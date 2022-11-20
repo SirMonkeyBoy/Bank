@@ -1,0 +1,11 @@
+name: Bank
+version: 1.0
+author: SirMonkeyBoy
+main: me.SirMonkeyBoy.Bank.Main
+description: Bank for vault
+api-version: 1.18
+depend:
+  - Vault
+  
+commands:
+  bank: 
