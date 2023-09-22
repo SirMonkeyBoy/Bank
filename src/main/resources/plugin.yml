@@ -1,0 +1,8 @@
+name: Bank-Plugin
+version: '${project.version}'
+main: me.sirmonkeyboy.bankplugin.Bank_Plugin
+api-version: '1.20'
+prefix: Bank
+depend: [Vault]
+authors: [SirMonkeyBoy]
+website: https://github.com/SirMonkeyBoy
