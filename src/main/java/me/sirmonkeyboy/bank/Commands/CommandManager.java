@@ -38,6 +38,7 @@ public class CommandManager implements TabExecutor {
                 } else //noinspection ConstantValue
                     if (args.length == 0) {
                         for (int i = 0; i < getSubcommands().size(); i++) {
+                            p.sendMessage("Please use /bank like");
                             p.sendMessage(getSubcommands().get(i).getSyntax() + " - " + getSubcommands().get(i).getDescription());
                         }
                     }
