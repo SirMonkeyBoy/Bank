@@ -1,9 +1,12 @@
-package me.sirmonkeyboy.bankplugin;
+package me.sirmonkeyboy.bank;
 
+import me.sirmonkeyboy.bank.Commands.CommandManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
+
+import java.util.Objects;
 
 public final class Bank extends JavaPlugin {
 
@@ -16,6 +19,7 @@ public final class Bank extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
         getLogger().info("Bank has started");
     }
 

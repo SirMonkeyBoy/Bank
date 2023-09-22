@@ -1,8 +1,12 @@
-name: Bank-Plugin
+name: Bank
 version: '${project.version}'
-main: me.sirmonkeyboy.bankplugin.Bank_Plugin
+main: me.sirmonkeyboy.bank.Bank
 api-version: '1.20'
 prefix: Bank
 depend: [Vault]
 authors: [SirMonkeyBoy]
 website: https://github.com/SirMonkeyBoy
+commands:
+  Bank:
+    description: Bank commands
+    usage: /<command>
