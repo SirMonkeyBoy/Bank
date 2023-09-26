@@ -12,11 +12,11 @@ public class MySQL {
 
     public MySQL(Bank plugin) {
         this.plugin = plugin;
-        host = plugin.getConfig().getString("host");
-        port = plugin.getConfig().getString("port");
-        database = plugin.getConfig().getString("database");
-        username = plugin.getConfig().getString("username");
-        password = plugin.getConfig().getString("password");
+        host = plugin.getConfig().getString("mysql.host");
+        port = plugin.getConfig().getString("mysql.port");
+        database = plugin.getConfig().getString("mysql.database");
+        username = plugin.getConfig().getString("mysql.username");
+        password = plugin.getConfig().getString("mysql.password");
     }
 
     private String host;
