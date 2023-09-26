@@ -1,25 +1,47 @@
 package me.sirmonkeyboy.bank;
 
 import me.sirmonkeyboy.bank.Commands.CommandManager;
+import me.sirmonkeyboy.bank.SQL.MySQL;
+
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 public final class Bank extends JavaPlugin {
+
+    public MySQL SQL;
 
     private static Economy econ = null;
 
     @Override
     public void onEnable() {
+
+        this.saveDefaultConfig();
+
         if (!setupEconomy() ) {
-            System.out.println("Disabled due to no Vault dependency found!");
+            getLogger().info("Disabled due to no Vault dependency found!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        this.SQL = new MySQL(this);
+
+        try {
+            SQL.connect();
+        } catch (ClassNotFoundException | SQLException e) {
+            getLogger().info("Database not connected");
+        }
+
+        if (SQL.isConnected()){
+            getLogger().info("Database is connected");
+        }
+
         Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
+
         getLogger().info("Bank has started");
     }
 
@@ -43,6 +65,8 @@ public final class Bank extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        SQL.disconnect();
+
         getLogger().info("Bank has stopped");
     }
 }

@@ -2,8 +2,10 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
-import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.entity.Player;
+
+import net.milkbowl.vault.economy.Economy;
 
 import java.util.List;
 
