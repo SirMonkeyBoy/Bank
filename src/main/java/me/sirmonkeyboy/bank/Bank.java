@@ -1,7 +1,9 @@
 package me.sirmonkeyboy.bank;
 
 import me.sirmonkeyboy.bank.Commands.CommandManager;
+import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
 import me.sirmonkeyboy.bank.SQL.MySQL;
+import me.sirmonkeyboy.bank.SQL.SQLGetter;
 
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +16,7 @@ import java.util.Objects;
 public final class Bank extends JavaPlugin {
 
     public MySQL SQL;
+    public SQLGetter data;
 
     private static Economy econ = null;
 
@@ -29,6 +32,7 @@ public final class Bank extends JavaPlugin {
         }
 
         this.SQL = new MySQL(this);
+        this.data = new SQLGetter(this);
 
         try {
             SQL.connect();
@@ -38,9 +42,11 @@ public final class Bank extends JavaPlugin {
 
         if (SQL.isConnected()){
             getLogger().info("Database is connected");
+            data.createTable();
         }
 
         Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
 
         getLogger().info("Bank has started");
     }
