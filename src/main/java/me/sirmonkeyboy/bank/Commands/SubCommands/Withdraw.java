@@ -22,7 +22,7 @@ public class Withdraw extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/bank withdraw";
+        return "/bank withdraw (Amount)";
     }
 
     @Override

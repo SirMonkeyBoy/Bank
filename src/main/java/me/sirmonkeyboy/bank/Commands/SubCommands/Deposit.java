@@ -23,14 +23,29 @@ public class Deposit extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/bank deposit";
+        return "/bank deposit (Amount)";
     }
 
     @Override
     public void perform(Player p, String[] args) {
         if (p.hasPermission("Bank.commands.Bank.Deposit")) {
             Economy eco = Bank.getEconomy();
-            p.sendMessage("test");
+            try {
+                int DepositMinimum = 1000;
+                int DepositAmount = Integer.parseInt(args[1]);
+                if (DepositAmount >= DepositMinimum){
+                    if (DepositAmount <= eco.getBalance(p)){
+                        p.sendMessage("Deposited $" + DepositAmount);
+                    }else {
+                        p.sendMessage("You Don't have $" + DepositAmount + " in your balance");
+                    }
+                }
+                else {
+                    p.sendMessage("Minimum deposit amount is $1000");
+                }
+            }catch (NumberFormatException e){
+                p.sendMessage("Minimum deposit amount is $1000");
+            }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Deposit")) {
                 p.sendMessage(translateAlternateColorCodes('&', "&cYou don't have permission to use this command"));
