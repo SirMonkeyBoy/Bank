@@ -38,7 +38,9 @@ public class Balance extends SubCommand {
             int balance = plugin.data.getbalance(p.getUniqueId());
             String BalanceMessage = plugin.getConfig().getString("BalanceMessage");
             if (BalanceMessage != null) {
-                p.sendMessage(translateAlternateColorCodes('&', BalanceMessage + balance));
+                String BalanceStr = String.valueOf(balance);
+                BalanceMessage = BalanceMessage.replace("%Bal%", BalanceStr);
+                p.sendMessage(translateAlternateColorCodes('&', BalanceMessage));
             }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Balance")) {

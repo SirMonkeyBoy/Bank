@@ -15,6 +15,8 @@ BalanceMessage: "&aYour balance is $"
 
 DepositMessage: "&aYou have deposited $"
 
-WithdrawMessage: "&aYou have withdraw $"
+DontHaveEnoughInBalance: "You don't have $%Deposit% in your balance"
+
+WithdrawMessage: "&aYou have withdraw $%Withdraw%"
 
 MinimumAmount: "1000"

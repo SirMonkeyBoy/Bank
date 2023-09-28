@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import net.milkbowl.vault.economy.Economy;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
@@ -38,7 +39,29 @@ public class Withdraw extends SubCommand {
     public void perform(Player p, String[] args) {
         if (p.hasPermission("Bank.commands.Bank.Withdraw")) {
             Economy eco = Bank.getEconomy();
-            p.sendMessage("test");
+            try {
+                int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
+                int WithdrawAmount = Integer.parseInt(args[1]);
+                if (WithdrawAmount >= DepositMinimum){
+                    String WithdrawMessage = plugin.getConfig().getString("WithdrawMessage");
+                    if (WithdrawAmount <= plugin.data.getbalance(p.getUniqueId())) {
+                        if (WithdrawMessage != null){
+                            eco.depositPlayer(p, WithdrawAmount);
+                            plugin.data.rembalance(p.getUniqueId(), WithdrawAmount);
+                            String WithdrawAmountStr = String.valueOf(WithdrawAmount);
+                            WithdrawMessage = WithdrawMessage.replace("%Withdraw%", WithdrawAmountStr);
+                            p.sendMessage(translateAlternateColorCodes('&',WithdrawMessage));
+                        }
+                    }else {
+                        p.sendMessage(translateAlternateColorCodes('&',"You don't have $" + WithdrawAmount + " in your bank"));
+                    }
+                }
+                else {
+                    p.sendMessage(translateAlternateColorCodes('&',"Minimum withdraw amount is $1000"));
+                }
+            }catch (NumberFormatException e){
+                p.sendMessage("Please deposit a number");
+            }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
                 String noPermission = plugin.getConfig().getString("NoPermission");
