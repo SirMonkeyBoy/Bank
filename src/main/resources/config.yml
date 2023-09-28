@@ -4,3 +4,17 @@ mysql:
   database: bank
   username: user
   password: password
+
+# Player Doesn't have permission to run that command
+NoPermission: "&cYou don't have permission to run this command"
+
+# You can't run that command
+YouCantRunThis: "&cYou can't run this"
+
+BalanceMessage: "&aYour balance is $"
+
+DepositMessage: "&aYou have deposited $"
+
+WithdrawMessage: "&aYou have withdraw $"
+
+MinimumAmount: "1000"
