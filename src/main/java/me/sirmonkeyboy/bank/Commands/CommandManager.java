@@ -22,9 +22,9 @@ public class CommandManager implements TabExecutor {
 
     public CommandManager(Bank plugin){
         this.plugin = plugin;
-        subcommands.add(new Balance());
-        subcommands.add(new Deposit());
-        subcommands.add(new Withdraw());
+        subcommands.add(new Balance(plugin));
+        subcommands.add(new Deposit(plugin));
+        subcommands.add(new Withdraw(plugin));
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
@@ -45,7 +45,10 @@ public class CommandManager implements TabExecutor {
                         }
                     }
             }else if (!p.hasPermission("Bank.commands.Bank")){
-                p.sendMessage(translateAlternateColorCodes('&', "&cYou don't have permission to use this command"));
+                String noPermission = plugin.getConfig().getString("NoPermission");
+                if (noPermission != null) {
+                    p.sendMessage(translateAlternateColorCodes('&', noPermission));
+                }
             }
         }else if (sender instanceof  ConsoleCommandSender c){
             c.sendMessage(translateAlternateColorCodes('&', "&cConsole can't run this command"));
@@ -62,7 +65,6 @@ public class CommandManager implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-
         if (args.length == 1) {
             ArrayList<String> subcommandArguments = new ArrayList<>();
 
