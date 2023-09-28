@@ -1,5 +1,6 @@
 package me.sirmonkeyboy.bank.Commands.SubCommands;
 
+import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 
 import org.bukkit.entity.Player;
@@ -9,6 +10,12 @@ import java.util.List;
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class Balance extends SubCommand {
+
+    private Bank plugin;
+
+    public Balance(Bank plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public String getName() {
@@ -28,10 +35,17 @@ public class Balance extends SubCommand {
     @Override
     public void perform(Player p, String[] args) {
         if (p.hasPermission("Bank.commands.Bank.Balance")) {
-            p.sendMessage("test");
+            int balance = plugin.data.getbalance(p.getUniqueId());
+            String BalanceMessage = plugin.getConfig().getString("BalanceMessage");
+            if (BalanceMessage != null) {
+                p.sendMessage(translateAlternateColorCodes('&', BalanceMessage + balance));
+            }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Balance")) {
-                p.sendMessage(translateAlternateColorCodes('&', "&cYou don't have permission to use this command"));
+                String noPermission = plugin.getConfig().getString("NoPermission");
+                if (noPermission != null) {
+                    p.sendMessage(translateAlternateColorCodes('&', noPermission));
+                }
             }
         }
     }
