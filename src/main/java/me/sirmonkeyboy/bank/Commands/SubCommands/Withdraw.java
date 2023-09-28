@@ -12,6 +12,13 @@ import java.util.List;
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class Withdraw extends SubCommand {
+
+    private Bank plugin;
+
+    public Withdraw(Bank plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public String getName() {
         return "withdraw";
@@ -34,7 +41,10 @@ public class Withdraw extends SubCommand {
             p.sendMessage("test");
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
-                p.sendMessage(translateAlternateColorCodes('&', "&cYou don't have permission to use this command"));
+                String noPermission = plugin.getConfig().getString("NoPermission");
+                if (noPermission != null) {
+                    p.sendMessage(translateAlternateColorCodes('&', noPermission));
+                }
             }
         }
     }
