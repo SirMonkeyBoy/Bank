@@ -11,11 +11,12 @@ NoPermission: "&cYou don't have permission to run this command"
 # You can't run that command
 YouCantRunThis: "&cYou can't run this"
 
-BalanceMessage: "&aYour balance is $"
+BalanceMessage: "&aYour Balance is $%Bal%"
 
-DepositMessage: "&aYou have deposited $"
-
-DontHaveEnoughInBalance: "You don't have $%Deposit% in your balance"
+Deposit:
+  DepositMessage: "&aYou have deposited $%Deposit%"
+  DontHaveEnoughInBalance: "You don't have $%Deposit% in your balance"
+  MinimumDepositMessage: "Minimum deposit amount is $%Minimum%"
 
 WithdrawMessage: "&aYou have withdraw $%Withdraw%"
 

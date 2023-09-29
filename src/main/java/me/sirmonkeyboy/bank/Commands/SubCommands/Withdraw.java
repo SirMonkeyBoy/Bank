@@ -60,7 +60,7 @@ public class Withdraw extends SubCommand {
                     p.sendMessage(translateAlternateColorCodes('&',"Minimum withdraw amount is $1000"));
                 }
             }catch (NumberFormatException e){
-                p.sendMessage("Please deposit a number");
+                p.sendMessage("&cPlease deposit a number");
             }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {

@@ -42,25 +42,33 @@ public class Deposit extends SubCommand {
             try {
                 int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
                 int DepositAmount = Integer.parseInt(args[1]);
+                String DepositAmountStr = String.valueOf(DepositAmount);
                 if (DepositAmount >= DepositMinimum){
-                    String DepositMessage = plugin.getConfig().getString("DepositMessage");
+                    String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
                     if (DepositAmount <= eco.getBalance(p)) {
                         if (DepositMessage != null){
                             eco.withdrawPlayer(p, DepositAmount);
                             plugin.data.addbalance(p.getUniqueId(), DepositAmount);
-                            String DepositAmountStr = String.valueOf(DepositAmount);
                             DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
-                            p.sendMessage(translateAlternateColorCodes('&',DepositMessage + DepositAmount));
+                            p.sendMessage(translateAlternateColorCodes('&',DepositMessage));
                         }
                     }else {
-                        p.sendMessage(translateAlternateColorCodes('&',"You don't have $" + DepositAmount + " in your balance"));
+                        String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
+                        if (DontHaveEnoughInBalance != null) {
+                            DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Deposit%", DepositAmountStr);
+                            p.sendMessage(translateAlternateColorCodes('&', DontHaveEnoughInBalance));
+                        }
                     }
                 }
                 else {
-                    p.sendMessage(translateAlternateColorCodes('&',"Minimum deposit amount is $1000"));
+                    String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
+                    if (MinimumDepositMessage != null) {
+                        MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", DepositAmountStr);
+                        p.sendMessage(translateAlternateColorCodes('&', MinimumDepositMessage));
+                    }
                 }
             }catch (NumberFormatException e){
-                p.sendMessage("Please deposit a number");
+                p.sendMessage("&cPlease deposit a number");
             }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Deposit")) {
