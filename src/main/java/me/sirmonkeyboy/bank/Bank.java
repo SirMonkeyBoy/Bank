@@ -38,6 +38,8 @@ public final class Bank extends JavaPlugin {
             SQL.connect();
         } catch (ClassNotFoundException | SQLException e) {
             getLogger().info("Database not connected");
+            getLogger().info("Disabled due to no MySQL Database found!");
+            getServer().getPluginManager().disablePlugin(this);
         }
 
         if (SQL.isConnected()){

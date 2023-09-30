@@ -43,8 +43,10 @@ public class Deposit extends SubCommand {
                 int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
                 int DepositAmount = Integer.parseInt(args[1]);
                 String DepositAmountStr = String.valueOf(DepositAmount);
+                String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
+                String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
+                String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
                 if (DepositAmount >= DepositMinimum){
-                    String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
                     if (DepositAmount <= eco.getBalance(p)) {
                         if (DepositMessage != null){
                             eco.withdrawPlayer(p, DepositAmount);
@@ -53,7 +55,6 @@ public class Deposit extends SubCommand {
                             p.sendMessage(translateAlternateColorCodes('&',DepositMessage));
                         }
                     }else {
-                        String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
                         if (DontHaveEnoughInBalance != null) {
                             DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Deposit%", DepositAmountStr);
                             p.sendMessage(translateAlternateColorCodes('&', DontHaveEnoughInBalance));
@@ -61,7 +62,6 @@ public class Deposit extends SubCommand {
                     }
                 }
                 else {
-                    String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
                     if (MinimumDepositMessage != null) {
                         MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", DepositAmountStr);
                         p.sendMessage(translateAlternateColorCodes('&', MinimumDepositMessage));
@@ -84,4 +84,4 @@ public class Deposit extends SubCommand {
     public List<String> getSubCommandArguments(Player p, String[] args) {
         return null;
     }
-}
+ }

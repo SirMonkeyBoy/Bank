@@ -1,3 +1,5 @@
+
+#MySQL is needed for the plugin to work
 mysql:
   host: localhost
   port: 3306
@@ -5,14 +7,13 @@ mysql:
   username: user
   password: password
 
-# Player Doesn't have permission to run that command
-NoPermission: "&cYou don't have permission to run this command"
-
-# You can't run that command
-YouCantRunThis: "&cYou can't run this"
-
+# Balance message
 BalanceMessage: "&aYour Balance is $%Bal%"
 
+# All Deposit command messages
+# Placeholders only work in the ones the come in by default
+# %Deposit% is the amount you deposit
+# %Minimum% is the MinimumAmount
 Deposit:
   DepositMessage: "&aYou have deposited $%Deposit%"
   DontHaveEnoughInBalance: "You don't have $%Deposit% in your balance"
@@ -20,4 +21,11 @@ Deposit:
 
 WithdrawMessage: "&aYou have withdraw $%Withdraw%"
 
+#Minimum amount for deposit/withdraws
 MinimumAmount: "1000"
+
+# Player Doesn't have permission to run that command
+NoPermission: "&cYou don't have permission to run this command"
+
+# You can't run that command
+YouCantRunThis: "&cYou can't run this"
