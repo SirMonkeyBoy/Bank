@@ -46,6 +46,7 @@ public class Deposit extends SubCommand {
                 String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
                 String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
                 String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
+                String MinimumDepositAmount = String.valueOf(1000);
                 if (DepositAmount >= DepositMinimum){
                     if (DepositAmount <= eco.getBalance(p)) {
                         if (DepositMessage != null){
@@ -63,7 +64,7 @@ public class Deposit extends SubCommand {
                 }
                 else {
                     if (MinimumDepositMessage != null) {
-                        MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", DepositAmountStr);
+                        MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", MinimumDepositAmount);
                         p.sendMessage(translateAlternateColorCodes('&', MinimumDepositMessage));
                     }
                 }
