@@ -102,4 +102,15 @@ public class SQLGetter {
         }
     }
 
+    public void createTableTransactionMonitor(){
+        PreparedStatement ps;
+        try {
+            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS transactionmonitor (NAME VARCHAR(100),UUID VARCHAR(100),AMOUNTADDEDTAKEN VARCHAR(100),PRIMARY KEY (NAME))");
+            ps.executeUpdate();
+        }catch (SQLException e){
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -45,6 +45,7 @@ public final class Bank extends JavaPlugin {
         if (SQL.isConnected()){
             getLogger().info("Database is connected");
             data.createTable();
+            data.createTableTransactionMonitor();
             Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
             getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
         }
