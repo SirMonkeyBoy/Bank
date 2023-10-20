@@ -10,3 +10,13 @@ commands:
   Bank:
     description: Bank commands
     usage: /<command>
+    permission: Bank.commands.Bank
+    permission-message: "You do not have permission to use this command"
+permissions:
+  Bank.commands.Bank:
+    description: "Access to /Bank"
+    default: op
+    children:
+      Bank.commands.Bank.Deposit: true
+      Bank.commands.Bank.Withdraw: true
+      Bank.commands.Bank.Balance: true

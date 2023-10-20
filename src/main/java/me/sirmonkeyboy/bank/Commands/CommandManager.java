@@ -44,11 +44,6 @@ public class CommandManager implements TabExecutor {
                             p.sendMessage(getSubcommands().get(i).getSyntax() + " - " + getSubcommands().get(i).getDescription());
                         }
                     }
-            }else if (!p.hasPermission("Bank.commands.Bank")){
-                String noPermission = plugin.getConfig().getString("NoPermission");
-                if (noPermission != null) {
-                    p.sendMessage(translateAlternateColorCodes('&', noPermission));
-                }
             }
         }else if (sender instanceof  ConsoleCommandSender c){
             c.sendMessage(translateAlternateColorCodes('&', "&cConsole can't run this command"));
