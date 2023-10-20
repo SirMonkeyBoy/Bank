@@ -8,4 +8,5 @@ Commands:
 - `/bank withdraw` Withdraws from your bank
 
 I made this as I wanted a Bank plugin that stores its data in a database.
-It supports Mysql and MariaDB i haven't tested it on any other database as I only use those databases.
+
+It supports Mysql and MariaDB I haven't tested it on any other database as I only use those databases.
