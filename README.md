@@ -6,3 +6,7 @@ Commands:
 - `/bank balance` Give bank balance 
 - `/bank depost` Deposit to your bank
 - `/bank withdraw` Withdraws from your bank
+
+I made this as I wanted a Bank plugin that stores its data in a database.
+
+It supports Mysql and MariaDB I haven't tested it on any other database as I only use those databases.
