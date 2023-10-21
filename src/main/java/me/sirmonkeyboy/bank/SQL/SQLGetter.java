@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class SQLGetter {
 
-    private Bank plugin;
+    private final Bank plugin;
 
     public SQLGetter(Bank plugin){
         this.plugin = plugin;
@@ -66,6 +66,7 @@ public class SQLGetter {
             PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("SELECT BALANCE FROM bankbalance WHERE UUID=?");
             ps.setString(1, uuid.toString());
             ResultSet rs =ps.executeQuery();
+            //noinspection UnusedAssignment
             int money = 0;
             if (rs.next()){
                 money = rs.getInt("BALANCE");

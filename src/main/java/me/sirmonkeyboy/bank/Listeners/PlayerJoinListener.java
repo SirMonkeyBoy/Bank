@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoinListener implements Listener {
 
-    private Bank plugin;
+    private final Bank plugin;
 
     public PlayerJoinListener(Bank plugin){
         this.plugin = plugin;

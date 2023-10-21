@@ -8,7 +8,8 @@ import java.sql.SQLException;
 
 public class MySQL {
 
-    private Bank plugin;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final Bank plugin;
 
     public MySQL(Bank plugin) {
         this.plugin = plugin;
@@ -19,16 +20,16 @@ public class MySQL {
         password = plugin.getConfig().getString("mysql.password");
     }
 
-    private String host;
-    private String port;
-    private String database;
-    private String username;
-    private String password;
+    private final String host;
+    private final String port;
+    private final String database;
+    private final String username;
+    private final String password;
 
     private Connection connection;
 
     public boolean isConnected() {
-        return (connection == null ? false : true);
+        return (connection != null);
     }
 
     public void connect() throws ClassNotFoundException, SQLException {

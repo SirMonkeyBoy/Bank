@@ -18,7 +18,7 @@ import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class CommandManager implements TabExecutor {
     private final Bank plugin;
-    private ArrayList<SubCommand> subcommands = new ArrayList<>();
+    private final ArrayList<SubCommand> subcommands = new ArrayList<>();
 
     public CommandManager(Bank plugin){
         this.plugin = plugin;

@@ -14,7 +14,7 @@ import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class Withdraw extends SubCommand {
 
-    private Bank plugin;
+    private final Bank plugin;
 
     public Withdraw(Bank plugin) {
         this.plugin = plugin;

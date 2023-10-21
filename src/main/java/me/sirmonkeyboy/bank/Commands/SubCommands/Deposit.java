@@ -14,7 +14,7 @@ import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class Deposit extends SubCommand {
 
-    private Bank plugin;
+    private final Bank plugin;
 
     public Deposit(Bank plugin) {
         this.plugin = plugin;
