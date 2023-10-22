@@ -17,6 +17,7 @@ import java.util.List;
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class CommandManager implements TabExecutor {
+    @SuppressWarnings("FieldCanBeLocal")
     private final Bank plugin;
     private final ArrayList<SubCommand> subcommands = new ArrayList<>();
 

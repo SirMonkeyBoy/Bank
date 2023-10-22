@@ -38,8 +38,9 @@ public final class Bank extends JavaPlugin {
             SQL.connect();
         } catch (ClassNotFoundException | SQLException e) {
             getLogger().info("Database not connected");
-            getLogger().info("Disabled due to no MySQL Database found!");
+            getLogger().info("Disabled due to no Database found!");
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         if (SQL.isConnected()){
@@ -74,7 +75,7 @@ public final class Bank extends JavaPlugin {
     @Override
     public void onDisable() {
         SQL.disconnect();
-
+        getLogger().info("Database connection has closed");
         getLogger().info("Bank has stopped");
     }
 }
