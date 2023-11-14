@@ -17,7 +17,7 @@ public class TransactionMonitor {
         this.plugin = plugin;
     }
 
-    public void createTransactionAdd(Player p) {
+    public void createTransactionDeposit(Player p) {
         try {
             PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("INSERT IGNORE INTO transactionmonitor (ID,NAME,UUID) VALUES (?,?,?)");
             UUID uuid = p.getUniqueId();
@@ -37,7 +37,7 @@ public class TransactionMonitor {
         }
     }
 
-    public void createTransactionRemove(Player p, int money) {
+    public void createTransactionWithdraw(Player p, int money) {
         try {
             PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("INSERT IGNORE INTO transactionmonitor (ID,NAME,UUID) VALUES (?,?,?)");
             UUID uuid = p.getUniqueId();
