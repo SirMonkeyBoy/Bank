@@ -54,6 +54,7 @@ public class Deposit extends SubCommand {
                             plugin.data.addbalance(p.getUniqueId(), DepositAmount);
                             DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
                             p.sendMessage(translateAlternateColorCodes('&',DepositMessage));
+                            plugin.Monitor.createTransactionAdd(p);
                         }
                     }else {
                         if (DontHaveEnoughInBalance != null) {

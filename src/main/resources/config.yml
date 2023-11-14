@@ -24,6 +24,8 @@ WithdrawMessage: "&aYou have withdraw $%Withdraw%"
 #Minimum amount for deposit/withdraws
 MinimumAmount: "1000"
 
+id: "0"
+
 # Player Doesn't have permission to run that command
 NoPermission: "&cYou don't have permission to run this command"
 

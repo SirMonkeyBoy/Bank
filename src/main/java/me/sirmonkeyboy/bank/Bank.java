@@ -5,6 +5,7 @@ import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
 import me.sirmonkeyboy.bank.SQL.MySQL;
 import me.sirmonkeyboy.bank.SQL.SQLGetter;
 
+import me.sirmonkeyboy.bank.Utill.TransactionMonitor;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,6 +18,7 @@ public final class Bank extends JavaPlugin {
 
     public MySQL SQL;
     public SQLGetter data;
+    public TransactionMonitor Monitor;
 
     private static Economy econ = null;
 
@@ -33,6 +35,7 @@ public final class Bank extends JavaPlugin {
 
         this.SQL = new MySQL(this);
         this.data = new SQLGetter(this);
+        this.Monitor = new TransactionMonitor(this);
 
         try {
             SQL.connect();
