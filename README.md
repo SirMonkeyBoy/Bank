@@ -1,4 +1,4 @@
-# Kingdom_Bank
+# Kingdom Bank
 Bank Plugin for Minecraft
 
 Commands:
