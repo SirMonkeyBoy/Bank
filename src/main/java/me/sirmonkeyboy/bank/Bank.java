@@ -54,7 +54,7 @@ public final class Bank extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
         }
 
-        getLogger().info("Bank has started");
+        getLogger().info("Kingdom Bank has started");
     }
 
     private boolean setupEconomy() {
@@ -78,7 +78,7 @@ public final class Bank extends JavaPlugin {
     @Override
     public void onDisable() {
         SQL.disconnect();
-        getLogger().info("Database connection has closed");
-        getLogger().info("Bank has stopped");
+        getLogger().info("Disconnected from Database");
+        getLogger().info("kingdom Bank has stopped");
     }
 }

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class TransactionMonitor {
 
-    private Bank plugin;
+    private final Bank plugin;
 
 
     public TransactionMonitor(Bank plugin) {
