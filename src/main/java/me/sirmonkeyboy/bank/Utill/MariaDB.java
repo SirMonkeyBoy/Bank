@@ -102,4 +102,23 @@ public class MariaDB {
         conn.close();
         return false;
     }
+
+    public double getbalance(UUID uuid) throws SQLException {
+        // Connect to the database
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+
+        // Insert data into the table
+        PreparedStatement pstmt = conn.prepareStatement("SELECT BALANCE FROM bankbalance WHERE UUID=?");
+        pstmt.setString(1, uuid.toString());
+        ResultSet rs = pstmt.executeQuery();
+        //noinspection UnusedAssignment
+        double money = 0;
+        if (rs.next()){
+            money = rs.getDouble("BALANCE");
+            return money;
+        }
+        // Close the connection
+        conn.close();
+        return money;
+    }
 }
