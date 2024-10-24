@@ -1,6 +1,6 @@
 
-#MySQL is needed for the plugin to work
-mysql:
+#MariaDB is needed for the plugin to work
+mariaDB:
   host: localhost
   port: 3306
   database: bank
