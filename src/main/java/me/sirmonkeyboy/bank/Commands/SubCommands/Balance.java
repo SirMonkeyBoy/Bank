@@ -5,6 +5,7 @@ import me.sirmonkeyboy.bank.Commands.SubCommand;
 
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
@@ -33,9 +34,9 @@ public class Balance extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) {
+    public void perform(Player p, String[] args) throws SQLException {
         if (p.hasPermission("Bank.commands.Bank.Balance")) {
-            int balance = plugin.data.getbalance(p.getUniqueId());
+            double balance = plugin.data.getbalance(p.getUniqueId());
             String BalanceMessage = plugin.getConfig().getString("BalanceMessage");
             if (BalanceMessage != null) {
                 String BalanceStr = String.valueOf(balance);
