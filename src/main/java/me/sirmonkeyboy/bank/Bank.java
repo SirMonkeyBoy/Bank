@@ -3,9 +3,7 @@ package me.sirmonkeyboy.bank;
 import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
 
-import me.sirmonkeyboy.bank.SQL.MySQL;
 import me.sirmonkeyboy.bank.Utill.MariaDB;
-import me.sirmonkeyboy.bank.Utill.TransactionMonitor;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,7 +13,7 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public final class Bank extends JavaPlugin {
-    public MySQL SQL;
+
     public MariaDB data;
 
     private static Economy econ = null;
@@ -30,7 +28,7 @@ public final class Bank extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        this.SQL =new MySQL(this);
+
         this.data = new MariaDB(this);
 
         try {
