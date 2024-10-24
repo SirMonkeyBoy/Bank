@@ -121,7 +121,7 @@ public class MariaDB {
         conn.close();
         return money;
     }
-    
+
     public void addbalance(UUID uuid, double money) throws SQLException {
         // Connect to the database
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
