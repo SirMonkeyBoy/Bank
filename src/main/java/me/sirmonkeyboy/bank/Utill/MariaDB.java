@@ -65,4 +65,41 @@ public class MariaDB {
         // Close the connection
         conn.close();
     }
+
+    public void createPlayer(Player p) throws SQLException {
+        // Connect to the database
+
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);) {
+            UUID uuid = p.getUniqueId();
+            if (!exists(uuid)) {
+                PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME,UUID) VALUES (?,?)");
+                pstmt.setString(1, p.getName());
+                pstmt.setString(2, uuid.toString());
+                pstmt.executeUpdate();
+
+                return;
+            }
+        }
+    }
+
+    public boolean exists(UUID uuid) throws SQLException {
+        // Connect to the database
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM bankbalance WHERE UUID=?");
+            pstmt.setString(1, uuid.toString());
+            ResultSet results = pstmt.executeQuery();
+            if (results.next()) {
+                // player found
+                return true;
+            }
+            return false;
+        }catch (SQLException e){
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+        }
+        conn.close();
+        return false;
+    }
 }
