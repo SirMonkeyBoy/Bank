@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import net.milkbowl.vault.economy.Economy;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,7 +55,6 @@ public class Deposit extends SubCommand {
                             plugin.data.addbalance(p.getUniqueId(), DepositAmount);
                             DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
                             p.sendMessage(translateAlternateColorCodes('&',DepositMessage));
-                            plugin.Monitor.createTransactionDeposit(p);
                         }
                     }else {
                         if (DontHaveEnoughInBalance != null) {
@@ -71,6 +71,8 @@ public class Deposit extends SubCommand {
                 }
             }catch (NumberFormatException e){
                 p.sendMessage("&cPlease deposit a number");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Deposit")) {
