@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import net.milkbowl.vault.economy.Economy;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,7 +45,7 @@ public class Withdraw extends SubCommand {
                 int WithdrawAmount = Integer.parseInt(args[1]);
                 if (WithdrawAmount >= DepositMinimum){
                     String WithdrawMessage = plugin.getConfig().getString("WithdrawMessage");
-                    if (WithdrawAmount <= plugin.data.getbalance(p.getUniqueId())) {
+                    if (WithdrawAmount == DepositMinimum) {
                         if (WithdrawMessage != null){
                             eco.depositPlayer(p, WithdrawAmount);
                             plugin.data.rembalance(p.getUniqueId(), WithdrawAmount);
@@ -61,6 +62,8 @@ public class Withdraw extends SubCommand {
                 }
             }catch (NumberFormatException e){
                 p.sendMessage("&cPlease deposit a number");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
