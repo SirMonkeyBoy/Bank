@@ -50,4 +50,19 @@ public class MariaDB {
     public Connection getConnection() {
         return connection;
     }
+    
+    public void createTables() throws SQLException {
+        // Connect to the database
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (NAME VARCHAR(100),UUID VARCHAR(100),BALANCE INT(100),PRIMARY KEY (NAME))");
+            pstmt.executeUpdate();
+        }catch (SQLException e){
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+        }
+        // Close the connection
+        conn.close();
+    }
 }
