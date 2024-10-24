@@ -139,4 +139,21 @@ public class MariaDB {
         // Close the connection
         conn.close();
     }
+
+    public void rembalance(UUID uuid, double money) throws SQLException {
+        // Connect to the database
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?");
+            pstmt.setDouble(1, (getbalance(uuid) - money));
+            pstmt.setString(2, uuid.toString());
+            pstmt.executeUpdate();
+        }catch (SQLException e){
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+        }
+        // Close the connection
+        conn.close();
+    }
 }
