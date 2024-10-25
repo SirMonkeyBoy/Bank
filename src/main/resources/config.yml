@@ -10,16 +10,20 @@ mariaDB:
 # Balance message
 BalanceMessage: "Your Balance is $%Bal%"
 
-# All Deposit command messages
-# Placeholders only work in the ones the come in by default
+# Placeholders
 # %Deposit% is the amount you deposit
+# %Withdraw% is the amount you withdraw
 # %Minimum% is the MinimumAmount
+
 Deposit:
   DepositMessage: "You have deposited $%Deposit%"
   DontHaveEnoughInBalance: "You don't have $%Deposit% in your balance"
   MinimumDepositMessage: "Minimum deposit amount is $%Minimum%"
 
-WithdrawMessage: "&aYou have withdraw $%Withdraw%"
+Withdraw:
+  WithdrawMessage: "You have withdrawn $%Withdraw%"
+  DontHaveEnoughInBalance: "You don't have $%Withdraw% in your bank balance"
+  MinimumWithdrawMessage: "Minimum withdraw amount is $%Minimum%"
 
 #Minimum amount for deposit/withdraws
 MinimumAmount: "1000"
