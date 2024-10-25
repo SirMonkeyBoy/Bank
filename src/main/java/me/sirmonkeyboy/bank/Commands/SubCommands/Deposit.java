@@ -42,33 +42,36 @@ public class Deposit extends SubCommand {
         if (p.hasPermission("Bank.commands.Bank.Deposit")) {
             Economy eco = Bank.getEconomy();
             try {
-                int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
-                double DepositAmount = Double.parseDouble(args[1]);
-                String DepositAmountStr = String.valueOf(DepositAmount);
-                String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
-                String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
-                String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
-                String MinimumDepositAmount = String.valueOf(DepositMinimum);
-                if (DepositAmount >= DepositMinimum){
-                    if (DepositAmount <= eco.getBalance(p)) {
-                        if (DepositMessage != null){
-                            eco.withdrawPlayer(p, DepositAmount);
-                            plugin.data.addbalance(p.getUniqueId(), DepositAmount);
-                            DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
-                            p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
+                if (args.length >= 2 && !args[1].isBlank()) {
+                    int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
+                    double DepositAmount = Double.parseDouble(args[1]);
+                    String DepositAmountStr = String.valueOf(DepositAmount);
+                    String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
+                    String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
+                    String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
+                    String MinimumDepositAmount = String.valueOf(DepositMinimum);
+                    if (DepositAmount >= DepositMinimum) {
+                        if (DepositAmount <= eco.getBalance(p)) {
+                            if (DepositMessage != null) {
+                                eco.withdrawPlayer(p, DepositAmount);
+                                plugin.data.addbalance(p.getUniqueId(), DepositAmount);
+                                DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
+                                p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
+                            }
+                        } else {
+                            if (DontHaveEnoughInBalance != null) {
+                                DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Deposit%", DepositAmountStr);
+                                p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
+                            }
                         }
-                    }else {
-                        if (DontHaveEnoughInBalance != null) {
-                            DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Deposit%", DepositAmountStr);
-                            p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
+                    } else {
+                        if (MinimumDepositMessage != null) {
+                            MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", MinimumDepositAmount);
+                            p.sendMessage(Component.text(MinimumDepositMessage).color(NamedTextColor.RED));
                         }
                     }
-                }
-                else {
-                    if (MinimumDepositMessage != null) {
-                        MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", MinimumDepositAmount);
-                        p.sendMessage(Component.text(MinimumDepositMessage).color(NamedTextColor.RED));
-                    }
+                } else {
+                    p.sendMessage(Component.text("Use /bank deposit Amount"));
                 }
             }catch (NumberFormatException e){
                 p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
