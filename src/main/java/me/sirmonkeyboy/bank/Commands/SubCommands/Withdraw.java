@@ -3,6 +3,8 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 import net.milkbowl.vault.economy.Economy;
@@ -41,27 +43,36 @@ public class Withdraw extends SubCommand {
         if (p.hasPermission("Bank.commands.Bank.Withdraw")) {
             Economy eco = Bank.getEconomy();
             try {
-                int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
-                int WithdrawAmount = Integer.parseInt(args[1]);
-                if (WithdrawAmount >= DepositMinimum){
-                    String WithdrawMessage = plugin.getConfig().getString("WithdrawMessage");
-                    if (WithdrawAmount == DepositMinimum) {
+                int WithdrawMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
+                double WithdrawAmount = Double.parseDouble(args[1]);
+                String WithdrawAmountStr = String.valueOf(WithdrawAmount);
+                String WithdrawMessage = plugin.getConfig().getString("Withdraw.WithdrawMessage");
+                String DontHaveEnoughInBalance = plugin.getConfig().getString("Withdraw.DontHaveEnoughInBalance");
+                String MinimumWithdrawMessage = plugin.getConfig().getString("Withdraw.MinimumWithdrawMessage");
+                String MinimumWithdrawAmount = String.valueOf(WithdrawMinimum);
+                if (WithdrawAmount >= WithdrawMinimum){
+                    if (WithdrawAmount == WithdrawMinimum) {
                         if (WithdrawMessage != null){
                             eco.depositPlayer(p, WithdrawAmount);
                             plugin.data.rembalance(p.getUniqueId(), WithdrawAmount);
-                            String WithdrawAmountStr = String.valueOf(WithdrawAmount);
                             WithdrawMessage = WithdrawMessage.replace("%Withdraw%", WithdrawAmountStr);
-                            p.sendMessage(translateAlternateColorCodes('&',WithdrawMessage));
+                            p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
                         }
                     }else {
-                        p.sendMessage(translateAlternateColorCodes('&',"You don't have $" + WithdrawAmount + " in your bank"));
+                        if (DontHaveEnoughInBalance != null) {
+                            DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Deposit%", WithdrawAmountStr);
+                            p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
+                        }
                     }
                 }
                 else {
-                    p.sendMessage(translateAlternateColorCodes('&',"Minimum withdraw amount is $1000"));
+                    if (MinimumWithdrawMessage != null) {
+                        MinimumWithdrawMessage = MinimumWithdrawMessage.replace("%Minimum%", MinimumWithdrawAmount);
+                        p.sendMessage(Component.text(MinimumWithdrawMessage).color(NamedTextColor.RED));
+                    }
                 }
             }catch (NumberFormatException e){
-                p.sendMessage("&cPlease deposit a number");
+                p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -69,7 +80,7 @@ public class Withdraw extends SubCommand {
             if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
                 String noPermission = plugin.getConfig().getString("NoPermission");
                 if (noPermission != null) {
-                    p.sendMessage(translateAlternateColorCodes('&', noPermission));
+                    p.sendMessage(Component.text(noPermission).color(NamedTextColor.RED));
                 }
             }
         }
