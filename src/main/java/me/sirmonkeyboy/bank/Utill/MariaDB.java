@@ -58,18 +58,20 @@ public class MariaDB {
         try {
             PreparedStatement pstmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (NAME VARCHAR(100),UUID VARCHAR(100),BALANCE INT(100),PRIMARY KEY (NAME))");
             pstmt.executeUpdate();
-        }catch (SQLException e){
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
+        } catch (SQLException e) {
+            // Roll back the transaction if an exception occurs
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.close();
         }
-        // Close the connection
-        conn.close();
     }
 
     public void createPlayer(Player p) throws SQLException {
         // Connect to the database
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);) {
+        try {
             UUID uuid = p.getUniqueId();
             if (!exists(uuid)) {
                 PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME,UUID) VALUES (?,?)");
@@ -79,6 +81,12 @@ public class MariaDB {
 
                 return;
             }
+        } catch (SQLException e) {
+            // Roll back the transaction if an exception occurs
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.close();
         }
     }
 
@@ -111,7 +119,6 @@ public class MariaDB {
         PreparedStatement pstmt = conn.prepareStatement("SELECT BALANCE FROM bankbalance WHERE UUID=?");
         pstmt.setString(1, uuid.toString());
         ResultSet rs = pstmt.executeQuery();
-        //noinspection UnusedAssignment
         double money = 0;
         if (rs.next()){
             money = rs.getDouble("BALANCE");
@@ -131,13 +138,13 @@ public class MariaDB {
             pstmt.setDouble(1, (getbalance(uuid) + money));
             pstmt.setString(2, uuid.toString());
             pstmt.executeUpdate();
-        }catch (SQLException e){
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
+        } catch (SQLException e) {
+            // Roll back the transaction if an exception occurs
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.close();
         }
-
-        // Close the connection
-        conn.close();
     }
 
     public void rembalance(UUID uuid, double money) throws SQLException {
@@ -149,11 +156,12 @@ public class MariaDB {
             pstmt.setDouble(1, (getbalance(uuid) - money));
             pstmt.setString(2, uuid.toString());
             pstmt.executeUpdate();
-        }catch (SQLException e){
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
+        } catch (SQLException e) {
+            // Roll back the transaction if an exception occurs
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.close();
         }
-        // Close the connection
-        conn.close();
     }
 }
