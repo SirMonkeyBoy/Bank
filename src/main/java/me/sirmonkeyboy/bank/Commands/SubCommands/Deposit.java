@@ -3,6 +3,8 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 
+import net.kyori.adventure.text.*;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 import net.milkbowl.vault.economy.Economy;
@@ -11,7 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
-import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class Deposit extends SubCommand {
 
@@ -54,23 +55,23 @@ public class Deposit extends SubCommand {
                             eco.withdrawPlayer(p, DepositAmount);
                             plugin.data.addbalance(p.getUniqueId(), DepositAmount);
                             DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
-                            p.sendMessage(translateAlternateColorCodes('&',DepositMessage));
+                            p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
                         }
                     }else {
                         if (DontHaveEnoughInBalance != null) {
                             DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Deposit%", DepositAmountStr);
-                            p.sendMessage(translateAlternateColorCodes('&', DontHaveEnoughInBalance));
+                            p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
                         }
                     }
                 }
                 else {
                     if (MinimumDepositMessage != null) {
                         MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", MinimumDepositAmount);
-                        p.sendMessage(translateAlternateColorCodes('&', MinimumDepositMessage));
+                        p.sendMessage(Component.text(MinimumDepositMessage).color(NamedTextColor.RED));
                     }
                 }
             }catch (NumberFormatException e){
-                p.sendMessage("&cPlease deposit a number");
+                p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -78,7 +79,7 @@ public class Deposit extends SubCommand {
             if (!p.hasPermission("Bank.commands.Bank.Deposit")) {
                 String noPermission = plugin.getConfig().getString("NoPermission");
                 if (noPermission != null) {
-                    p.sendMessage(translateAlternateColorCodes('&', noPermission));
+                    p.sendMessage(Component.text(noPermission).color(NamedTextColor.RED));
                 }
             }
         }
