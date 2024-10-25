@@ -3,14 +3,16 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 
+import net.kyori.adventure.text.*;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 import net.milkbowl.vault.economy.Economy;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
-import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class Deposit extends SubCommand {
 
@@ -40,43 +42,47 @@ public class Deposit extends SubCommand {
         if (p.hasPermission("Bank.commands.Bank.Deposit")) {
             Economy eco = Bank.getEconomy();
             try {
-                int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
-                int DepositAmount = Integer.parseInt(args[1]);
-                String DepositAmountStr = String.valueOf(DepositAmount);
-                String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
-                String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
-                String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
-                String MinimumDepositAmount = String.valueOf(1000);
-                if (DepositAmount >= DepositMinimum){
-                    if (DepositAmount <= eco.getBalance(p)) {
-                        if (DepositMessage != null){
-                            eco.withdrawPlayer(p, DepositAmount);
-                            plugin.data.addbalance(p.getUniqueId(), DepositAmount);
-                            DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
-                            p.sendMessage(translateAlternateColorCodes('&',DepositMessage));
-                            plugin.Monitor.createTransactionDeposit(p);
+                if (args.length >= 2 && !args[1].isBlank()) {
+                    int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
+                    double DepositAmount = Double.parseDouble(args[1]);
+                    String DepositAmountStr = String.valueOf(DepositAmount);
+                    String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
+                    String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
+                    String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
+                    String MinimumDepositAmount = String.valueOf(DepositMinimum);
+                    if (DepositAmount >= DepositMinimum) {
+                        if (DepositAmount <= eco.getBalance(p)) {
+                            if (DepositMessage != null) {
+                                eco.withdrawPlayer(p, DepositAmount);
+                                plugin.data.addbalance(p.getUniqueId(), DepositAmount);
+                                DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
+                                p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
+                            }
+                        } else {
+                            if (DontHaveEnoughInBalance != null) {
+                                DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Deposit%", DepositAmountStr);
+                                p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
+                            }
                         }
-                    }else {
-                        if (DontHaveEnoughInBalance != null) {
-                            DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Deposit%", DepositAmountStr);
-                            p.sendMessage(translateAlternateColorCodes('&', DontHaveEnoughInBalance));
+                    } else {
+                        if (MinimumDepositMessage != null) {
+                            MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", MinimumDepositAmount);
+                            p.sendMessage(Component.text(MinimumDepositMessage).color(NamedTextColor.RED));
                         }
                     }
-                }
-                else {
-                    if (MinimumDepositMessage != null) {
-                        MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", MinimumDepositAmount);
-                        p.sendMessage(translateAlternateColorCodes('&', MinimumDepositMessage));
-                    }
+                } else {
+                    p.sendMessage(Component.text("Use /bank deposit Amount"));
                 }
             }catch (NumberFormatException e){
-                p.sendMessage("&cPlease deposit a number");
+                p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Deposit")) {
                 String noPermission = plugin.getConfig().getString("NoPermission");
                 if (noPermission != null) {
-                    p.sendMessage(translateAlternateColorCodes('&', noPermission));
+                    p.sendMessage(Component.text(noPermission).color(NamedTextColor.RED));
                 }
             }
         }

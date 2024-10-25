@@ -10,4 +10,4 @@ Commands:
 
 I made this as I wanted a Bank plugin that stores its data in a database.
 
-It supports MariaDB it will probalby will work with MySQL as well.
+It supports MariaDB.

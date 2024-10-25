@@ -2,10 +2,8 @@ package me.sirmonkeyboy.bank;
 
 import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
-import me.sirmonkeyboy.bank.SQL.MySQL;
-import me.sirmonkeyboy.bank.SQL.SQLGetter;
 
-import me.sirmonkeyboy.bank.Utill.TransactionMonitor;
+import me.sirmonkeyboy.bank.Utill.MariaDB;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,9 +14,7 @@ import java.util.Objects;
 
 public final class Bank extends JavaPlugin {
 
-    public MySQL SQL;
-    public SQLGetter data;
-    public TransactionMonitor Monitor;
+    public MariaDB data;
 
     private static Economy econ = null;
 
@@ -33,12 +29,10 @@ public final class Bank extends JavaPlugin {
             return;
         }
 
-        this.SQL = new MySQL(this);
-        this.data = new SQLGetter(this);
-        this.Monitor = new TransactionMonitor(this);
+        this.data = new MariaDB(this);
 
         try {
-            SQL.connect();
+            data.connect();
         } catch (ClassNotFoundException | SQLException e) {
             getLogger().info("Database not connected");
             getLogger().info("Disabled due to no Database found!");
@@ -46,13 +40,14 @@ public final class Bank extends JavaPlugin {
             return;
         }
 
-        if (SQL.isConnected()){
-            getLogger().info("Database is connected");
-            data.createTable();
-            data.createTableTransactionMonitor();
-            Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
-            getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
+        getLogger().info("Database is connected");
+        try {
+            data.createTables();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
 
         getLogger().info("Kingdom Bank has started");
     }
@@ -77,7 +72,7 @@ public final class Bank extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        SQL.disconnect();
+        data.disconnect();
         getLogger().info("Disconnected from Database");
         getLogger().info("kingdom Bank has stopped");
     }

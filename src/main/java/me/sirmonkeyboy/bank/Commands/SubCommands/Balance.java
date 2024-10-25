@@ -3,11 +3,13 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class Balance extends SubCommand {
 
@@ -33,20 +35,20 @@ public class Balance extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) {
+    public void perform(Player p, String[] args) throws SQLException {
         if (p.hasPermission("Bank.commands.Bank.Balance")) {
-            int balance = plugin.data.getbalance(p.getUniqueId());
+            double balance = plugin.data.getbalance(p.getUniqueId());
             String BalanceMessage = plugin.getConfig().getString("BalanceMessage");
             if (BalanceMessage != null) {
                 String BalanceStr = String.valueOf(balance);
                 BalanceMessage = BalanceMessage.replace("%Bal%", BalanceStr);
-                p.sendMessage(translateAlternateColorCodes('&', BalanceMessage));
+                p.sendMessage(Component.text(BalanceMessage).color(NamedTextColor.GREEN));
             }
         } else {
             if (!p.hasPermission("Bank.commands.Bank.Balance")) {
                 String noPermission = plugin.getConfig().getString("NoPermission");
                 if (noPermission != null) {
-                    p.sendMessage(translateAlternateColorCodes('&', noPermission));
+                    p.sendMessage(Component.text(noPermission).color(NamedTextColor.RED));
                 }
             }
         }
