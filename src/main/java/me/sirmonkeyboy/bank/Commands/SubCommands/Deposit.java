@@ -43,12 +43,12 @@ public class Deposit extends SubCommand {
             Economy eco = Bank.getEconomy();
             try {
                 int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
-                int DepositAmount = Integer.parseInt(args[1]);
+                double DepositAmount = Double.parseDouble(args[1]);
                 String DepositAmountStr = String.valueOf(DepositAmount);
                 String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
                 String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
                 String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
-                String MinimumDepositAmount = String.valueOf(1000);
+                String MinimumDepositAmount = String.valueOf(DepositMinimum);
                 if (DepositAmount >= DepositMinimum){
                     if (DepositAmount <= eco.getBalance(p)) {
                         if (DepositMessage != null){
