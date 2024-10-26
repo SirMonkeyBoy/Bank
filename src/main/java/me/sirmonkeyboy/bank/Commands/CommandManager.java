@@ -6,6 +6,8 @@ import me.sirmonkeyboy.bank.Commands.SubCommands.Balance;
 import me.sirmonkeyboy.bank.Commands.SubCommands.Deposit;
 import me.sirmonkeyboy.bank.Commands.SubCommands.Withdraw;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
@@ -47,10 +49,10 @@ public class CommandManager implements TabExecutor {
                     }
                 } else //noinspection ConstantValue
                     if (args.length == 0) {
-                        for (int i = 0; i < getSubcommands().size(); i++) {
-                            p.sendMessage("Please use /bank like this");
-                            p.sendMessage(getSubcommands().get(i).getSyntax() + " - " + getSubcommands().get(i).getDescription());
-                        }
+                        p.sendMessage(Component.text("Bank usages"));
+                        p.sendMessage(Component.text("/bank balance or /bank bal - ").append(Component.text("Gets your bank balance").color(NamedTextColor.GOLD)));
+                        p.sendMessage(Component.text("/bank deposit (Amount) - ").append(Component.text("Deposits (Amount) into your account").color(NamedTextColor.GOLD)));
+                        p.sendMessage(Component.text("/bank withdraw (Amount) - ").append(Component.text("Withdraws (Amount) from your account").color(NamedTextColor.GOLD)));
                     }
             }
         }else if (sender instanceof  ConsoleCommandSender c){
