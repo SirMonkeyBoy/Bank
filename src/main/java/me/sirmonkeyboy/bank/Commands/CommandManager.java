@@ -18,8 +18,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.bukkit.ChatColor.translateAlternateColorCodes;
-
 public class CommandManager implements TabExecutor {
     @SuppressWarnings("FieldCanBeLocal")
     private final Bank plugin;
@@ -32,9 +30,9 @@ public class CommandManager implements TabExecutor {
         subcommands.add(new Withdraw(plugin));
         subcommands.add(new Bal(plugin));
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-
         if(sender instanceof Player p) {
             if (p.hasPermission("Bank.commands.Bank")) {
                 if (args.length > 0) {
@@ -56,10 +54,10 @@ public class CommandManager implements TabExecutor {
                     }
             }
         }else if (sender instanceof  ConsoleCommandSender c){
-            c.sendMessage(translateAlternateColorCodes('&', "&cConsole can't run this command"));
+            c.sendMessage(Component.text("Console can't run this command").color(NamedTextColor.RED));
         }else if (sender instanceof BlockCommandSender){
             ConsoleCommandSender c = org.bukkit.Bukkit.getServer().getConsoleSender();
-            c.sendMessage(translateAlternateColorCodes('&', "&cCommand Blocks can't run this command"));
+            c.sendMessage(Component.text("Command Blocks can't run this command").color(NamedTextColor.RED));
         }
         return true;
     }
