@@ -56,7 +56,8 @@ public class MariaDB {
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
         try {
-            PreparedStatement pstmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (NAME VARCHAR(100),UUID VARCHAR(100),BALANCE INT(100),PRIMARY KEY (NAME))");
+            conn.setAutoCommit(false);
+            PreparedStatement pstmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (NAME VARCHAR(255),UUID VARCHAR(100),BALANCE DOUBLE,PRIMARY KEY (UUID))");
             pstmt.executeUpdate();
         } catch (SQLException e) {
             // Roll back the transaction if an exception occurs
