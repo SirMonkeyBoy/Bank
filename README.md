@@ -9,5 +9,6 @@ Commands:
 - `/bank withdraw` Withdraws from your bank
 
 I made this as I wanted a Bank plugin that stores its data in a database.
+As well as also tracks the deposit and withdraws from it.
 
 It supports MariaDB.
