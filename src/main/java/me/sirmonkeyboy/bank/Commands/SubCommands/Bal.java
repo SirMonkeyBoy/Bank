@@ -36,7 +36,7 @@ public class Bal extends SubCommand {
     @Override
     public void perform(Player p, String[] args) throws SQLException {
         if (p.hasPermission("Bank.commands.Bank.Balance")) {
-            double balance = plugin.data.getbalance(p.getUniqueId());
+            double balance = plugin.data.getBalance(p.getUniqueId());
             String BalanceMessage = plugin.getConfig().getString("BalanceMessage");
             if (BalanceMessage != null) {
                 String BalanceStr = String.valueOf(balance);

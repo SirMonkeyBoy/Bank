@@ -51,10 +51,10 @@ public class Withdraw extends SubCommand {
                     String MinimumWithdrawMessage = this.plugin.getConfig().getString("Withdraw.MinimumWithdrawMessage");
                     String MinimumWithdrawAmount = String.valueOf(WithdrawMinimum);
                     if (WithdrawAmount >= WithdrawMinimum) {
-                        if (WithdrawAmount <= plugin.data.getbalance(p.getUniqueId())) {
+                        if (WithdrawAmount <= plugin.data.getBalance(p.getUniqueId())) {
                             if (WithdrawMessage != null) {
                                 eco.depositPlayer(p, WithdrawAmount);
-                                this.plugin.data.rembalance(p.getUniqueId(), WithdrawAmount);
+                                this.plugin.data.remBalance(p.getUniqueId(), WithdrawAmount);
                                 WithdrawMessage = WithdrawMessage.replace("%Withdraw%", WithdrawAmountStr);
                                 p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
                             }

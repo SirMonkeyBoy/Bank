@@ -54,7 +54,7 @@ public class Deposit extends SubCommand {
                         if (DepositAmount <= eco.getBalance(p)) {
                             if (DepositMessage != null) {
                                 eco.withdrawPlayer(p, DepositAmount);
-                                plugin.data.addbalance(p.getUniqueId(), DepositAmount);
+                                plugin.data.addBalance(p.getUniqueId(), DepositAmount);
                                 DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
                                 p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
                             }
