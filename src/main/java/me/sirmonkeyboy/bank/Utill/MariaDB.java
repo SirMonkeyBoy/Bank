@@ -62,15 +62,18 @@ public class MariaDB {
 
             PreparedStatement pstmt2 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS transactions (" +
                     "  id INT NOT NULL AUTO_INCREMENT UNIQUE,\n" +
+                    "  username VARCHAR(255),\n" +
                     "  uuid VARCHAR(100),\n" +
-                    "  time DATETIME,\n" +
+                    "  time TIMESTAMP,\n" +
                     "  type VARCHAR(255),\n" +
                     "  amount DOUBLE,\n" +
-                    "  username VARCHAR(255),\n" +
                     "  PRIMARY KEY (id),\n" +
                     "  FOREIGN KEY (uuid) REFERENCES bankbalance(uuid) ON DELETE CASCADE\n" +
                     ");");
             pstmt2.executeUpdate();
+
+            PreparedStatement pstmt3 = conn.prepareStatement("CREATE INDEX transactions_index_0 ON transactions (uuid);");
+            pstmt3.executeUpdate();
         } catch (SQLException e) {
             // Roll back the transaction if an exception occurs
             conn.rollback();
@@ -170,6 +173,31 @@ public class MariaDB {
             pstmt.setString(2, uuid.toString());
             pstmt.executeUpdate();
         } catch (SQLException e) {
+            // Roll back the transaction if an exception occurs
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.close();
+        }
+    }
+
+    public void DepositTransaction(UUID uuid, String name, double amount) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+
+        try {
+            conn.setAutoCommit(false);
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount) VALUES (?, ?, ?, ?, ?)");
+            String type = "DEPOSIT";
+            long currentTimeMillis = System.currentTimeMillis();
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
+            pstmt.setString(1, name);
+            pstmt.setString(2, uuid.toString());
+            pstmt.setTimestamp(3, timestamp);
+            pstmt.setString(4, type);
+            pstmt.setDouble(5, amount);
+            pstmt.executeUpdate();
+            conn.commit();
+        }catch (SQLException e) {
             // Roll back the transaction if an exception occurs
             conn.rollback();
             throw e;
