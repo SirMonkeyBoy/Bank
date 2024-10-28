@@ -59,6 +59,18 @@ public class MariaDB {
             conn.setAutoCommit(false);
             PreparedStatement pstmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (NAME VARCHAR(255),UUID VARCHAR(100),BALANCE DOUBLE,PRIMARY KEY (UUID))");
             pstmt.executeUpdate();
+
+            PreparedStatement pstmt2 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS transactions (" +
+                    "  id INT NOT NULL AUTO_INCREMENT UNIQUE,\n" +
+                    "  uuid VARCHAR(100),\n" +
+                    "  time DATETIME,\n" +
+                    "  type VARCHAR(255),\n" +
+                    "  amount DOUBLE,\n" +
+                    "  username VARCHAR(255),\n" +
+                    "  PRIMARY KEY (id),\n" +
+                    "  FOREIGN KEY (uuid) REFERENCES bankbalance(uuid) ON DELETE CASCADE\n" +
+                    ");");
+            pstmt2.executeUpdate();
         } catch (SQLException e) {
             // Roll back the transaction if an exception occurs
             conn.rollback();
