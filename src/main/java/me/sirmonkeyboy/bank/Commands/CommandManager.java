@@ -1,10 +1,13 @@
 package me.sirmonkeyboy.bank.Commands;
 
 import me.sirmonkeyboy.bank.Bank;
+import me.sirmonkeyboy.bank.Commands.SubCommands.Bal;
 import me.sirmonkeyboy.bank.Commands.SubCommands.Balance;
 import me.sirmonkeyboy.bank.Commands.SubCommands.Deposit;
 import me.sirmonkeyboy.bank.Commands.SubCommands.Withdraw;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
@@ -14,8 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class CommandManager implements TabExecutor {
     @SuppressWarnings("FieldCanBeLocal")
@@ -27,10 +28,11 @@ public class CommandManager implements TabExecutor {
         subcommands.add(new Balance(plugin));
         subcommands.add(new Deposit(plugin));
         subcommands.add(new Withdraw(plugin));
+        subcommands.add(new Bal(plugin));
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-
         if(sender instanceof Player p) {
             if (p.hasPermission("Bank.commands.Bank")) {
                 if (args.length > 0) {
@@ -45,17 +47,17 @@ public class CommandManager implements TabExecutor {
                     }
                 } else //noinspection ConstantValue
                     if (args.length == 0) {
-                        for (int i = 0; i < getSubcommands().size(); i++) {
-                            p.sendMessage("Please use /bank like this");
-                            p.sendMessage(getSubcommands().get(i).getSyntax() + " - " + getSubcommands().get(i).getDescription());
-                        }
+                        p.sendMessage(Component.text("Bank usages"));
+                        p.sendMessage(Component.text("/bank balance or /bank bal - ").append(Component.text("Gets your bank balance").color(NamedTextColor.GOLD)));
+                        p.sendMessage(Component.text("/bank deposit (Amount) - ").append(Component.text("Deposits (Amount) into your account").color(NamedTextColor.GOLD)));
+                        p.sendMessage(Component.text("/bank withdraw (Amount) - ").append(Component.text("Withdraws (Amount) from your account").color(NamedTextColor.GOLD)));
                     }
             }
         }else if (sender instanceof  ConsoleCommandSender c){
-            c.sendMessage(translateAlternateColorCodes('&', "&cConsole can't run this command"));
+            c.sendMessage(Component.text("Console can't run this command").color(NamedTextColor.RED));
         }else if (sender instanceof BlockCommandSender){
             ConsoleCommandSender c = org.bukkit.Bukkit.getServer().getConsoleSender();
-            c.sendMessage(translateAlternateColorCodes('&', "&cCommand Blocks can't run this command"));
+            c.sendMessage(Component.text("Command Blocks can't run this command").color(NamedTextColor.RED));
         }
         return true;
     }

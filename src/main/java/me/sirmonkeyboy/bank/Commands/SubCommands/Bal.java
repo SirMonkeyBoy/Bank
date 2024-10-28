@@ -2,7 +2,6 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -11,17 +10,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-public class Balance extends SubCommand {
+public class Bal extends SubCommand {
 
     private final Bank plugin;
 
-    public Balance(Bank plugin) {
+    public Bal(Bank plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public String getName() {
-        return "balance";
+        return "bal";
     }
 
     @Override
@@ -31,7 +30,7 @@ public class Balance extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/bank balance";
+        return "/bank bal";
     }
 
     @Override

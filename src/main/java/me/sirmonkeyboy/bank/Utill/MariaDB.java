@@ -56,8 +56,24 @@ public class MariaDB {
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
         try {
-            PreparedStatement pstmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (NAME VARCHAR(100),UUID VARCHAR(100),BALANCE INT(100),PRIMARY KEY (NAME))");
+            conn.setAutoCommit(false);
+            PreparedStatement pstmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (NAME VARCHAR(255),UUID VARCHAR(100),BALANCE DOUBLE,PRIMARY KEY (UUID))");
             pstmt.executeUpdate();
+
+            PreparedStatement pstmt2 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS transactions (" +
+                    "  id INT NOT NULL AUTO_INCREMENT UNIQUE,\n" +
+                    "  username VARCHAR(255),\n" +
+                    "  uuid VARCHAR(100),\n" +
+                    "  time TIMESTAMP,\n" +
+                    "  type VARCHAR(255),\n" +
+                    "  amount DOUBLE,\n" +
+                    "  PRIMARY KEY (id),\n" +
+                    "  FOREIGN KEY (uuid) REFERENCES bankbalance(uuid) ON DELETE CASCADE\n" +
+                    ");");
+            pstmt2.executeUpdate();
+
+            PreparedStatement pstmt3 = conn.prepareStatement("CREATE INDEX IF NOT EXISTS transactions_index_0 ON transactions (uuid);");
+            pstmt3.executeUpdate();
         } catch (SQLException e) {
             // Roll back the transaction if an exception occurs
             conn.rollback();
@@ -111,7 +127,7 @@ public class MariaDB {
         return false;
     }
 
-    public double getbalance(UUID uuid) throws SQLException {
+    public double getBalance(UUID uuid) throws SQLException {
         // Connect to the database
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
@@ -129,13 +145,13 @@ public class MariaDB {
         return money;
     }
 
-    public void addbalance(UUID uuid, double money) throws SQLException {
+    public void addBalance(UUID uuid, double amount) throws SQLException {
         // Connect to the database
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
         try {
             PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?");
-            pstmt.setDouble(1, (getbalance(uuid) + money));
+            pstmt.setDouble(1, (getBalance(uuid) + amount));
             pstmt.setString(2, uuid.toString());
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -147,16 +163,66 @@ public class MariaDB {
         }
     }
 
-    public void rembalance(UUID uuid, double money) throws SQLException {
+    public void remBalance(UUID uuid, double amount) throws SQLException {
         // Connect to the database
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
         try {
             PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?");
-            pstmt.setDouble(1, (getbalance(uuid) - money));
+            pstmt.setDouble(1, (getBalance(uuid) - amount));
             pstmt.setString(2, uuid.toString());
             pstmt.executeUpdate();
         } catch (SQLException e) {
+            // Roll back the transaction if an exception occurs
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.close();
+        }
+    }
+
+    public void DepositTransaction(UUID uuid, String name, double amount) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+
+        try {
+            conn.setAutoCommit(false);
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount) VALUES (?, ?, ?, ?, ?)");
+            String type = "DEPOSIT";
+            long currentTimeMillis = System.currentTimeMillis();
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
+            pstmt.setString(1, name);
+            pstmt.setString(2, uuid.toString());
+            pstmt.setTimestamp(3, timestamp);
+            pstmt.setString(4, type);
+            pstmt.setDouble(5, amount);
+            pstmt.executeUpdate();
+            conn.commit();
+        }catch (SQLException e) {
+            // Roll back the transaction if an exception occurs
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.close();
+        }
+    }
+
+    public void WithdrawTransaction(UUID uuid, String name, double amount) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+
+        try {
+            conn.setAutoCommit(false);
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount) VALUES (?, ?, ?, ?, ?)");
+            String type = "WITHDRAW";
+            long currentTimeMillis = System.currentTimeMillis();
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
+            pstmt.setString(1, name);
+            pstmt.setString(2, uuid.toString());
+            pstmt.setTimestamp(3, timestamp);
+            pstmt.setString(4, type);
+            pstmt.setDouble(5, amount);
+            pstmt.executeUpdate();
+            conn.commit();
+        }catch (SQLException e) {
             // Roll back the transaction if an exception occurs
             conn.rollback();
             throw e;
