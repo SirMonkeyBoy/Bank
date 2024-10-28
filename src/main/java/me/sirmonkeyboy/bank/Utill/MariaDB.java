@@ -142,13 +142,13 @@ public class MariaDB {
         return money;
     }
 
-    public void addBalance(UUID uuid, double money) throws SQLException {
+    public void addBalance(UUID uuid, double amount) throws SQLException {
         // Connect to the database
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
         try {
             PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?");
-            pstmt.setDouble(1, (getBalance(uuid) + money));
+            pstmt.setDouble(1, (getBalance(uuid) + amount));
             pstmt.setString(2, uuid.toString());
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -160,13 +160,13 @@ public class MariaDB {
         }
     }
 
-    public void remBalance(UUID uuid, double money) throws SQLException {
+    public void remBalance(UUID uuid, double amount) throws SQLException {
         // Connect to the database
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
         try {
             PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?");
-            pstmt.setDouble(1, (getBalance(uuid) - money));
+            pstmt.setDouble(1, (getBalance(uuid) - amount));
             pstmt.setString(2, uuid.toString());
             pstmt.executeUpdate();
         } catch (SQLException e) {
