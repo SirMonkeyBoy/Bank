@@ -72,7 +72,11 @@ public final class Bank extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        data.disconnect();
+
+        if (data.isConnected()) {
+            data.disconnect();
+        }
+        
         getLogger().info("Disconnected from Database");
         getLogger().info("kingdom Bank has stopped");
     }
