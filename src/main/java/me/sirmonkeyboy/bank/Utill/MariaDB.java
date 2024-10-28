@@ -72,7 +72,7 @@ public class MariaDB {
                     ");");
             pstmt2.executeUpdate();
 
-            PreparedStatement pstmt3 = conn.prepareStatement("CREATE INDEX transactions_index_0 ON transactions (uuid);");
+            PreparedStatement pstmt3 = conn.prepareStatement("CREATE INDEX IF NOT EXISTS transactions_index_0 ON transactions (uuid);");
             pstmt3.executeUpdate();
         } catch (SQLException e) {
             // Roll back the transaction if an exception occurs
@@ -188,6 +188,31 @@ public class MariaDB {
             conn.setAutoCommit(false);
             PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount) VALUES (?, ?, ?, ?, ?)");
             String type = "DEPOSIT";
+            long currentTimeMillis = System.currentTimeMillis();
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
+            pstmt.setString(1, name);
+            pstmt.setString(2, uuid.toString());
+            pstmt.setTimestamp(3, timestamp);
+            pstmt.setString(4, type);
+            pstmt.setDouble(5, amount);
+            pstmt.executeUpdate();
+            conn.commit();
+        }catch (SQLException e) {
+            // Roll back the transaction if an exception occurs
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.close();
+        }
+    }
+
+    public void WithdrawTransaction(UUID uuid, String name, double amount) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+
+        try {
+            conn.setAutoCommit(false);
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount) VALUES (?, ?, ?, ?, ?)");
+            String type = "WITHDRAW";
             long currentTimeMillis = System.currentTimeMillis();
             java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
             pstmt.setString(1, name);
