@@ -182,12 +182,12 @@ public class MariaDB {
         }
     }
 
-    public void DepositTransaction(UUID uuid, String name, double amount) throws SQLException {
+    public void DepositTransaction(UUID uuid, String name, double amount, double newbalance) throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
         try {
             conn.setAutoCommit(false);
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount) VALUES (?, ?, ?, ?, ?)");
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)");
             String type = "DEPOSIT";
             long currentTimeMillis = System.currentTimeMillis();
             java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
@@ -196,6 +196,7 @@ public class MariaDB {
             pstmt.setTimestamp(3, timestamp);
             pstmt.setString(4, type);
             pstmt.setDouble(5, amount);
+            pstmt.setDouble(6, newbalance);
             pstmt.executeUpdate();
             conn.commit();
         }catch (SQLException e) {
