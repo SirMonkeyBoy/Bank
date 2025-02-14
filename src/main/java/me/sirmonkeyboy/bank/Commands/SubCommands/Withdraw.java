@@ -56,7 +56,7 @@ public class Withdraw extends SubCommand {
                                 eco.depositPlayer(p, WithdrawAmount);
                                 this.plugin.data.remBalance(p.getUniqueId(), WithdrawAmount);
                                 WithdrawMessage = WithdrawMessage.replace("%Withdraw%", WithdrawAmountStr);
-                                plugin.data.WithdrawTransaction(p.getUniqueId(), p.getName(), WithdrawAmount);
+                                plugin.data.WithdrawTransaction(p.getUniqueId(), p.getName(), WithdrawAmount, plugin.data.getBalance(p.getUniqueId()));
                                 p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
                             }
                         } else if (DontHaveEnoughInBalance != null) {
