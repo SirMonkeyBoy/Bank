@@ -67,6 +67,7 @@ public class MariaDB {
                     "  time TIMESTAMP,\n" +
                     "  type VARCHAR(255),\n" +
                     "  amount DOUBLE,\n" +
+                    "  newbalance DOUBLE,\n" +
                     "  PRIMARY KEY (id),\n" +
                     "  FOREIGN KEY (uuid) REFERENCES bankbalance(uuid) ON DELETE CASCADE\n" +
                     ");");
