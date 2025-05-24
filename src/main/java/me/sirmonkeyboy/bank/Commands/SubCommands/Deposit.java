@@ -5,6 +5,7 @@ import me.sirmonkeyboy.bank.Commands.SubCommand;
 
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.entity.Player;
 
 import net.milkbowl.vault.economy.Economy;
