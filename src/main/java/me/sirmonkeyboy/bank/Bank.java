@@ -2,8 +2,8 @@ package me.sirmonkeyboy.bank;
 
 import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
-
 import me.sirmonkeyboy.bank.Utill.MariaDB;
+
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
