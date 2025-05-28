@@ -12,6 +12,10 @@ commands:
     usage: /<command>
     permission: Bank.commands.Bank
     permission-message: "You do not have permission to use this command"
+  BankTop:
+    description: BankTop
+    permission: Bank.commands.BankTop
+    permission-message: "You do not have permission to use this command"
 permissions:
   Bank.commands.Bank:
     description: "Access to /Bank"
