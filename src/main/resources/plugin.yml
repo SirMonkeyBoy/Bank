@@ -24,3 +24,6 @@ permissions:
       Bank.commands.Bank.Deposit: true
       Bank.commands.Bank.Withdraw: true
       Bank.commands.Bank.Balance: true
+  Bank.commands.BankTop:
+    description: "Access to /BankTop"
+    default: op
