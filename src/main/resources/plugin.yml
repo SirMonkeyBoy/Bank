@@ -1,7 +1,7 @@
 name: Bank
 version: '${project.version}'
 main: me.sirmonkeyboy.bank.Bank
-api-version: '1.21.1'
+api-version: '1.21.4'
 prefix: Bank
 depend: [Vault]
 authors: [SirMonkeyBoy]
