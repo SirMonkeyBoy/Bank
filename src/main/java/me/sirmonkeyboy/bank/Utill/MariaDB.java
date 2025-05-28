@@ -31,6 +31,9 @@ public class MariaDB {
         return (connection != null);
     }
 
+    private final String[] topPlayers = new String[10];
+    private final double[] topBalances = new double[10];
+
     public void connect() throws ClassNotFoundException, SQLException {
         if (!isConnected()) {
             connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
@@ -233,5 +236,29 @@ public class MariaDB {
         } finally {
             conn.close();
         }
+    }
+
+    public void BankTop() throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+
+        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM bankbalance ORDER BY BALANCE DESC LIMIT 10;");
+        ResultSet rs = pstmt.executeQuery();
+
+        int i = 0;
+        while (rs.next() && i < 10) {
+            topPlayers[i] = rs.getString("NAME");
+            topBalances[i] = rs.getDouble("BALANCE");
+            i++;
+        }
+
+        conn.close();
+    }
+
+    public String[] getTopPlayers() {
+        return topPlayers;
+    }
+
+    public double[] getTopBalances() {
+        return topBalances;
     }
 }
