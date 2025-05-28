@@ -1,5 +1,6 @@
 package me.sirmonkeyboy.bank;
 
+import me.sirmonkeyboy.bank.Commands.BankTop;
 import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
 import me.sirmonkeyboy.bank.Utill.MariaDB;
@@ -48,7 +49,7 @@ public final class Bank extends JavaPlugin {
         }
         Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
-
+        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this));
         getLogger().info("Bank has started");
     }
 
