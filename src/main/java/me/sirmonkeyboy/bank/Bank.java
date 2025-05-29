@@ -4,6 +4,7 @@ import me.sirmonkeyboy.bank.Commands.BankTop;
 import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
 import me.sirmonkeyboy.bank.Utill.MariaDB;
+import me.sirmonkeyboy.bank.Utill.Utills;
 
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,6 +43,7 @@ public final class Bank extends JavaPlugin {
         }
 
         getLogger().info("Database is connected");
+        Utills.StartBanner();
         try {
             data.createTables();
         } catch (SQLException e) {
