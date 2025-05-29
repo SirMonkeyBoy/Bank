@@ -37,21 +37,26 @@ public final class Bank extends JavaPlugin {
             data.connect();
         } catch (ClassNotFoundException | SQLException e) {
             getLogger().info("Database not connected");
-            getLogger().info("Disabled due to no Database found!");
+            getLogger().info("Disabling due to no Database found!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        getLogger().info("Database is connected");
         Utills.StartBanner();
+
+        getLogger().info("Database successfully connected");
+
         try {
             data.createTables();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
         Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this));
+
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
+
         getLogger().info("Bank has started");
     }
 
@@ -78,9 +83,9 @@ public final class Bank extends JavaPlugin {
 
         if (data.isConnected()) {
             data.disconnect();
+            getLogger().info("Disconnected successfully from Database");
         }
-        
-        getLogger().info("Disconnected from Database");
-        getLogger().info("Bank has stopped");
+
+        getLogger().info("Kingdom Bank has stopped");
     }
 }
