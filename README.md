@@ -14,6 +14,10 @@ Features:
 - Keeps a record of all Transactions
 - It supports MariaDB
 
+Dependency's:
+- [Vault](https://www.spigotmc.org/resources/vault.34315/) Required
+- The recommend economy plugin is [EssentialsX](https://essentialsx.net/downloads.html) not tested with others
+
 I made this Project for fun as I wanted a Bank plugin that stores its data in a database and also tracks the deposit and withdraws from it.
 
 
