@@ -1,14 +1,18 @@
-# Bank
+# Kingdom Bank
 
-Bank Plugin for Minecraft
+Kingdom Bank is a Plugin made for the Minecraft server software Papermc
 
 Commands:
 - `/bank` Will give you a list of subcommands
-- `/bank balance` Give bank balance 
-- `/bank depost` Deposit to your bank
+- `/bank balance` Shows your bank balance 
+- `/bank deposit` Deposits to your bank
 - `/bank withdraw` Withdraws from your bank
 - `/banktop` Shows you the top 10 bank balances
 
-I made this as I wanted a Bank plugin that stores its data in a database and also tracks the deposit and withdraws from it.
+Features:
+- Stores all balances in a MariaDB database
+- Keeps a record of all Transactions
+
+I made this Project for fun as I wanted a Bank plugin that stores its data in a database and also tracks the deposit and withdraws from it.
 
 It supports MariaDB.
