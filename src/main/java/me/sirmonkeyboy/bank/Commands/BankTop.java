@@ -45,6 +45,11 @@ public class BankTop implements TabExecutor {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        }else {
+            String YouCantRunThis = plugin.getConfig().getString("YouCantRunThis");
+            if (YouCantRunThis != null) {
+                sender.sendMessage(Component.text(YouCantRunThis).color(NamedTextColor.RED));
+            }
         }
         return false;
     }
