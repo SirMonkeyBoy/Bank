@@ -1,8 +1,8 @@
-name: Bank
+name: KingdomBank
 version: '${project.version}'
 main: me.sirmonkeyboy.bank.Bank
 api-version: '1.21.4'
-prefix: Kingdom-Bank
+prefix: Kingdom Bank
 depend: [Vault]
 authors: [SirMonkeyBoy]
 website: https://github.com/SirMonkeyBoy
