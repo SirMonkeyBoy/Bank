@@ -32,4 +32,4 @@ MinimumAmount: "1000"
 NoPermission: "You don't have permission to run this command"
 
 # You can't run that command
-YouCantRunThis: "You can't run this"
+YouCantRunThis: "Only Players can run this"
