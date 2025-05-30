@@ -46,8 +46,9 @@ public final class Bank extends JavaPlugin {
             data.createTables();
         } catch (SQLException e) {
             getLogger().info("Disable Kingdom Bank due to error in Database tables");
+            e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
-            throw new RuntimeException(e);
+            return;
         }
 
         Utills.StartBanner();
