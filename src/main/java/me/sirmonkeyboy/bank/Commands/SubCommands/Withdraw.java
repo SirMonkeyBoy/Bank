@@ -39,50 +39,78 @@ public class Withdraw extends SubCommand {
 
     @Override
     public void perform(Player p, String[] args) {
-        if (p.hasPermission("Bank.commands.Bank.Withdraw")) {
+
+        try {
+            // Checks args length
+            if (args.length < 2 || args[1].isBlank()) {
+                p.sendMessage(Component.text("Use /bank withdraw Amount"));
+                return;
+            }
             Economy eco = Bank.getEconomy();
 
-            try {
-                if (args.length >= 2 && !args[1].isBlank()) {
-                    int WithdrawMinimum = Integer.parseInt(Objects.requireNonNull(this.plugin.getConfig().getString("MinimumAmount")));
-                    double WithdrawAmount = Double.parseDouble(args[1]);
-                    String WithdrawAmountStr = String.valueOf(WithdrawAmount);
-                    String WithdrawMessage = this.plugin.getConfig().getString("Withdraw.WithdrawMessage");
-                    String DontHaveEnoughInBalance = this.plugin.getConfig().getString("Withdraw.DontHaveEnoughInBalance");
-                    String MinimumWithdrawMessage = this.plugin.getConfig().getString("Withdraw.MinimumWithdrawMessage");
-                    String MinimumWithdrawAmount = String.valueOf(WithdrawMinimum);
-                    if (WithdrawAmount >= WithdrawMinimum) {
-                        if (WithdrawAmount <= plugin.data.getBalance(p.getUniqueId())) {
-                            if (WithdrawMessage != null) {
-                                eco.depositPlayer(p, WithdrawAmount);
-                                this.plugin.data.remBalance(p.getUniqueId(), WithdrawAmount);
-                                WithdrawMessage = WithdrawMessage.replace("%Withdraw%", WithdrawAmountStr);
-                                plugin.data.WithdrawTransaction(p.getUniqueId(), p.getName(), WithdrawAmount, plugin.data.getBalance(p.getUniqueId()));
-                                p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
-                            }
-                        } else if (DontHaveEnoughInBalance != null) {
-                            DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Withdraw%", WithdrawAmountStr);
-                            p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
-                        }
-                    } else if (MinimumWithdrawMessage != null) {
-                        MinimumWithdrawMessage = MinimumWithdrawMessage.replace("%Minimum%", MinimumWithdrawAmount);
-                        p.sendMessage(Component.text(MinimumWithdrawMessage).color(NamedTextColor.RED));
-                    }
-                } else {
-                    p.sendMessage(Component.text("Use /bank withdraw Amount"));
+            // Number
+            int WithdrawMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
+            double WithdrawAmount = Double.parseDouble(args[1]);
+
+            // Strings
+            String WithdrawAmountStr = String.valueOf(WithdrawAmount);
+            String WithdrawMessage = plugin.getConfig().getString("Withdraw.WithdrawMessage");
+            String DontHaveEnoughInBalance = plugin.getConfig().getString("Withdraw.DontHaveEnoughInBalance");
+            String MinimumWithdrawMessage = plugin.getConfig().getString("Withdraw.MinimumWithdrawMessage");
+            String noPermission = plugin.getConfig().getString("NoPermission");
+            String MinimumWithdrawAmount = String.valueOf(WithdrawMinimum);
+
+            // Makes sure players can use the command
+            if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
+                if (noPermission == null) {
+                    p.sendMessage(Component.text("Contact Server Admin no Permission message").color(NamedTextColor.RED));
+                    return;
                 }
-            } catch (NumberFormatException var12) {
+                p.sendMessage(Component.text(noPermission).color(NamedTextColor.RED));
+                return;
+            }
+
+            // Checks withdraw amount is over the minimum
+            if (!(WithdrawAmount >= WithdrawMinimum)) {
+                if (MinimumWithdrawMessage == null) {
+                    p.sendMessage(Component.text("Contact Server Admin no mini withdraw message").color(NamedTextColor.RED));
+                    return;
+                }
+                MinimumWithdrawMessage = MinimumWithdrawMessage.replace("%Minimum%", MinimumWithdrawAmount);
+                p.sendMessage(Component.text(MinimumWithdrawMessage).color(NamedTextColor.RED));
+                return;
+            }
+
+            // Checks withdraw amount is less than the players bank balance
+            if (WithdrawAmount > plugin.data.getBalance(p.getUniqueId())) {
+                if (DontHaveEnoughInBalance == null) {
+                    p.sendMessage(Component.text("Contact Server Admin no not enough money message").color(NamedTextColor.RED));
+                    return;
+                }
+                DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Withdraw%", WithdrawAmountStr);
+                p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
+                return;
+            }
+
+            // Checks if the withdraw message is in the config
+            if (WithdrawMessage == null) {
+                p.sendMessage(Component.text("Contact Server Admin no withdraw message").color(NamedTextColor.RED));
+                return;
+            }
+
+            // Withdraw logic
+            eco.depositPlayer(p, WithdrawAmount);
+            plugin.data.remBalance(p.getUniqueId(), WithdrawAmount);
+            WithdrawMessage = WithdrawMessage.replace("%Withdraw%", WithdrawAmountStr);
+            plugin.data.WithdrawTransaction(p.getUniqueId(), p.getName(), WithdrawAmount, plugin.data.getBalance(p.getUniqueId()));
+            p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
+
+            // Makes sure that the arg is a number
+            } catch (NumberFormatException e) {
                 p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        } else if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
-            String noPermission = this.plugin.getConfig().getString("NoPermission");
-            if (noPermission != null) {
-                p.sendMessage(Component.text(noPermission).color(NamedTextColor.RED));
-            }
-        }
-
     }
 
     @Override
