@@ -42,15 +42,18 @@ public final class Bank extends JavaPlugin {
             return;
         }
 
+        try {
+            data.createTables();
+        } catch (SQLException e) {
+            getLogger().info("Disable Kingdom Bank due to error in Database tables");
+            getServer().getPluginManager().disablePlugin(this);
+            throw new RuntimeException(e);
+        }
+
         Utills.StartBanner();
 
         getLogger().info("Database successfully connected");
 
-        try {
-            data.createTables();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
         Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
         Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this));
