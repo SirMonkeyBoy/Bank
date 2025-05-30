@@ -42,7 +42,7 @@ public class Deposit extends SubCommand {
     public void perform(Player p, String[] args) {
 
         try {
-            //Checks args length
+            // Checks args length
             if (args.length < 2 || args[1].isBlank()) {
                 p.sendMessage(Component.text("Use /bank deposit Amount"));
                 return;
@@ -50,11 +50,11 @@ public class Deposit extends SubCommand {
 
             Economy eco = Bank.getEconomy();
 
-            //Numbers
+            // Numbers
             int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
             double DepositAmount = Double.parseDouble(args[1]);
 
-            //Strings
+            // Strings
             String DepositAmountStr = String.valueOf(DepositAmount);
             String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
             String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
@@ -62,7 +62,7 @@ public class Deposit extends SubCommand {
             String MinimumDepositAmount = String.valueOf(DepositMinimum);
             String noPermission = plugin.getConfig().getString("NoPermission");
 
-            //Makes sure players can use the command
+            // Makes sure players can use the command
             if (!p.hasPermission("Bank.commands.Bank.Deposit")) {
                 if (noPermission == null) {
                     p.sendMessage(Component.text("Contact Server Admin no Permission message").color(NamedTextColor.RED));
@@ -72,7 +72,7 @@ public class Deposit extends SubCommand {
                 return;
             }
 
-            //Checks Deposit amount is over the minimum
+            // Checks Deposit amount is over the minimum
             if (!(DepositAmount >= DepositMinimum)) {
                 if (MinimumDepositMessage == null) {
                     p.sendMessage(Component.text("Contact Server Admin no mini deposit message").color(NamedTextColor.RED));
@@ -83,7 +83,7 @@ public class Deposit extends SubCommand {
                 return;
             }
 
-            //Checks Deposit amount is less than the players balance
+            // Checks Deposit amount is less than the players balance
             if (DepositAmount > eco.getBalance(p)) {
                 if (DontHaveEnoughInBalance == null) {
                     p.sendMessage(Component.text("Contact Server Admin no not enough money message").color(NamedTextColor.RED));
@@ -94,20 +94,20 @@ public class Deposit extends SubCommand {
                 return;
             }
 
-            //Checks if the deposit message is in the config
+            // Checks if the deposit message is in the config
             if (DepositMessage == null) {
                 p.sendMessage(Component.text("Contact Server Admin no deposit message").color(NamedTextColor.RED));
                 return;
             }
 
-            //Deposit Logic
+            // Deposit Logic
             eco.withdrawPlayer(p, DepositAmount);
             plugin.data.addBalance(p.getUniqueId(), DepositAmount);
             DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
             plugin.data.DepositTransaction(p.getUniqueId(), p.getName(), DepositAmount, plugin.data.getBalance(p.getUniqueId()));
             p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
 
-        //Makes sure that the arg is a number
+        // Makes sure that the arg is a number
         }catch (NumberFormatException e){
             p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
         } catch (SQLException e) {
