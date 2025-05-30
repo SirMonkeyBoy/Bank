@@ -6,7 +6,7 @@
 
     <groupId>me.SirMonkeyBoy</groupId>
     <artifactId>Bank</artifactId>
-    <version>1.0-Beta</version>
+    <version>1.1-Beta</version>
     <packaging>jar</packaging>
 
     <name>KingdomBank</name>
