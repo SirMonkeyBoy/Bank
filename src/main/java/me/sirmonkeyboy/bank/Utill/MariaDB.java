@@ -167,18 +167,57 @@ public class MariaDB {
         }
     }
 
-    public void BankTop() throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+    // Withdraws from bank balance and tracks transaction
+    public void remBalance(UUID uuid, String name, double amount) throws SQLException {
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
 
-        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM bankbalance ORDER BY BALANCE DESC LIMIT 10;");
-        ResultSet rs = pstmt.executeQuery();
+            try {
+                // Withdraws from the players account
+                try (PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE = BALANCE - ? WHERE UUID= ?")) {
 
-        int i = 0;
-        while (rs.next() && i < 10) {
-            topPlayers[i] = rs.getString("NAME");
-            topBalances[i] = rs.getDouble("BALANCE");
-            i++;
+                    pstmt.setDouble(1, amount);
+                    pstmt.setString(2, uuid.toString());
+
+                    pstmt.executeUpdate();
+                }
+
+                // Gets the new balance
+                double newBalance;
+                try (PreparedStatement pstmt = conn.prepareStatement(
+                        "SELECT BALANCE FROM bankbalance WHERE UUID = ?")) {
+                    pstmt.setString(1, uuid.toString());
+                    try (ResultSet rs = pstmt.executeQuery()) {
+                        if (rs.next()) {
+                            newBalance = rs.getDouble("BALANCE");
+                        } else {
+                            throw new SQLException("UUID not found in bankbalance");
+                        }
+                    }
+                }
+
+                // Adds transaction into transaction table
+                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
+                    String type = "WITHDRAW";
+                    long currentTimeMillis = System.currentTimeMillis();
+                    java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
+                    pstmt.setString(1, name);
+                    pstmt.setString(2, uuid.toString());
+                    pstmt.setTimestamp(3, timestamp);
+                    pstmt.setString(4, type);
+                    pstmt.setDouble(5, amount);
+                    pstmt.setDouble(6, newBalance);
+
+                    pstmt.executeUpdate();
+                }
+
+                conn.commit();
+            }catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
         }
+    }
 
         conn.close();
     }
