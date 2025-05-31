@@ -59,6 +59,7 @@ public class MariaDB {
         }
     }
 
+    //Gets database connection
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
@@ -82,6 +83,7 @@ public class MariaDB {
         }
     }
 
+    // creates players row in bankbalance table
     public void createPlayer(Player p) throws SQLException {
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME, UUID) VALUES (?, ?)")) {
@@ -93,58 +95,25 @@ public class MariaDB {
         }
     }
 
+    // Gets balance from bankbalance table
     public double getBalance(UUID uuid) throws SQLException {
-        // Connect to the database
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
 
-        // Insert data into the table
         PreparedStatement pstmt = conn.prepareStatement("SELECT BALANCE FROM bankbalance WHERE UUID=?");
-        pstmt.setString(1, uuid.toString());
-        ResultSet rs = pstmt.executeQuery();
         double money = 0;
-        if (rs.next()){
-            money = rs.getDouble("BALANCE");
-            return money;
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT BALANCE FROM bankbalance WHERE UUID=?")) {
+
+            pstmt.setString(1, uuid.toString());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    money = rs.getDouble("BALANCE");
+                    return money;
+                }
+            }
         }
-        // Close the connection
-        conn.close();
         return money;
-    }
-
-    public void addBalance(UUID uuid, double amount) throws SQLException {
-        // Connect to the database
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
-
-        try {
-            PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?");
-            pstmt.setDouble(1, (getBalance(uuid) + amount));
-            pstmt.setString(2, uuid.toString());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            // Roll back the transaction if an exception occurs
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.close();
-        }
-    }
-
-    public void remBalance(UUID uuid, double amount) throws SQLException {
-        // Connect to the database
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
-
-        try {
-            PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?");
-            pstmt.setDouble(1, (getBalance(uuid) - amount));
-            pstmt.setString(2, uuid.toString());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            // Roll back the transaction if an exception occurs
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.close();
-        }
     }
 
     public void DepositTransaction(UUID uuid, String name, double amount, double newbalance) throws SQLException {
