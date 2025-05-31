@@ -3,6 +3,7 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 
+import me.sirmonkeyboy.bank.Utill.MariaDB;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -18,8 +19,11 @@ public class Withdraw extends SubCommand {
 
     private final Bank plugin;
 
+    private final MariaDB data;
+
     public Withdraw(Bank plugin) {
         this.plugin = plugin;
+        this.data = plugin.data;
     }
 
     @Override
@@ -81,17 +85,6 @@ public class Withdraw extends SubCommand {
                 return;
             }
 
-            // Checks withdraw amount is less than the players bank balance
-            if (withdrawAmount > plugin.data.getBalance(p.getUniqueId())) {
-                if (DontHaveEnoughInBalance == null) {
-                    p.sendMessage(Component.text("Contact Server Admin no not enough money message").color(NamedTextColor.RED));
-                    return;
-                }
-                DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Withdraw%", WithdrawAmountStr);
-                p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
-                return;
-            }
-
             // Checks if the withdraw message is in the config
             if (WithdrawMessage == null) {
                 p.sendMessage(Component.text("Contact Server Admin no withdraw message").color(NamedTextColor.RED));
@@ -99,8 +92,20 @@ public class Withdraw extends SubCommand {
             }
 
             // Withdraw logic
+            boolean success = data.remBalance(p.getUniqueId(), p.getName(), withdrawAmount);
+
+            if (!success) {
+                if (DontHaveEnoughInBalance == null) {
+                    p.sendMessage(Component.text("Contact Server Admin no not enough money message").color(NamedTextColor.RED));
+                } else {
+                    DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Withdraw%", WithdrawAmountStr);
+                    p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
+                }
+                return;
+            }
+
             eco.depositPlayer(p, withdrawAmount);
-            plugin.data.remBalance(p.getUniqueId(), p.getName(), withdrawAmount);
+
             WithdrawMessage = WithdrawMessage.replace("%Withdraw%", WithdrawAmountStr);
             p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
 
