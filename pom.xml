@@ -98,5 +98,11 @@
             <artifactId>annotations-java5</artifactId>
             <version>24.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.1.0</version> <!-- Use latest version -->
+        </dependency>
+
     </dependencies>
 </project>
