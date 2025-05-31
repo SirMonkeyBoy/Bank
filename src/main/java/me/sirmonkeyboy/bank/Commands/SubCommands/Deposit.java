@@ -51,11 +51,11 @@ public class Deposit extends SubCommand {
             Economy eco = Bank.getEconomy();
 
             // Numbers
-            int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
-            double DepositAmount = Double.parseDouble(args[1]);
+            int DepositMinimum = plugin.getConfig().getInt("MinimumAmount");
+            double depositAmount = Double.parseDouble(args[1]);
 
             // Strings
-            String DepositAmountStr = String.valueOf(DepositAmount);
+            String DepositAmountStr = String.valueOf(depositAmount);
             String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
             String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
             String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
@@ -73,7 +73,7 @@ public class Deposit extends SubCommand {
             }
 
             // Checks Deposit amount is over the minimum
-            if (!(DepositAmount >= DepositMinimum)) {
+            if (!(depositAmount >= DepositMinimum)) {
                 if (MinimumDepositMessage == null) {
                     p.sendMessage(Component.text("Contact Server Admin no mini deposit message").color(NamedTextColor.RED));
                     return;
@@ -84,7 +84,7 @@ public class Deposit extends SubCommand {
             }
 
             // Checks Deposit amount is less than the players balance
-            if (DepositAmount > eco.getBalance(p)) {
+            if (depositAmount > eco.getBalance(p)) {
                 if (DontHaveEnoughInBalance == null) {
                     p.sendMessage(Component.text("Contact Server Admin no not enough money message").color(NamedTextColor.RED));
                     return;
@@ -101,10 +101,9 @@ public class Deposit extends SubCommand {
             }
 
             // Deposit Logic
-            eco.withdrawPlayer(p, DepositAmount);
-            plugin.data.addBalance(p.getUniqueId(), DepositAmount);
+            eco.withdrawPlayer(p, depositAmount);
+            plugin.data.addBalance(p.getUniqueId(), p.getName(), depositAmount);
             DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
-            plugin.data.DepositTransaction(p.getUniqueId(), p.getName(), DepositAmount, plugin.data.getBalance(p.getUniqueId()));
             p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
 
         // Makes sure that the arg is a number
