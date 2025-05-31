@@ -33,10 +33,12 @@ public class BankTop implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args ) {
         if (sender instanceof Player p) {
             try {
-                data.BankTop();
+                data.bankTop();
                 String[] names = data.getTopPlayers();
                 double[] balances = data.getTopBalances();
-                p.sendMessage(Component.text(" -----").color(NamedTextColor.YELLOW).append(Component.text(" Bank Top ").color(NamedTextColor.GOLD)).append(Component.text("-----").color(NamedTextColor.YELLOW)));
+                p.sendMessage(Component.text(" -----").color(NamedTextColor.YELLOW)
+                        .append(Component.text(" Bank Top ").color(NamedTextColor.GOLD))
+                        .append(Component.text("-----").color(NamedTextColor.YELLOW)));
                 for (int i = 0; i < names.length; i++) {
                     if (names[i] != null) {
                         p.sendMessage((i + 1) + ". " + names[i] + ", $" + balances[i]);
