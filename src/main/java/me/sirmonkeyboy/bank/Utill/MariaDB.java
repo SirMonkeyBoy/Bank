@@ -2,22 +2,19 @@ package me.sirmonkeyboy.bank.Utill;
 
 import me.sirmonkeyboy.bank.Bank;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import org.bukkit.entity.Player;
 
 import java.sql.*;
 import java.util.UUID;
 
 public class MariaDB {
+
     private final Bank plugin;
 
-    public MariaDB(Bank plugin) {
-        this.plugin = plugin;
-        host = plugin.getConfig().getString("mariaDB.host");
-        port = plugin.getConfig().getString("mariaDB.port");
-        database = plugin.getConfig().getString("mariaDB.database");
-        username = plugin.getConfig().getString("mariaDB.username");
-        password = plugin.getConfig().getString("mariaDB.password");
-    }
+    private HikariDataSource dataSource;
 
     private final String host;
     private final String port;
@@ -25,34 +22,45 @@ public class MariaDB {
     private final String username;
     private final String password;
 
-    private Connection connection;
+    public MariaDB(Bank plugin) {
+        this.plugin = plugin;
 
+        host = plugin.getConfig().getString("mariaDB.host");
+        port = plugin.getConfig().getString("mariaDB.port");
+        database = plugin.getConfig().getString("mariaDB.database");
+        username = plugin.getConfig().getString("mariaDB.username");
+        password = plugin.getConfig().getString("mariaDB.password");
+    }
+
+    // Creates the connections to the database
+    public void connect() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database);
+        config.setUsername(username);
+        config.setPassword(password);
+        config.setMaximumPoolSize(20);
+        config.setMinimumIdle(2);
+        config.setIdleTimeout(30000);
+        config.setConnectionTimeout(30000);
+        config.setLeakDetectionThreshold(10000);
+
+        dataSource = new HikariDataSource(config);
+    }
+
+    // Checks if the database is connected
     public boolean isConnected() {
-        return (connection != null);
+        return (dataSource != null && !dataSource.isClosed());
     }
 
-    private final String[] topPlayers = new String[10];
-    private final double[] topBalances = new double[10];
-
-    public void connect() throws ClassNotFoundException, SQLException {
-        if (!isConnected()) {
-            connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
-        }
-    }
-
+    // Disconnects for the database if connected
     public void disconnect() {
-        if (isConnected()) {
-            try {
-                connection.close();
-            }catch (SQLException e){
-                //noinspection CallToPrintStackTrace
-                e.printStackTrace();
-            }
+        if (dataSource != null && !dataSource.isClosed()) {
+            dataSource.close();
         }
     }
 
-    public Connection getConnection() {
-        return connection;
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
     
     public void createTables() throws SQLException {
