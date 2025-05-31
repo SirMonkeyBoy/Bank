@@ -50,10 +50,10 @@ public class Withdraw extends SubCommand {
 
             // Number
             int WithdrawMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
-            double WithdrawAmount = Double.parseDouble(args[1]);
+            double withdrawAmount = Double.parseDouble(args[1]);
 
             // Strings
-            String WithdrawAmountStr = String.valueOf(WithdrawAmount);
+            String WithdrawAmountStr = String.valueOf(withdrawAmount);
             String WithdrawMessage = plugin.getConfig().getString("Withdraw.WithdrawMessage");
             String DontHaveEnoughInBalance = plugin.getConfig().getString("Withdraw.DontHaveEnoughInBalance");
             String MinimumWithdrawMessage = plugin.getConfig().getString("Withdraw.MinimumWithdrawMessage");
@@ -71,7 +71,7 @@ public class Withdraw extends SubCommand {
             }
 
             // Checks withdraw amount is over the minimum
-            if (!(WithdrawAmount >= WithdrawMinimum)) {
+            if (!(withdrawAmount >= WithdrawMinimum)) {
                 if (MinimumWithdrawMessage == null) {
                     p.sendMessage(Component.text("Contact Server Admin no mini withdraw message").color(NamedTextColor.RED));
                     return;
@@ -82,7 +82,7 @@ public class Withdraw extends SubCommand {
             }
 
             // Checks withdraw amount is less than the players bank balance
-            if (WithdrawAmount > plugin.data.getBalance(p.getUniqueId())) {
+            if (withdrawAmount > plugin.data.getBalance(p.getUniqueId())) {
                 if (DontHaveEnoughInBalance == null) {
                     p.sendMessage(Component.text("Contact Server Admin no not enough money message").color(NamedTextColor.RED));
                     return;
@@ -99,18 +99,17 @@ public class Withdraw extends SubCommand {
             }
 
             // Withdraw logic
-            eco.depositPlayer(p, WithdrawAmount);
-            plugin.data.remBalance(p.getUniqueId(), WithdrawAmount);
+            eco.depositPlayer(p, withdrawAmount);
+            plugin.data.remBalance(p.getUniqueId(), p.getName(), withdrawAmount);
             WithdrawMessage = WithdrawMessage.replace("%Withdraw%", WithdrawAmountStr);
-            plugin.data.WithdrawTransaction(p.getUniqueId(), p.getName(), WithdrawAmount, plugin.data.getBalance(p.getUniqueId()));
             p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
 
-            // Makes sure that the arg is a number
-            } catch (NumberFormatException e) {
-                p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+        // Makes sure that the arg is a number
+        } catch (NumberFormatException e) {
+            p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
