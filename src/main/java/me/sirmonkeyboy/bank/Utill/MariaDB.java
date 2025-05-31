@@ -200,7 +200,7 @@ public class MariaDB {
                 // Withdraws from the players account
                 try (PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?")) {
 
-                    pstmt.setDouble(1, currentBalance + amount);
+                    pstmt.setDouble(1, currentBalance - amount);
                     pstmt.setString(2, uuid.toString());
 
                     pstmt.executeUpdate();
