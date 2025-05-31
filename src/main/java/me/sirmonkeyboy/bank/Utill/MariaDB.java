@@ -22,6 +22,10 @@ public class MariaDB {
     private final String username;
     private final String password;
 
+    private final String[] topPlayers = new String[10];
+    private final double[] topBalances = new double[10];
+
+
     public MariaDB(Bank plugin) {
         this.plugin = plugin;
 
@@ -219,7 +223,19 @@ public class MariaDB {
         }
     }
 
-        conn.close();
+    // Gets the top 10 bank balances
+    public void bankTop() throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM bankbalance ORDER BY BALANCE DESC LIMIT 10;");
+            ResultSet rs = pstmt.executeQuery();
+
+            int i = 0;
+            while (rs.next() && i < 10) {
+                topPlayers[i] = rs.getString("NAME");
+                topBalances[i] = rs.getDouble("BALANCE");
+                i++;
+            }
+        }
     }
 
     public String[] getTopPlayers() {
