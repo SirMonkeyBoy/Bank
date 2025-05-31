@@ -172,33 +172,42 @@ public class MariaDB {
     }
 
     // Withdraws from bank balance and tracks transaction
-    public void remBalance(UUID uuid, String name, double amount) throws SQLException {
+    public boolean remBalance(UUID uuid, String name, double amount) throws SQLException {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
 
             try {
-                // Withdraws from the players account
-                try (PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE = BALANCE - ? WHERE UUID= ?")) {
-
-                    pstmt.setDouble(1, amount);
-                    pstmt.setString(2, uuid.toString());
-
-                    pstmt.executeUpdate();
-                }
-
-                // Gets the new balance
-                double newBalance;
+                // Check current balance
+                double currentBalance;
                 try (PreparedStatement pstmt = conn.prepareStatement(
                         "SELECT BALANCE FROM bankbalance WHERE UUID = ?")) {
                     pstmt.setString(1, uuid.toString());
                     try (ResultSet rs = pstmt.executeQuery()) {
                         if (rs.next()) {
-                            newBalance = rs.getDouble("BALANCE");
+                            currentBalance = rs.getDouble("BALANCE");
                         } else {
                             throw new SQLException("UUID not found in bankbalance");
                         }
                     }
                 }
+
+                // Makes sure player has enough money in the bank
+                if (currentBalance < amount) {
+                    conn.rollback();
+                    return false;
+                }
+
+                // Withdraws from the players account
+                try (PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?")) {
+
+                    pstmt.setDouble(1, currentBalance + amount);
+                    pstmt.setString(2, uuid.toString());
+
+                    pstmt.executeUpdate();
+                }
+
+                // Makes newBalance
+                double newBalance = currentBalance - amount;
 
                 // Adds transaction into transaction table
                 try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
@@ -216,6 +225,7 @@ public class MariaDB {
                 }
 
                 conn.commit();
+                return true;
             }catch (SQLException e) {
                 conn.rollback();
                 throw e;
