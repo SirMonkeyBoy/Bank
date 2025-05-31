@@ -13,6 +13,7 @@ import net.milkbowl.vault.economy.Economy;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 
 public class Deposit extends SubCommand {
@@ -54,7 +55,7 @@ public class Deposit extends SubCommand {
             Economy eco = Bank.getEconomy();
 
             // Numbers
-            int DepositMinimum = plugin.getConfig().getInt("MinimumAmount");
+            int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
             double depositAmount = Double.parseDouble(args[1]);
 
             // Strings

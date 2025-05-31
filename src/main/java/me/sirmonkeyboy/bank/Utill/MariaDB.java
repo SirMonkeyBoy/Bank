@@ -150,7 +150,7 @@ public class MariaDB {
 
                 // Adds transaction into transaction table
                 try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
-                    String type = "WITHDRAW";
+                    String type = "DEPOSIT";
                     long currentTimeMillis = System.currentTimeMillis();
                     java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
                     pstmt.setString(1, name);
