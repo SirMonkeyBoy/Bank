@@ -2,6 +2,7 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
+import me.sirmonkeyboy.bank.Utill.MariaDB;
 
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -12,15 +13,17 @@ import net.milkbowl.vault.economy.Economy;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 
 public class Deposit extends SubCommand {
 
     private final Bank plugin;
 
+    private final MariaDB data;
+
     public Deposit(Bank plugin) {
         this.plugin = plugin;
+        this.data = plugin.data;
     }
 
     @Override
@@ -102,7 +105,7 @@ public class Deposit extends SubCommand {
 
             // Deposit Logic
             eco.withdrawPlayer(p, depositAmount);
-            plugin.data.addBalance(p.getUniqueId(), p.getName(), depositAmount);
+            data.addBalance(p.getUniqueId(), p.getName(), depositAmount);
             DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
             p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
 
