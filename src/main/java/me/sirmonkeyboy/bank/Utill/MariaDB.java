@@ -62,37 +62,23 @@ public class MariaDB {
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
-    
+
+    // Creates the database tables if they don't exist
+    @SuppressWarnings("TextBlockMigration")
     public void createTables() throws SQLException {
-        // Connect to the database
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt1 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (" +
+                     "NAME VARCHAR(255), UUID VARCHAR(100), BALANCE DOUBLE, PRIMARY KEY (UUID))");
+             PreparedStatement pstmt2 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS transactions (" +
+                     "id INT NOT NULL AUTO_INCREMENT UNIQUE, " +
+                     "username VARCHAR(255), uuid VARCHAR(100), time TIMESTAMP, type VARCHAR(255), " +
+                     "amount DOUBLE, newbalance DOUBLE, PRIMARY KEY (id), " +
+                     "FOREIGN KEY (uuid) REFERENCES bankbalance(uuid) ON DELETE CASCADE)");
+             PreparedStatement pstmt3 = conn.prepareStatement("CREATE INDEX IF NOT EXISTS transactions_index_0 ON transactions (uuid)")) {
 
-        try {
-            conn.setAutoCommit(false);
-            PreparedStatement pstmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (NAME VARCHAR(255),UUID VARCHAR(100),BALANCE DOUBLE,PRIMARY KEY (UUID))");
-            pstmt.executeUpdate();
-
-            PreparedStatement pstmt2 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS transactions (" +
-                    "  id INT NOT NULL AUTO_INCREMENT UNIQUE,\n" +
-                    "  username VARCHAR(255),\n" +
-                    "  uuid VARCHAR(100),\n" +
-                    "  time TIMESTAMP,\n" +
-                    "  type VARCHAR(255),\n" +
-                    "  amount DOUBLE,\n" +
-                    "  newbalance DOUBLE,\n" +
-                    "  PRIMARY KEY (id),\n" +
-                    "  FOREIGN KEY (uuid) REFERENCES bankbalance(uuid) ON DELETE CASCADE\n" +
-                    ");");
+            pstmt1.executeUpdate();
             pstmt2.executeUpdate();
-
-            PreparedStatement pstmt3 = conn.prepareStatement("CREATE INDEX IF NOT EXISTS transactions_index_0 ON transactions (uuid);");
             pstmt3.executeUpdate();
-        } catch (SQLException e) {
-            // Roll back the transaction if an exception occurs
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.close();
         }
     }
 
