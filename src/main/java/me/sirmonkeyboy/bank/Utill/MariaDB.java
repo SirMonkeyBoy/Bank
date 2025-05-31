@@ -83,47 +83,14 @@ public class MariaDB {
     }
 
     public void createPlayer(Player p) throws SQLException {
-        // Connect to the database
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME, UUID) VALUES (?, ?)")) {
 
-        try {
-            UUID uuid = p.getUniqueId();
-            if (!exists(uuid)) {
-                PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME,UUID) VALUES (?,?)");
-                pstmt.setString(1, p.getName());
-                pstmt.setString(2, uuid.toString());
-                pstmt.executeUpdate();
+            pstmt.setString(1, p.getName());
+            pstmt.setString(2, p.getUniqueId().toString());
+            pstmt.executeUpdate();
 
-                return;
-            }
-        } catch (SQLException e) {
-            // Roll back the transaction if an exception occurs
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.close();
         }
-    }
-
-    public boolean exists(UUID uuid) throws SQLException {
-        // Connect to the database
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
-
-        try {
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM bankbalance WHERE UUID=?");
-            pstmt.setString(1, uuid.toString());
-            ResultSet results = pstmt.executeQuery();
-            if (results.next()) {
-                // player found
-                return true;
-            }
-            return false;
-        }catch (SQLException e){
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
-        }
-        conn.close();
-        return false;
     }
 
     public double getBalance(UUID uuid) throws SQLException {
