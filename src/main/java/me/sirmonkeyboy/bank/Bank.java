@@ -6,6 +6,11 @@ import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
 import me.sirmonkeyboy.bank.Utill.MariaDB;
 import me.sirmonkeyboy.bank.Utill.Utills;
 
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +24,8 @@ public final class Bank extends JavaPlugin {
     public MariaDB data;
 
     private static Economy econ = null;
+
+    Audience console = Bukkit.getConsoleSender();
 
     @Override
     public void onEnable() {
@@ -35,9 +42,8 @@ public final class Bank extends JavaPlugin {
 
         try {
             data.connect();
-        } catch (ClassNotFoundException | SQLException e) {
-            getLogger().info("Database not connected");
-            getLogger().info("Disabling due to no Database found!");
+        } catch (Exception e) {
+            console.sendMessage(Component.text("[Kingdom Bank] Disabling Due to invalid Database info in config").color(NamedTextColor.DARK_RED));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
