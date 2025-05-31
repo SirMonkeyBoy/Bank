@@ -98,7 +98,6 @@ public class MariaDB {
     // Gets balance from bankbalance table
     public double getBalance(UUID uuid) throws SQLException {
 
-        PreparedStatement pstmt = conn.prepareStatement("SELECT BALANCE FROM bankbalance WHERE UUID=?");
         double money = 0;
 
         try (Connection conn = getConnection();
@@ -116,55 +115,55 @@ public class MariaDB {
         return money;
     }
 
-    public void DepositTransaction(UUID uuid, String name, double amount, double newbalance) throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
-
-        try {
+    // Deposits into bank balance and tracks transaction
+    public void addBalance(UUID uuid, String name, double amount) throws SQLException {
+        try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)");
-            String type = "DEPOSIT";
-            long currentTimeMillis = System.currentTimeMillis();
-            java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
-            pstmt.setString(1, name);
-            pstmt.setString(2, uuid.toString());
-            pstmt.setTimestamp(3, timestamp);
-            pstmt.setString(4, type);
-            pstmt.setDouble(5, amount);
-            pstmt.setDouble(6, newbalance);
-            pstmt.executeUpdate();
-            conn.commit();
-        }catch (SQLException e) {
-            // Roll back the transaction if an exception occurs
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.close();
-        }
-    }
 
-    public void WithdrawTransaction(UUID uuid, String name, double amount, double newbalance) throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+            try {
+                // Deposits into the players account
+                try (PreparedStatement pstmt = conn.prepareStatement(
+                        "UPDATE bankbalance SET BALANCE = BALANCE + ? WHERE UUID = ?")) {
+                    pstmt.setDouble(1, amount);
+                    pstmt.setString(2, uuid.toString());
 
-        try {
-            conn.setAutoCommit(false);
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)");
-            String type = "WITHDRAW";
-            long currentTimeMillis = System.currentTimeMillis();
-            java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
-            pstmt.setString(1, name);
-            pstmt.setString(2, uuid.toString());
-            pstmt.setTimestamp(3, timestamp);
-            pstmt.setString(4, type);
-            pstmt.setDouble(5, amount);
-            pstmt.setDouble(6, newbalance);
-            pstmt.executeUpdate();
-            conn.commit();
-        }catch (SQLException e) {
-            // Roll back the transaction if an exception occurs
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.close();
+                    pstmt.executeUpdate();
+                }
+
+                // Gets the new balance
+                double newBalance;
+                try (PreparedStatement pstmt = conn.prepareStatement(
+                        "SELECT BALANCE FROM bankbalance WHERE UUID = ?")) {
+                    pstmt.setString(1, uuid.toString());
+                    try (ResultSet rs = pstmt.executeQuery()) {
+                        if (rs.next()) {
+                            newBalance = rs.getDouble("BALANCE");
+                        } else {
+                            throw new SQLException("UUID not found in bankbalance");
+                        }
+                    }
+                }
+
+                // Adds transaction into transaction table
+                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
+                    String type = "WITHDRAW";
+                    long currentTimeMillis = System.currentTimeMillis();
+                    java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
+                    pstmt.setString(1, name);
+                    pstmt.setString(2, uuid.toString());
+                    pstmt.setTimestamp(3, timestamp);
+                    pstmt.setString(4, type);
+                    pstmt.setDouble(5, amount);
+                    pstmt.setDouble(6, newBalance);
+
+                    pstmt.executeUpdate();
+                }
+
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
         }
     }
 
