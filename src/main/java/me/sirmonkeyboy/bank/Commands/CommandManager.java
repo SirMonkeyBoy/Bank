@@ -2,6 +2,7 @@ package me.sirmonkeyboy.bank.Commands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommands.*;
+import me.sirmonkeyboy.bank.Utils.ConfigManager;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,14 +20,18 @@ import java.util.List;
 public class CommandManager implements TabExecutor {
     @SuppressWarnings("FieldCanBeLocal")
     private final Bank plugin;
+
+    private final ConfigManager configManager;
+
     private final ArrayList<SubCommand> subcommands = new ArrayList<>();
 
-    public CommandManager(Bank plugin){
+    public CommandManager(Bank plugin, ConfigManager configManager){
         this.plugin = plugin;
-        subcommands.add(new Balance(plugin));
-        subcommands.add(new Deposit(plugin));
-        subcommands.add(new Withdraw(plugin));
-        subcommands.add(new Bal(plugin));
+        this.configManager = configManager;
+        subcommands.add(new Balance(plugin, configManager));
+        subcommands.add(new Deposit(plugin, configManager));
+        subcommands.add(new Withdraw(plugin, configManager));
+        subcommands.add(new Bal(plugin, configManager));
         subcommands.add(new Help());
     }
 
