@@ -1,10 +1,7 @@
 package me.sirmonkeyboy.bank.Commands;
 
 import me.sirmonkeyboy.bank.Bank;
-import me.sirmonkeyboy.bank.Commands.SubCommands.Bal;
-import me.sirmonkeyboy.bank.Commands.SubCommands.Balance;
-import me.sirmonkeyboy.bank.Commands.SubCommands.Deposit;
-import me.sirmonkeyboy.bank.Commands.SubCommands.Withdraw;
+import me.sirmonkeyboy.bank.Commands.SubCommands.*;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,6 +27,7 @@ public class CommandManager implements TabExecutor {
         subcommands.add(new Deposit(plugin));
         subcommands.add(new Withdraw(plugin));
         subcommands.add(new Bal(plugin));
+        subcommands.add(new Help());
     }
 
     @Override
