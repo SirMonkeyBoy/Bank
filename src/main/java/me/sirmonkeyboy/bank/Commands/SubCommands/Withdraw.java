@@ -98,7 +98,7 @@ public class Withdraw extends SubCommand {
                     p.sendMessage(Component.text("Contact Server Admin no not enough money message").color(NamedTextColor.RED));
                 } else {
                     String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceWithdraw().replace("%Withdraw%", WithdrawAmountStr);
-                    p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
+                    p.sendMessage(Component.text(DontHaveEnoughInBalance + "or error in withdraw transaction try again").color(NamedTextColor.RED));
                 }
                 return;
             }
