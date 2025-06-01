@@ -3,6 +3,7 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
+import me.sirmonkeyboy.bank.Utils.CooldownManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.Component;
@@ -14,19 +15,23 @@ import net.milkbowl.vault.economy.Economy;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 public class Withdraw extends SubCommand {
 
     private final Bank plugin;
 
-    private final MariaDB data;
+    private MariaDB data;
 
     private final ConfigManager configManager;
 
-    public Withdraw(Bank plugin, ConfigManager configManager) {
+    private final CooldownManager cooldownManager;
+
+    public Withdraw(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
         this.plugin = plugin;
         this.data = plugin.data;
         this.configManager = configManager;
+        this.cooldownManager = cooldownManager;
     }
 
     @Override
@@ -53,6 +58,7 @@ public class Withdraw extends SubCommand {
                 p.sendMessage(Component.text("Use /bank withdraw Amount"));
                 return;
             }
+
             Economy eco = Bank.getEconomy();
 
             // Number
@@ -70,6 +76,13 @@ public class Withdraw extends SubCommand {
                     return;
                 }
                 p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+                return;
+            }
+
+            UUID uuid = p.getUniqueId();
+            if (cooldownManager.isOnCooldown(uuid)) {
+                long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
+                p.sendMessage("You're on cooldown! Try again in " + seconds + " seconds.");
                 return;
             }
 
@@ -95,11 +108,12 @@ public class Withdraw extends SubCommand {
 
             if (!success) {
                 if (configManager.getDontHaveEnoughInBalanceWithdraw() == null) {
-                    p.sendMessage(Component.text("Contact Server Admin no not enough money message").color(NamedTextColor.RED));
-                } else {
-                    String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceWithdraw().replace("%Withdraw%", WithdrawAmountStr);
-                    p.sendMessage(Component.text(DontHaveEnoughInBalance + "or error in withdraw transaction try again").color(NamedTextColor.RED));
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                    return;
                 }
+                String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceWithdraw().replace("%Withdraw%", WithdrawAmountStr);
+                p.sendMessage(Component.text(DontHaveEnoughInBalance + "or error in withdraw transaction try again").color(NamedTextColor.RED));
+
                 return;
             }
 
@@ -108,12 +122,14 @@ public class Withdraw extends SubCommand {
             String WithdrawMessage = configManager.getWithdrawMessage().replace("%Withdraw%", WithdrawAmountStr);
             p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
 
+            cooldownManager.startCooldown(uuid);
         // Makes sure that the arg is a number
         } catch (NumberFormatException e) {
             p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @Override
