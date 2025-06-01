@@ -1,7 +1,7 @@
 package me.sirmonkeyboy.bank.Commands;
 
 import me.sirmonkeyboy.bank.Bank;
-import me.sirmonkeyboy.bank.Utill.MariaDB;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

@@ -1,4 +1,4 @@
-package me.sirmonkeyboy.bank.Utill;
+package me.sirmonkeyboy.bank.Utils;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -6,7 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Bukkit;
 
-public class Utills {
+public class Utils {
 
     static Audience console = Bukkit.getConsoleSender();
 

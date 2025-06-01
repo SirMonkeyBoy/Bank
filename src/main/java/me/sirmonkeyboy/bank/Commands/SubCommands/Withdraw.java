@@ -2,7 +2,7 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
-import me.sirmonkeyboy.bank.Utill.MariaDB;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -92,7 +92,7 @@ public class Withdraw extends SubCommand {
             }
 
             // Withdraw logic
-            boolean success = data.remBalance(p.getUniqueId(), p.getName(), withdrawAmount);
+            boolean success = data.withdrawTransaction(p.getUniqueId(), p.getName(), withdrawAmount);
 
             if (!success) {
                 if (DontHaveEnoughInBalance == null) {

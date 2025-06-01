@@ -2,7 +2,7 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
-import me.sirmonkeyboy.bank.Utill.MariaDB;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -106,7 +106,7 @@ public class Deposit extends SubCommand {
 
             // Deposit Logic
             eco.withdrawPlayer(p, depositAmount);
-            data.addBalance(p.getUniqueId(), p.getName(), depositAmount);
+            data.depositTransaction(p.getUniqueId(), p.getName(), depositAmount);
             DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
             p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
 

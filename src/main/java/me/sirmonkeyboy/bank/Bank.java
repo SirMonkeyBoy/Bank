@@ -3,8 +3,8 @@ package me.sirmonkeyboy.bank;
 import me.sirmonkeyboy.bank.Commands.BankTop;
 import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
-import me.sirmonkeyboy.bank.Utill.MariaDB;
-import me.sirmonkeyboy.bank.Utill.Utills;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
+import me.sirmonkeyboy.bank.Utils.Utils;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -57,7 +57,7 @@ public final class Bank extends JavaPlugin {
             return;
         }
 
-        Utills.StartBanner();
+        Utils.StartBanner();
 
         getLogger().info("Database successfully connected");
 

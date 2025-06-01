@@ -1,4 +1,4 @@
-package me.sirmonkeyboy.bank.Utill;
+package me.sirmonkeyboy.bank.Utils;
 
 import me.sirmonkeyboy.bank.Bank;
 
@@ -120,7 +120,7 @@ public class MariaDB {
     }
 
     // Deposits into bank balance and tracks transaction
-    public void addBalance(UUID uuid, String name, double amount) throws SQLException {
+    public void depositTransaction(UUID uuid, String name, double amount) throws SQLException {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
 
@@ -172,7 +172,7 @@ public class MariaDB {
     }
 
     // Withdraws from bank balance and tracks transaction
-    public boolean remBalance(UUID uuid, String name, double amount) throws SQLException {
+    public boolean withdrawTransaction(UUID uuid, String name, double amount) throws SQLException {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
 
