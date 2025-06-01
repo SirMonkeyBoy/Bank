@@ -3,6 +3,7 @@ package me.sirmonkeyboy.bank;
 import me.sirmonkeyboy.bank.Commands.BankTop;
 import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
+import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
 import me.sirmonkeyboy.bank.Utils.Utils;
 
@@ -31,6 +32,14 @@ public final class Bank extends JavaPlugin {
     public void onEnable() {
 
         this.saveDefaultConfig();
+
+        ConfigManager configManager = new ConfigManager(this);
+
+        if (!configManager.validate()) {
+            getLogger().severe("Disabling due to missing config values.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
 
         if (!setupEconomy() ) {
             getLogger().info("Disabled due to no Vault dependency found!");
