@@ -3,6 +3,7 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
+import me.sirmonkeyboy.bank.Utils.CooldownManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.*;
@@ -14,6 +15,7 @@ import net.milkbowl.vault.economy.Economy;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 
 public class Deposit extends SubCommand {
@@ -24,10 +26,14 @@ public class Deposit extends SubCommand {
 
     private final ConfigManager configManager;
 
-    public Deposit(Bank plugin, ConfigManager configManager) {
+    private final CooldownManager cooldownManager;
+
+    public Deposit(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
         this.plugin = plugin;
         this.data = plugin.data;
         this.configManager = configManager;
+
+        this.cooldownManager = cooldownManager;
     }
 
     @Override
@@ -75,6 +81,13 @@ public class Deposit extends SubCommand {
                 return;
             }
 
+            UUID uuid = p.getUniqueId();
+            if (cooldownManager.isOnCooldown(uuid)) {
+                long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
+                p.sendMessage("You're on cooldown! Try again in " + seconds + " seconds.");
+                return;
+            }
+
             // Checks Deposit amount is over the minimum
             if (!(depositAmount >= DepositMinimum)) {
                 if (configManager.getMinimumDepositMessage() == null) {
@@ -115,6 +128,7 @@ public class Deposit extends SubCommand {
             String  DepositMessage = configManager.getDepositMessage().replace("%Deposit%", DepositAmountStr);
             p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
 
+            cooldownManager.startCooldown(uuid);
         // Makes sure that the arg is a number
         }catch (NumberFormatException e){
             p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
