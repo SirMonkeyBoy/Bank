@@ -71,8 +71,8 @@ public final class Bank extends JavaPlugin {
         getLogger().info("Database successfully connected");
 
 
-        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this));
         Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this, configManager));
+        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this, configManager));
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
 

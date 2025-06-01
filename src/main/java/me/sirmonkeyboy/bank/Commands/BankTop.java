@@ -1,6 +1,7 @@
 package me.sirmonkeyboy.bank.Commands;
 
 import me.sirmonkeyboy.bank.Bank;
+import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.Component;
@@ -23,9 +24,12 @@ public class BankTop implements TabExecutor {
 
     private final MariaDB data;
 
-    public BankTop(Bank plugin) {
+    private final ConfigManager configManager;
+
+    public BankTop(Bank plugin, ConfigManager configManager) {
         this.plugin = plugin;
         this.data = plugin.data;
+        this.configManager = configManager;
     }
 
 
@@ -48,9 +52,8 @@ public class BankTop implements TabExecutor {
                 throw new RuntimeException(e);
             }
         }else {
-            String YouCantRunThis = plugin.getConfig().getString("YouCantRunThis");
-            if (YouCantRunThis != null) {
-                sender.sendMessage(Component.text(YouCantRunThis).color(NamedTextColor.RED));
+            if (configManager.getYouCantRunThis() != null) {
+                sender.sendMessage(Component.text(configManager.getYouCantRunThis()).color(NamedTextColor.RED));
             }
         }
         return false;
