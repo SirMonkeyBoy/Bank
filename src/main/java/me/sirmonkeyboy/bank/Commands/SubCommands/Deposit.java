@@ -2,6 +2,7 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
+import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.*;
@@ -13,7 +14,6 @@ import net.milkbowl.vault.economy.Economy;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 
 public class Deposit extends SubCommand {
@@ -22,9 +22,12 @@ public class Deposit extends SubCommand {
 
     private final MariaDB data;
 
-    public Deposit(Bank plugin) {
+    private final ConfigManager configManager;
+
+    public Deposit(Bank plugin, ConfigManager configManager) {
         this.plugin = plugin;
         this.data = plugin.data;
+        this.configManager = configManager;
     }
 
     @Override
@@ -55,59 +58,55 @@ public class Deposit extends SubCommand {
             Economy eco = Bank.getEconomy();
 
             // Numbers
-            int DepositMinimum = Integer.parseInt(Objects.requireNonNull(plugin.getConfig().getString("MinimumAmount")));
+            int DepositMinimum = configManager.getMinimumAmount();
             double depositAmount = Double.parseDouble(args[1]);
 
             // Strings
             String DepositAmountStr = String.valueOf(depositAmount);
-            String DepositMessage = plugin.getConfig().getString("Deposit.DepositMessage");
-            String DontHaveEnoughInBalance = plugin.getConfig().getString("Deposit.DontHaveEnoughInBalance");
-            String MinimumDepositMessage = plugin.getConfig().getString("Deposit.MinimumDepositMessage");
             String MinimumDepositAmount = String.valueOf(DepositMinimum);
-            String noPermission = plugin.getConfig().getString("NoPermission");
 
             // Makes sure players can use the command
             if (!p.hasPermission("Bank.commands.Bank.Deposit")) {
-                if (noPermission == null) {
-                    p.sendMessage(Component.text("Contact Server Admin no Permission message").color(NamedTextColor.RED));
+                if (configManager.getNoPermission() == null) {
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return;
                 }
-                p.sendMessage(Component.text(noPermission).color(NamedTextColor.RED));
+                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
                 return;
             }
 
             // Checks Deposit amount is over the minimum
             if (!(depositAmount >= DepositMinimum)) {
-                if (MinimumDepositMessage == null) {
-                    p.sendMessage(Component.text("Contact Server Admin no mini deposit message").color(NamedTextColor.RED));
+                if (configManager.getMinimumDepositMessage() == null) {
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return;
                 }
-                MinimumDepositMessage = MinimumDepositMessage.replace("%Minimum%", MinimumDepositAmount);
+                String MinimumDepositMessage = configManager.getMinimumDepositMessage().replace("%Minimum%", MinimumDepositAmount);
                 p.sendMessage(Component.text(MinimumDepositMessage).color(NamedTextColor.RED));
                 return;
             }
 
             // Checks Deposit amount is less than the players balance
             if (depositAmount > eco.getBalance(p)) {
-                if (DontHaveEnoughInBalance == null) {
-                    p.sendMessage(Component.text("Contact Server Admin no not enough money message").color(NamedTextColor.RED));
+                if (configManager.getDontHaveEnoughInBalanceDeposit() == null) {
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return;
                 }
-                DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Deposit%", DepositAmountStr);
+                String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceDeposit().replace("%Deposit%", DepositAmountStr);
                 p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
                 return;
             }
 
             // Checks if the deposit message is in the config
-            if (DepositMessage == null) {
-                p.sendMessage(Component.text("Contact Server Admin no deposit message").color(NamedTextColor.RED));
+            if (configManager.getDepositMessage() == null) {
+                p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                 return;
             }
 
             // Deposit Logic
             eco.withdrawPlayer(p, depositAmount);
             data.depositTransaction(p.getUniqueId(), p.getName(), depositAmount);
-            DepositMessage = DepositMessage.replace("%Deposit%", DepositAmountStr);
+            String  DepositMessage = configManager.getDepositMessage().replace("%Deposit%", DepositAmountStr);
             p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
 
         // Makes sure that the arg is a number
