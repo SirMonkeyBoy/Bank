@@ -104,8 +104,14 @@ public class Deposit extends SubCommand {
             }
 
             // Deposit Logic
+            boolean success = data.depositTransaction(p.getUniqueId(), p.getName(), depositAmount);
+
+            if (!success) {
+                p.sendMessage(Component.text("Error in deposit transaction try again").color(NamedTextColor.RED));
+                return;
+            }
+
             eco.withdrawPlayer(p, depositAmount);
-            data.depositTransaction(p.getUniqueId(), p.getName(), depositAmount);
             String  DepositMessage = configManager.getDepositMessage().replace("%Deposit%", DepositAmountStr);
             p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
 

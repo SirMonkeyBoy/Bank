@@ -112,7 +112,7 @@ public class MariaDB {
     }
 
     // Deposits into bank balance and tracks transaction
-    public void depositTransaction(UUID uuid, String name, double amount) throws SQLException {
+    public boolean depositTransaction(UUID uuid, String name, double amount) throws SQLException {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
 
@@ -156,9 +156,10 @@ public class MariaDB {
                 }
 
                 conn.commit();
+                return true;
             } catch (SQLException e) {
                 conn.rollback();
-                throw e;
+                return false;
             }
         }
     }
@@ -220,7 +221,8 @@ public class MariaDB {
                 return true;
             }catch (SQLException e) {
                 conn.rollback();
-                throw e;
+                e.printStackTrace();
+                return false;
             }
         }
     }
