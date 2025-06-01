@@ -2,6 +2,7 @@ package me.sirmonkeyboy.bank.Commands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
+import me.sirmonkeyboy.bank.Utils.CooldownManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.Component;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 public class BankTop implements TabExecutor {
 
@@ -26,16 +28,35 @@ public class BankTop implements TabExecutor {
 
     private final ConfigManager configManager;
 
-    public BankTop(Bank plugin, ConfigManager configManager) {
+    private final CooldownManager cooldownManager;
+
+    public BankTop(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
         this.plugin = plugin;
         this.data = plugin.data;
         this.configManager = configManager;
+        this.cooldownManager = cooldownManager;
     }
 
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args ) {
         if (sender instanceof Player p) {
+            if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
+                if (configManager.getNoPermission() == null) {
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                    return false;
+                }
+                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+                return false;
+            }
+
+            UUID uuid = p.getUniqueId();
+            if (cooldownManager.isOnCooldown(uuid)) {
+                long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
+                p.sendMessage("You're on cooldown! Try again in " + seconds + " seconds.");
+                return false;
+            }
+
             try {
                 data.bankTop();
                 String[] names = data.getTopPlayers();
@@ -48,15 +69,19 @@ public class BankTop implements TabExecutor {
                         p.sendMessage((i + 1) + ". " + names[i] + ", $" + balances[i]);
                     }
                 }
+                cooldownManager.startCooldown(uuid);
+                return true;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }else {
-            if (configManager.getYouCantRunThis() != null) {
-                sender.sendMessage(Component.text(configManager.getYouCantRunThis()).color(NamedTextColor.RED));
+            if (configManager.getYouCantRunThis() == null) {
+                sender.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                return false;
             }
+            sender.sendMessage(Component.text(configManager.getYouCantRunThis()).color(NamedTextColor.RED));
+            return false;
         }
-        return false;
     }
 
     @Override
