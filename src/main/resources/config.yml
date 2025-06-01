@@ -3,12 +3,14 @@
 mariaDB:
   host: localhost
   port: 3306
-  database: bank
-  username: user
+  database: KingdomBank
+  username: KingdomBank
   password: password
+  Set-Maximum-Pool-Size: 15
+  Set-Minimum-Idle: 2
 
 # Balance message
-BalanceMessage: "Your Balance is $%Bal%"
+Balance-Message: "Your Balance is $%Bal%"
 
 # Placeholders
 # %Deposit% is the amount you deposit
@@ -16,20 +18,20 @@ BalanceMessage: "Your Balance is $%Bal%"
 # %Minimum% is the MinimumAmount
 
 Deposit:
-  DepositMessage: "You have deposited $%Deposit%"
-  DontHaveEnoughInBalance: "You don't have $%Deposit% in your balance"
-  MinimumDepositMessage: "Minimum deposit amount is $%Minimum%"
+  Deposit-Message: "You have deposited $%Deposit%"
+  Dont-Have-Enough-In-Balance: "You don't have $%Deposit% in your balance"
+  Minimum-Deposit-Message: "Minimum deposit amount is $%Minimum%"
 
 Withdraw:
-  WithdrawMessage: "You have withdrawn $%Withdraw%"
-  DontHaveEnoughInBalance: "You don't have $%Withdraw% in your bank balance"
-  MinimumWithdrawMessage: "Minimum withdraw amount is $%Minimum%"
+  Withdraw-Message: "You have withdrawn $%Withdraw%"
+  Dont-Have-Enough-In-Balance: "You don't have $%Withdraw% in your bank balance"
+  Minimum-Withdraw-Message: "Minimum withdraw amount is $%Minimum%"
 
 #Minimum amount for deposit/withdraws
-MinimumAmount: "1000"
+Minimum-Amount: 1000
 
 # Player Doesn't have permission to run that command
-NoPermission: "You don't have permission to run this command"
+No-Permission: "You don't have permission to run this command"
 
 # You can't run that command
-YouCantRunThis: "Only Players can run this"
+You-Cant-Run-This: "Only Players can run this"
