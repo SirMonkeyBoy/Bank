@@ -1,10 +1,9 @@
 package me.sirmonkeyboy.bank.Commands;
 
 import me.sirmonkeyboy.bank.Bank;
-import me.sirmonkeyboy.bank.Commands.SubCommands.Bal;
-import me.sirmonkeyboy.bank.Commands.SubCommands.Balance;
-import me.sirmonkeyboy.bank.Commands.SubCommands.Deposit;
-import me.sirmonkeyboy.bank.Commands.SubCommands.Withdraw;
+import me.sirmonkeyboy.bank.Commands.SubCommands.*;
+import me.sirmonkeyboy.bank.Utils.ConfigManager;
+import me.sirmonkeyboy.bank.Utils.CooldownManager;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,14 +21,22 @@ import java.util.List;
 public class CommandManager implements TabExecutor {
     @SuppressWarnings("FieldCanBeLocal")
     private final Bank plugin;
+
+    private final ConfigManager configManager;
+
+    private final CooldownManager cooldownManager;
+
     private final ArrayList<SubCommand> subcommands = new ArrayList<>();
 
-    public CommandManager(Bank plugin){
+    public CommandManager(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager){
         this.plugin = plugin;
-        subcommands.add(new Balance(plugin));
-        subcommands.add(new Deposit(plugin));
-        subcommands.add(new Withdraw(plugin));
-        subcommands.add(new Bal(plugin));
+        this.configManager = configManager;
+        this.cooldownManager = cooldownManager;
+        subcommands.add(new Balance(plugin, configManager, cooldownManager));
+        subcommands.add(new Deposit(plugin, configManager, cooldownManager));
+        subcommands.add(new Withdraw(plugin, configManager, cooldownManager));
+        subcommands.add(new Bal(plugin, configManager,cooldownManager));
+        subcommands.add(new Help());
     }
 
     @Override

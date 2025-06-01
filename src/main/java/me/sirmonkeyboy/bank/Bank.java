@@ -1,9 +1,18 @@
 package me.sirmonkeyboy.bank;
 
+import me.sirmonkeyboy.bank.Commands.BankTop;
 import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
-import me.sirmonkeyboy.bank.Utill.MariaDB;
+import me.sirmonkeyboy.bank.Utils.ConfigManager;
+import me.sirmonkeyboy.bank.Utils.CooldownManager;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
+import me.sirmonkeyboy.bank.Utils.Utils;
 
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,10 +27,22 @@ public final class Bank extends JavaPlugin {
 
     private static Economy econ = null;
 
+    Audience console = Bukkit.getConsoleSender();
+
     @Override
     public void onEnable() {
 
         this.saveDefaultConfig();
+
+        ConfigManager configManager = new ConfigManager(this);
+
+        CooldownManager cooldownManager = new CooldownManager(configManager.getCooldown());
+
+        if (!configManager.validate()) {
+            getLogger().severe("Disabling due to missing config values.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
 
         if (!setupEconomy() ) {
             getLogger().info("Disabled due to no Vault dependency found!");
@@ -29,24 +50,33 @@ public final class Bank extends JavaPlugin {
             return;
         }
 
-        this.data = new MariaDB(this);
+        this.data = new MariaDB(this, configManager);
 
         try {
             data.connect();
-        } catch (ClassNotFoundException | SQLException e) {
-            getLogger().info("Database not connected");
-            getLogger().info("Disabled due to no Database found!");
+        } catch (Exception e) {
+            console.sendMessage(Component.text("[Kingdom Bank] Disabling Due to invalid Database info in config").color(NamedTextColor.DARK_RED));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        getLogger().info("Database is connected");
         try {
             data.createTables();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            getLogger().info("Disable Kingdom Bank due to error in Database tables");
+            e.printStackTrace();
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
-        Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this));
+
+        Utils.StartBanner();
+
+        getLogger().info("Database successfully connected");
+
+
+        Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this, configManager, cooldownManager));
+        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this, configManager, cooldownManager));
+
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
 
         getLogger().info("Bank has started");
@@ -73,11 +103,11 @@ public final class Bank extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        if (data.isConnected()) {
+        if (data != null && data.isConnected()) {
             data.disconnect();
+            getLogger().info("Disconnected successfully from Database");
         }
-        
-        getLogger().info("Disconnected from Database");
-        getLogger().info("Bank has stopped");
+
+        getLogger().info("Kingdom Bank has stopped");
     }
 }

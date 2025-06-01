@@ -6,7 +6,7 @@
 
     <groupId>me.SirMonkeyBoy</groupId>
     <artifactId>Bank</artifactId>
-    <version>1.0-Beta</version>
+    <version>1.1-Beta</version>
     <packaging>jar</packaging>
 
     <name>KingdomBank</name>
@@ -98,5 +98,11 @@
             <artifactId>annotations-java5</artifactId>
             <version>24.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>6.3.0</version>
+        </dependency>
+
     </dependencies>
 </project>

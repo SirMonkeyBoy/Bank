@@ -2,6 +2,9 @@ package me.sirmonkeyboy.bank.Commands.SubCommands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
+import me.sirmonkeyboy.bank.Utils.ConfigManager;
+import me.sirmonkeyboy.bank.Utils.CooldownManager;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -12,14 +15,23 @@ import net.milkbowl.vault.economy.Economy;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
 public class Withdraw extends SubCommand {
 
     private final Bank plugin;
 
-    public Withdraw(Bank plugin) {
+    private MariaDB data;
+
+    private final ConfigManager configManager;
+
+    private final CooldownManager cooldownManager;
+
+    public Withdraw(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
         this.plugin = plugin;
+        this.data = plugin.data;
+        this.configManager = configManager;
+        this.cooldownManager = cooldownManager;
     }
 
     @Override
@@ -39,48 +51,83 @@ public class Withdraw extends SubCommand {
 
     @Override
     public void perform(Player p, String[] args) {
-        if (p.hasPermission("Bank.commands.Bank.Withdraw")) {
+
+        try {
+            // Checks args length
+            if (args.length < 2 || args[1].isBlank()) {
+                p.sendMessage(Component.text("Use /bank withdraw Amount"));
+                return;
+            }
+
             Economy eco = Bank.getEconomy();
 
-            try {
-                if (args.length >= 2 && !args[1].isBlank()) {
-                    int WithdrawMinimum = Integer.parseInt(Objects.requireNonNull(this.plugin.getConfig().getString("MinimumAmount")));
-                    double WithdrawAmount = Double.parseDouble(args[1]);
-                    String WithdrawAmountStr = String.valueOf(WithdrawAmount);
-                    String WithdrawMessage = this.plugin.getConfig().getString("Withdraw.WithdrawMessage");
-                    String DontHaveEnoughInBalance = this.plugin.getConfig().getString("Withdraw.DontHaveEnoughInBalance");
-                    String MinimumWithdrawMessage = this.plugin.getConfig().getString("Withdraw.MinimumWithdrawMessage");
-                    String MinimumWithdrawAmount = String.valueOf(WithdrawMinimum);
-                    if (WithdrawAmount >= WithdrawMinimum) {
-                        if (WithdrawAmount <= plugin.data.getBalance(p.getUniqueId())) {
-                            if (WithdrawMessage != null) {
-                                eco.depositPlayer(p, WithdrawAmount);
-                                this.plugin.data.remBalance(p.getUniqueId(), WithdrawAmount);
-                                WithdrawMessage = WithdrawMessage.replace("%Withdraw%", WithdrawAmountStr);
-                                plugin.data.WithdrawTransaction(p.getUniqueId(), p.getName(), WithdrawAmount, plugin.data.getBalance(p.getUniqueId()));
-                                p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
-                            }
-                        } else if (DontHaveEnoughInBalance != null) {
-                            DontHaveEnoughInBalance = DontHaveEnoughInBalance.replace("%Withdraw%", WithdrawAmountStr);
-                            p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
-                        }
-                    } else if (MinimumWithdrawMessage != null) {
-                        MinimumWithdrawMessage = MinimumWithdrawMessage.replace("%Minimum%", MinimumWithdrawAmount);
-                        p.sendMessage(Component.text(MinimumWithdrawMessage).color(NamedTextColor.RED));
-                    }
-                } else {
-                    p.sendMessage(Component.text("Use /bank withdraw Amount"));
+            // Number
+            int WithdrawMinimum = configManager.getMinimumAmount();
+            double withdrawAmount = Double.parseDouble(args[1]);
+
+            // Strings
+            String WithdrawAmountStr = String.valueOf(withdrawAmount);
+            String MinimumWithdrawAmount = String.valueOf(WithdrawMinimum);
+
+            // Makes sure players can use the command
+            if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
+                if (configManager.getNoPermission() == null) {
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                    return;
                 }
-            } catch (NumberFormatException var12) {
-                p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+                return;
             }
-        } else if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
-            String noPermission = this.plugin.getConfig().getString("NoPermission");
-            if (noPermission != null) {
-                p.sendMessage(Component.text(noPermission).color(NamedTextColor.RED));
+
+            UUID uuid = p.getUniqueId();
+            if (cooldownManager.isOnCooldown(uuid)) {
+                long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
+                p.sendMessage("You're on cooldown! Try again in " + seconds + " seconds.");
+                return;
             }
+
+            // Checks withdraw amount is over the minimum
+            if (!(withdrawAmount >= WithdrawMinimum)) {
+                if (configManager.getMinimumWithdrawMessage() == null) {
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                    return;
+                }
+                String MinimumWithdrawMessage = configManager.getMinimumWithdrawMessage().replace("%Minimum%", MinimumWithdrawAmount);
+                p.sendMessage(Component.text(MinimumWithdrawMessage).color(NamedTextColor.RED));
+                return;
+            }
+
+            // Checks if the withdraw message is in the config
+            if (configManager.getWithdrawMessage() == null) {
+                p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                return;
+            }
+
+            // Withdraw logic
+            boolean success = data.withdrawTransaction(p.getUniqueId(), p.getName(), withdrawAmount);
+
+            if (!success) {
+                if (configManager.getDontHaveEnoughInBalanceWithdraw() == null) {
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                    return;
+                }
+                String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceWithdraw().replace("%Withdraw%", WithdrawAmountStr);
+                p.sendMessage(Component.text(DontHaveEnoughInBalance + "or error in withdraw transaction try again").color(NamedTextColor.RED));
+
+                return;
+            }
+
+            eco.depositPlayer(p, withdrawAmount);
+
+            String WithdrawMessage = configManager.getWithdrawMessage().replace("%Withdraw%", WithdrawAmountStr);
+            p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
+
+            cooldownManager.startCooldown(uuid);
+        // Makes sure that the arg is a number
+        } catch (NumberFormatException e) {
+            p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
     }
