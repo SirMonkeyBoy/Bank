@@ -30,8 +30,11 @@ Withdraw:
 #Minimum amount for deposit/withdraws
 Minimum-Amount: 1000
 
+## Cooldown in seconds between bank interactions
+Cooldown: 15
+
 # Player Doesn't have permission to run that command
 No-Permission: "You don't have permission to run this command"
 
 # You can't run that command
-You-Cant-Run-This: "Only Players can run this"
+You-Cant-Run-This: "Only Players can run this command"
