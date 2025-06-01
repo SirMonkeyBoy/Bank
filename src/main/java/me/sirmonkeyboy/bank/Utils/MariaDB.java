@@ -14,36 +14,28 @@ public class MariaDB {
 
     private final Bank plugin;
 
-    private HikariDataSource dataSource;
+    private final ConfigManager configManager;
 
-    private final String host;
-    private final String port;
-    private final String database;
-    private final String username;
-    private final String password;
+    private HikariDataSource dataSource;
 
     private final String[] topPlayers = new String[10];
     private final double[] topBalances = new double[10];
 
 
-    public MariaDB(Bank plugin) {
+    public MariaDB(Bank plugin, ConfigManager configManager) {
         this.plugin = plugin;
 
-        host = plugin.getConfig().getString("mariaDB.host");
-        port = plugin.getConfig().getString("mariaDB.port");
-        database = plugin.getConfig().getString("mariaDB.database");
-        username = plugin.getConfig().getString("mariaDB.username");
-        password = plugin.getConfig().getString("mariaDB.password");
+        this.configManager = configManager;
     }
 
     // Creates the connections to the database
     public void connect() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database);
-        config.setUsername(username);
-        config.setPassword(password);
-        config.setMaximumPoolSize(20);
-        config.setMinimumIdle(2);
+        config.setJdbcUrl("jdbc:mysql://" + configManager.getHost() + ":" + configManager.getPort() + "/" + configManager.getDatabase());
+        config.setUsername(configManager.getUsername());
+        config.setPassword(configManager.getPassword());
+        config.setMaximumPoolSize(configManager.getSetMaximumPoolSize());
+        config.setMinimumIdle(configManager.getSetMinimumIdle());
         config.setIdleTimeout(30000);
         config.setConnectionTimeout(30000);
         config.setLeakDetectionThreshold(10000);

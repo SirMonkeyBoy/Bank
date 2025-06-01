@@ -47,7 +47,7 @@ public final class Bank extends JavaPlugin {
             return;
         }
 
-        this.data = new MariaDB(this);
+        this.data = new MariaDB(this, configManager);
 
         try {
             data.connect();
