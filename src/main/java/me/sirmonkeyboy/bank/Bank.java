@@ -4,6 +4,7 @@ import me.sirmonkeyboy.bank.Commands.BankTop;
 import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
+import me.sirmonkeyboy.bank.Utils.CooldownManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
 import me.sirmonkeyboy.bank.Utils.Utils;
 
@@ -34,6 +35,8 @@ public final class Bank extends JavaPlugin {
         this.saveDefaultConfig();
 
         ConfigManager configManager = new ConfigManager(this);
+
+        CooldownManager cooldownManager = new CooldownManager(configManager.getCooldown());
 
         if (!configManager.validate()) {
             getLogger().severe("Disabling due to missing config values.");
@@ -71,8 +74,8 @@ public final class Bank extends JavaPlugin {
         getLogger().info("Database successfully connected");
 
 
-        Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this, configManager));
-        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this, configManager));
+        Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this, configManager, cooldownManager));
+        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this, configManager, cooldownManager));
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
 
