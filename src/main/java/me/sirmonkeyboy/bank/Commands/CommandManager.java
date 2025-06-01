@@ -3,6 +3,7 @@ package me.sirmonkeyboy.bank.Commands;
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommands.*;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
+import me.sirmonkeyboy.bank.Utils.CooldownManager;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,15 +24,18 @@ public class CommandManager implements TabExecutor {
 
     private final ConfigManager configManager;
 
+    private final CooldownManager cooldownManager;
+
     private final ArrayList<SubCommand> subcommands = new ArrayList<>();
 
-    public CommandManager(Bank plugin, ConfigManager configManager){
+    public CommandManager(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager){
         this.plugin = plugin;
         this.configManager = configManager;
-        subcommands.add(new Balance(plugin, configManager));
-        subcommands.add(new Deposit(plugin, configManager));
-        subcommands.add(new Withdraw(plugin, configManager));
-        subcommands.add(new Bal(plugin, configManager));
+        this.cooldownManager = cooldownManager;
+        subcommands.add(new Balance(plugin, configManager, cooldownManager));
+        subcommands.add(new Deposit(plugin, configManager, cooldownManager));
+        subcommands.add(new Withdraw(plugin, configManager, cooldownManager));
+        subcommands.add(new Bal(plugin, configManager,cooldownManager));
         subcommands.add(new Help());
     }
 
