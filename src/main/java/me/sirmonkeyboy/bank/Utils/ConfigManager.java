@@ -31,9 +31,11 @@ public class ConfigManager {
     // This is set here so it can't get removed in config
     private String MissingMessage = "Contact Server Admin missing message in config";
 
-    private int MinimumAmount;
     private int SetMaximumPoolSize;
     private int SetMinimumIdle;
+    private int MinimumAmount;
+    private int Cooldown;
+
 
     public ConfigManager(Bank plugin) {
         this.plugin = plugin;
@@ -64,6 +66,7 @@ public class ConfigManager {
         DontHaveEnoughInBalanceWithdraw = plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance");
         MinimumWithdrawMessage = plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message");
         MinimumAmount = plugin.getConfig().getInt("Minimum-Amount");
+        Cooldown = plugin.getConfig().getInt("Cooldown");
         NoPermission = plugin.getConfig().getString("No-Permission");
         YouCantRunThis = plugin.getConfig().getString("You-Cant-Run-This");
     }
@@ -86,6 +89,7 @@ public class ConfigManager {
         if (DontHaveEnoughInBalanceWithdraw == null || DontHaveEnoughInBalanceWithdraw.isEmpty()) nullFields.add("Withdraw.Dont-Have-Enough-In-Balance");
         if (MinimumWithdrawMessage == null || MinimumWithdrawMessage.isEmpty()) nullFields.add("Withdraw.Minimum-Withdraw-Message");
         if (MinimumAmount <= 0) nullFields.add("Minimum-Amount");
+        if (Cooldown <= 0) nullFields.add("Cooldown");
         if (NoPermission == null || NoPermission.isEmpty()) nullFields.add("No-Permission");
         if (YouCantRunThis == null || YouCantRunThis.isEmpty()) nullFields.add("You-Cant-Run-This");
 
@@ -168,5 +172,9 @@ public class ConfigManager {
 
     public int getMinimumAmount() {
         return MinimumAmount;
+    }
+
+    public int getCooldown() {
+        return Cooldown;
     }
 }
