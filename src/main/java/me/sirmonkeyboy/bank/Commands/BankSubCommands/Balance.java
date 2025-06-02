@@ -1,4 +1,4 @@
-package me.sirmonkeyboy.bank.Commands.SubCommands;
+package me.sirmonkeyboy.bank.Commands.BankSubCommands;
 
 import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class Bal extends SubCommand {
+public class Balance extends SubCommand {
 
     private final Bank plugin;
 
@@ -26,7 +26,7 @@ public class Bal extends SubCommand {
 
     private final CooldownManager cooldownManager;
 
-    public Bal(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
+    public Balance(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
         this.plugin = plugin;
         this.data = plugin.data;
         this.configManager = configManager;
@@ -35,7 +35,7 @@ public class Bal extends SubCommand {
 
     @Override
     public String getName() {
-        return "bal";
+        return "balance";
     }
 
     @Override
@@ -45,7 +45,7 @@ public class Bal extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/bank bal";
+        return "/bank balance";
     }
 
     @Override

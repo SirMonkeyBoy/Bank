@@ -1,7 +1,7 @@
 package me.sirmonkeyboy.bank.Commands;
 
 import me.sirmonkeyboy.bank.Bank;
-import me.sirmonkeyboy.bank.Commands.SubCommands.*;
+import me.sirmonkeyboy.bank.Commands.BankSubCommands.*;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
 
