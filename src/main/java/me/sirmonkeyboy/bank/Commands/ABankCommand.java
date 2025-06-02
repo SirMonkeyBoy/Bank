@@ -1,4 +1,109 @@
 package me.sirmonkeyboy.bank.Commands;
 
+import me.sirmonkeyboy.bank.Bank;
+import me.sirmonkeyboy.bank.Commands.ABankSubCommands.BalOther;
+import me.sirmonkeyboy.bank.Commands.ABankSubCommands.Reload;
+import me.sirmonkeyboy.bank.Utils.ConfigManager;
+import me.sirmonkeyboy.bank.Utils.CooldownManager;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ABankCommand implements TabExecutor {
+
+    private final List<String> completions = List.of("reload", "balother");
+
+    private final Bank plugin;
+
+    private final ConfigManager configManager;
+
+    private final CooldownManager cooldownManager;
+
+    private final ArrayList<SubCommand> subCommands = new ArrayList<>();
+
+    public ABankCommand(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
+        this.configManager = configManager;
+        this.cooldownManager = cooldownManager;
+        this.plugin = plugin;
+        subCommands.add(new Reload(plugin,  configManager));
+        subCommands.add(new BalOther(plugin, configManager, cooldownManager));
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
+        if (sender instanceof Player p) {
+            if (!(p.hasPermission("Bank.commands.ABank"))) {
+                if (configManager.getNoPermission() == null || configManager.getNoPermission().isEmpty()){
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                    return true;
+                }
+                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+                return true;
+            }
+
+            if (args.length > 0) {
+                for (int i = 0; i < getSubCommands().size(); i++) {
+                    if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
+                        try {
+                            getSubCommands().get(i).perform(p, args);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+                return true;
+            }
+
+            //noinspection ConstantValue
+            if (args.length == 0) {
+                p.sendMessage(Component.text("----- Bank usages -----"));
+                p.sendMessage(Component.text("/abank reload - ").append(Component.text("Reloads the config file").color(NamedTextColor.GOLD)));
+                p.sendMessage(Component.text("/abank balother - ").append(Component.text("Shows you another players bank balance").color(NamedTextColor.GOLD)));
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<SubCommand> getSubCommands() {
+        return subCommands;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
+        List<String> suggestions = new ArrayList<>();
+
+        if (args.length == 1) {
+            String input = args[args.length - 1].toLowerCase();
+            for (String Sub1 : completions) {
+                if (Sub1.startsWith(input)) {
+                    suggestions.add(Sub1);
+                }
+            }
+            return suggestions;
+        }
+
+        if (args.length >= 2) {
+            for (SubCommand sub : subCommands) {
+                if (sub.getName().equalsIgnoreCase(args[0]) && commandSender instanceof Player player) {
+                    return sub.getSubCommandArguments(player, args);
+                }
+            }
+        }
+        return List.of();
+    }
+
 }
