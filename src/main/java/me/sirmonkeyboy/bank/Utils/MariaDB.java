@@ -8,6 +8,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
+import java.util.OptionalDouble;
 import java.util.UUID;
 
 public class MariaDB {
@@ -110,6 +111,25 @@ public class MariaDB {
             }
         }
         return money;
+    }
+
+    public OptionalDouble getBalanceOther(String name) throws SQLException {
+
+        double bal;
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT BALANCE FROM bankbalance WHERE NAME=?")) {
+
+            pstmt.setString(1, name);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    bal = rs.getDouble("BALANCE");
+                    return OptionalDouble.of(bal);
+                }
+            }
+        }
+        return OptionalDouble.empty();
     }
 
     // Deposits into bank balance and tracks transaction
