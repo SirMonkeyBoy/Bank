@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandManager implements TabExecutor {
+public class BankCommand implements TabExecutor {
     @SuppressWarnings("FieldCanBeLocal")
     private final Bank plugin;
 
@@ -28,7 +28,7 @@ public class CommandManager implements TabExecutor {
 
     private final ArrayList<SubCommand> subcommands = new ArrayList<>();
 
-    public CommandManager(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager){
+    public BankCommand(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager){
         this.plugin = plugin;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;

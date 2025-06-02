@@ -1,7 +1,7 @@
 package me.sirmonkeyboy.bank;
 
+import me.sirmonkeyboy.bank.Commands.BankCommand;
 import me.sirmonkeyboy.bank.Commands.BankTop;
-import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
@@ -74,7 +74,7 @@ public final class Bank extends JavaPlugin {
         getLogger().info("Database successfully connected");
 
 
-        Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this, configManager, cooldownManager));
+        Objects.requireNonNull(getCommand("Bank")).setExecutor(new BankCommand(this, configManager, cooldownManager));
         Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this, configManager, cooldownManager));
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
