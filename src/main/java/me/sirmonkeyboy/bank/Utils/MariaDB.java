@@ -24,7 +24,6 @@ public class MariaDB {
 
     public MariaDB(Bank plugin, ConfigManager configManager) {
         this.plugin = plugin;
-
         this.configManager = configManager;
     }
 
@@ -68,10 +67,10 @@ public class MariaDB {
                      "NAME VARCHAR(255), UUID VARCHAR(100), BALANCE DOUBLE, PRIMARY KEY (UUID))");
              PreparedStatement pstmt2 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS transactions (" +
                      "id INT NOT NULL AUTO_INCREMENT UNIQUE, " +
-                     "username VARCHAR(255), uuid VARCHAR(100), time TIMESTAMP, type VARCHAR(255), " +
+                     "NAME VARCHAR(255), UUID VARCHAR(100), time TIMESTAMP, type VARCHAR(255), " +
                      "amount DOUBLE, newbalance DOUBLE, PRIMARY KEY (id), " +
-                     "FOREIGN KEY (uuid) REFERENCES bankbalance(uuid) ON DELETE CASCADE)");
-             PreparedStatement pstmt3 = conn.prepareStatement("CREATE INDEX IF NOT EXISTS transactions_index_0 ON transactions (uuid)")) {
+                     "FOREIGN KEY (UUID) REFERENCES bankbalance(UUID) ON DELETE CASCADE)");
+             PreparedStatement pstmt3 = conn.prepareStatement("CREATE INDEX IF NOT EXISTS transactions_index_0 ON transactions (UUID)")) {
 
             pstmt1.executeUpdate();
             pstmt2.executeUpdate();
@@ -81,11 +80,13 @@ public class MariaDB {
 
     // creates players row in bankbalance table
     public void createPlayer(Player p) throws SQLException {
+        double balance = 0;
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME, UUID) VALUES (?, ?)")) {
+             PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME, UUID, BALANCE) VALUES (?, ?, ?)")) {
 
             pstmt.setString(1, p.getName());
             pstmt.setString(2, p.getUniqueId().toString());
+            pstmt.setDouble(3, balance);
             pstmt.executeUpdate();
 
         }
@@ -141,7 +142,7 @@ public class MariaDB {
                 }
 
                 // Adds transaction into transaction table
-                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
+                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (NAME, UUID, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
                     String type = "DEPOSIT";
                     long currentTimeMillis = System.currentTimeMillis();
                     java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
@@ -203,7 +204,7 @@ public class MariaDB {
                 double newBalance = currentBalance - amount;
 
                 // Adds transaction into transaction table
-                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, uuid, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
+                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (NAME, UUID, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
                     String type = "WITHDRAW";
                     long currentTimeMillis = System.currentTimeMillis();
                     java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
