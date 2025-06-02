@@ -84,7 +84,8 @@ public class Deposit extends SubCommand {
             UUID uuid = p.getUniqueId();
             if (cooldownManager.isOnCooldown(uuid)) {
                 long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
-                p.sendMessage("You're on cooldown! Try again in " + seconds + " seconds.");
+                String CooldownMessage = configManager.getCooldownMessage().replace("Seconds", String.valueOf(seconds));
+                p.sendMessage(CooldownMessage);
                 return;
             }
 
