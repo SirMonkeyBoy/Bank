@@ -42,7 +42,7 @@ public class BankTop implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args ) {
         if (sender instanceof Player p) {
             if (!p.hasPermission("Bank.commands.Bank.BankTop")) {
-                if (configManager.getNoPermission() == null) {
+                if (configManager.getNoPermission() == null || configManager.getNoPermission().isEmpty()) {
                     p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return true;
                 }
@@ -76,7 +76,7 @@ public class BankTop implements TabExecutor {
                 throw new RuntimeException(e);
             }
         }else {
-            if (configManager.getYouCantRunThis() == null) {
+            if (configManager.getYouCantRunThis() == null || configManager.getYouCantRunThis().isEmpty()) {
                 sender.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                 return true;
             }

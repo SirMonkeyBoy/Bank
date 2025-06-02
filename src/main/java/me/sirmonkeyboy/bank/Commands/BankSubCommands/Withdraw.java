@@ -71,7 +71,7 @@ public class Withdraw extends SubCommand {
 
             // Makes sure players can use the command
             if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
-                if (configManager.getNoPermission() == null) {
+                if (configManager.getNoPermission() == null || configManager.getNoPermission().isEmpty()) {
                     p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return;
                 }
@@ -89,7 +89,7 @@ public class Withdraw extends SubCommand {
 
             // Checks withdraw amount is over the minimum
             if (!(withdrawAmount >= WithdrawMinimum)) {
-                if (configManager.getMinimumWithdrawMessage() == null) {
+                if (configManager.getMinimumWithdrawMessage() == null || configManager.getMinimumWithdrawMessage().isEmpty()) {
                     p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return;
                 }
@@ -99,7 +99,7 @@ public class Withdraw extends SubCommand {
             }
 
             // Checks if the withdraw message is in the config
-            if (configManager.getWithdrawMessage() == null) {
+            if (configManager.getWithdrawMessage() == null || configManager.getWithdrawMessage().isEmpty()) {
                 p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                 return;
             }
@@ -108,7 +108,7 @@ public class Withdraw extends SubCommand {
             boolean success = data.withdrawTransaction(p.getUniqueId(), p.getName(), withdrawAmount);
 
             if (!success) {
-                if (configManager.getDontHaveEnoughInBalanceWithdraw() == null) {
+                if (configManager.getDontHaveEnoughInBalanceWithdraw() == null || configManager.getDontHaveEnoughInBalanceWithdraw().isEmpty()) {
                     p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return;
                 }

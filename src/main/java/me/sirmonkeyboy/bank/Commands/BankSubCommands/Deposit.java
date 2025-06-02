@@ -73,7 +73,7 @@ public class Deposit extends SubCommand {
 
             // Makes sure players can use the command
             if (!p.hasPermission("Bank.commands.Bank.Deposit")) {
-                if (configManager.getNoPermission() == null) {
+                if (configManager.getNoPermission() == null || configManager.getNoPermission().isEmpty()) {
                     p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return;
                 }
@@ -91,7 +91,7 @@ public class Deposit extends SubCommand {
 
             // Checks Deposit amount is over the minimum
             if (!(depositAmount >= DepositMinimum)) {
-                if (configManager.getMinimumDepositMessage() == null) {
+                if (configManager.getMinimumDepositMessage() == null || configManager.getMinimumDepositMessage().isEmpty()) {
                     p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return;
                 }
@@ -102,7 +102,7 @@ public class Deposit extends SubCommand {
 
             // Checks Deposit amount is less than the players balance
             if (depositAmount > eco.getBalance(p)) {
-                if (configManager.getDontHaveEnoughInBalanceDeposit() == null) {
+                if (configManager.getDontHaveEnoughInBalanceDeposit() == null || configManager.getDontHaveEnoughInBalanceDeposit().isEmpty()) {
                     p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return;
                 }
@@ -112,7 +112,7 @@ public class Deposit extends SubCommand {
             }
 
             // Checks if the deposit message is in the config
-            if (configManager.getDepositMessage() == null) {
+            if (configManager.getDepositMessage() == null || configManager.getDepositMessage().isEmpty()) {
                 p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                 return;
             }

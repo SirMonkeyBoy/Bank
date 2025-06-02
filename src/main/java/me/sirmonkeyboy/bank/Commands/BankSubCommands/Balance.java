@@ -51,7 +51,7 @@ public class Balance extends SubCommand {
     @Override
     public void perform(Player p, String[] args) throws SQLException {
         if (!p.hasPermission("Bank.commands.Bank.Balance")) {
-            if (configManager.getNoPermission() == null) {
+            if (configManager.getNoPermission() == null || configManager.getNoPermission().isEmpty()) {
                 p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                 return;
             }
@@ -68,7 +68,7 @@ public class Balance extends SubCommand {
         }
 
         double balance = data.getBalance(p.getUniqueId());
-        if (configManager.getBalanceMessage() == null) {
+        if (configManager.getBalanceMessage() == null || configManager.getBalanceMessage().isEmpty()) {
             p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
             return;
         }
