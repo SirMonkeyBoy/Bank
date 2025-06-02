@@ -41,7 +41,7 @@ public class BankTop implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args ) {
         if (sender instanceof Player p) {
-            if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
+            if (!p.hasPermission("Bank.commands.Bank.BankTop")) {
                 if (configManager.getNoPermission() == null) {
                     p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                     return false;
