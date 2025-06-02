@@ -44,10 +44,10 @@ public class BankTop implements TabExecutor {
             if (!p.hasPermission("Bank.commands.Bank.BankTop")) {
                 if (configManager.getNoPermission() == null) {
                     p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                    return false;
+                    return true;
                 }
                 p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
-                return false;
+                return true;
             }
 
             UUID uuid = p.getUniqueId();
@@ -55,7 +55,7 @@ public class BankTop implements TabExecutor {
                 long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
                 String CooldownMessage = configManager.getCooldownMessage().replace("Seconds", String.valueOf(seconds));
                 p.sendMessage(CooldownMessage);
-                return false;
+                return true;
             }
 
             try {
@@ -78,10 +78,10 @@ public class BankTop implements TabExecutor {
         }else {
             if (configManager.getYouCantRunThis() == null) {
                 sender.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                return false;
+                return true;
             }
             sender.sendMessage(Component.text(configManager.getYouCantRunThis()).color(NamedTextColor.RED));
-            return false;
+            return true;
         }
     }
 
