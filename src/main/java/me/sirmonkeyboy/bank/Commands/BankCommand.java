@@ -42,24 +42,35 @@ public class BankCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if(sender instanceof Player p) {
-            if (p.hasPermission("Bank.commands.Bank")) {
-                if (args.length > 0) {
-                    for (int i = 0; i < getSubcommands().size(); i++) {
-                        if (args[0].equalsIgnoreCase(getSubcommands().get(i).getName())) {
-                            try {
-                                getSubcommands().get(i).perform(p, args);
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
+            if (!p.hasPermission("Bank.commands.Bank")) {
+                if (configManager.getNoPermission() == null){
+                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                    return true;
+                }
+                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+                return true;
+            }
+
+            if (args.length > 0) {
+                for (int i = 0; i < getSubcommands().size(); i++) {
+                    if (args[0].equalsIgnoreCase(getSubcommands().get(i).getName())) {
+                        try {
+                            getSubcommands().get(i).perform(p, args);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
                         }
                     }
-                } else //noinspection ConstantValue
-                    if (args.length == 0) {
-                        p.sendMessage(Component.text("Bank usages"));
-                        p.sendMessage(Component.text("/bank balance or /bank bal - ").append(Component.text("Gets your bank balance").color(NamedTextColor.GOLD)));
-                        p.sendMessage(Component.text("/bank deposit (Amount) - ").append(Component.text("Deposits (Amount) into your account").color(NamedTextColor.GOLD)));
-                        p.sendMessage(Component.text("/bank withdraw (Amount) - ").append(Component.text("Withdraws (Amount) from your account").color(NamedTextColor.GOLD)));
-                    }
+                }
+                return true;
+            }
+
+            //noinspection ConstantValue
+            if (args.length == 0) {
+                p.sendMessage(Component.text("Bank usages"));
+                p.sendMessage(Component.text("/bank balance or /bank bal - ").append(Component.text("Gets your bank balance").color(NamedTextColor.GOLD)));
+                p.sendMessage(Component.text("/bank deposit (Amount) - ").append(Component.text("Deposits (Amount) into your account").color(NamedTextColor.GOLD)));
+                p.sendMessage(Component.text("/bank withdraw (Amount) - ").append(Component.text("Withdraws (Amount) from your account").color(NamedTextColor.GOLD)));
+                return true;
             }
         }else if (sender instanceof  ConsoleCommandSender c){
             c.sendMessage(Component.text("Console can't run this command").color(NamedTextColor.RED));
