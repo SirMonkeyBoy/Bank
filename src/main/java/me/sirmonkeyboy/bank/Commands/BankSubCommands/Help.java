@@ -7,7 +7,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class Help extends SubCommand {
@@ -27,7 +26,7 @@ public class Help extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) throws SQLException {
+    public void perform(Player p, String[] args)  {
             p.sendMessage(Component.text("Bank usages"));
             p.sendMessage(Component.text("/bank balance or /bank bal - ").append(Component.text("Gets your bank balance").color(NamedTextColor.GOLD)));
             p.sendMessage(Component.text("/bank deposit (Amount) - ").append(Component.text("Deposits (Amount) into your account").color(NamedTextColor.GOLD)));
