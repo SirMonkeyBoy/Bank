@@ -30,7 +30,8 @@ public class ConfigManager {
     private String YouCantRunThis;
     private String CooldownMessage;
     // This is set here so it can't get removed in config
-    private String MissingMessage = "Contact Server Admin missing message in config";
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String MissingMessage = "Contact Server Admin missing message in config";
 
     private int SetMaximumPoolSize;
     private int SetMinimumIdle;
@@ -44,11 +45,15 @@ public class ConfigManager {
     }
 
     public void reloadConfigManager(CommandSender sender) {
+        plugin.reloadConfig();
         load();
         if (!validate()) {
             sender.sendMessage(Component.text("Config validation failed. Check your config.yml for missing values.").color(NamedTextColor.DARK_RED));
             sender.sendMessage(Component.text("Plugin will not fully work with out it").color(NamedTextColor.DARK_RED));
+            sender.sendMessage(Component.text("Check console for what is missing").color(NamedTextColor.DARK_RED));
+            return;
         }
+        sender.sendMessage(Component.text("Config successfully reloaded").color(NamedTextColor.GREEN));
     }
 
     public void load() {
@@ -161,18 +166,6 @@ public class ConfigManager {
         return  MinimumWithdrawMessage;
     }
 
-    public  String getNoPermission() {
-        return  NoPermission;
-    }
-
-    public String getYouCantRunThis() {
-        return YouCantRunThis;
-    }
-
-    public String getMissingMessage() {
-        return  MissingMessage;
-    }
-
     public int getMinimumAmount() {
         return MinimumAmount;
     }
@@ -183,5 +176,17 @@ public class ConfigManager {
 
     public String getCooldownMessage() {
         return CooldownMessage;
+    }
+
+    public  String getNoPermission() {
+        return  NoPermission;
+    }
+
+    public String getYouCantRunThis() {
+        return YouCantRunThis;
+    }
+
+    public String getMissingMessage() {
+        return  MissingMessage;
     }
 }
