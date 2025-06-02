@@ -28,6 +28,7 @@ public class ConfigManager {
     private String MinimumWithdrawMessage;
     private String NoPermission;
     private String YouCantRunThis;
+    private String CooldownMessage;
     // This is set here so it can't get removed in config
     private String MissingMessage = "Contact Server Admin missing message in config";
 
@@ -66,7 +67,8 @@ public class ConfigManager {
         DontHaveEnoughInBalanceWithdraw = plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance");
         MinimumWithdrawMessage = plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message");
         MinimumAmount = plugin.getConfig().getInt("Minimum-Amount");
-        Cooldown = plugin.getConfig().getInt("Cooldown");
+        Cooldown = plugin.getConfig().getInt("Cooldown.Cooldown");
+        CooldownMessage = plugin.getConfig().getString("Cooldown.Cooldown-Message");
         NoPermission = plugin.getConfig().getString("No-Permission");
         YouCantRunThis = plugin.getConfig().getString("You-Cant-Run-This");
     }
@@ -89,7 +91,8 @@ public class ConfigManager {
         if (DontHaveEnoughInBalanceWithdraw == null || DontHaveEnoughInBalanceWithdraw.isEmpty()) nullFields.add("Withdraw.Dont-Have-Enough-In-Balance");
         if (MinimumWithdrawMessage == null || MinimumWithdrawMessage.isEmpty()) nullFields.add("Withdraw.Minimum-Withdraw-Message");
         if (MinimumAmount <= 0) nullFields.add("Minimum-Amount");
-        if (Cooldown <= 0) nullFields.add("Cooldown");
+        if (Cooldown <= 0) nullFields.add("Cooldown.Cooldown");
+        if (CooldownMessage == null || CooldownMessage.isEmpty()) nullFields.add("Cooldown.Cooldown-Message");
         if (NoPermission == null || NoPermission.isEmpty()) nullFields.add("No-Permission");
         if (YouCantRunThis == null || YouCantRunThis.isEmpty()) nullFields.add("You-Cant-Run-This");
 
@@ -176,5 +179,9 @@ public class ConfigManager {
 
     public int getCooldown() {
         return Cooldown;
+    }
+
+    public String getCooldownMessage() {
+        return CooldownMessage;
     }
 }
