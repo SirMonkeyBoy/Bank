@@ -14,6 +14,7 @@ Features:
 - Stores all balances in a MariaDB database
 - Keeps a record of all Transactions
 - It supports MariaDB
+- Supports Cooldown timer for all commands that use the database
 
 Dependency's:
 - [Vault](https://www.spigotmc.org/resources/vault.34315/) Required
