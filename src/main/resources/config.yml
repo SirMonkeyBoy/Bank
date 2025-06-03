@@ -34,7 +34,7 @@ Cooldown:
   # Cooldown in seconds between bank interactions
   Cooldown: 15
   # Cooldown message
-  Cooldown-Message: "You must wait $%Seconds% seconds before use again."
+  Cooldown-Message: "You must wait %Seconds% seconds before use again."
 
 # Player Doesn't have permission to run that command
 No-Permission: "You don't have permission to run this command"
