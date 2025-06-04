@@ -19,17 +19,14 @@ import java.util.UUID;
 
 public class Withdraw extends SubCommand {
 
-    private final Bank plugin;
-
-    private MariaDB data;
+    private final MariaDB data;
 
     private final ConfigManager configManager;
 
     private final CooldownManager cooldownManager;
 
-    public Withdraw(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
-        this.plugin = plugin;
-        this.data = plugin.data;
+    public Withdraw(MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
+        this.data = data;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;
     }
