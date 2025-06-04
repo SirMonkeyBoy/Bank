@@ -14,7 +14,7 @@ Commands:
   - `/abank balother Name` Gives you the bank balance of another player 
 
 Features:
-- Stores all balances in a MariaDB database
+- Stores all balances in a database
 - Keeps a record of all Transactions
 - It supports MariaDB
 - Supports Cooldown timer for all commands that use the database
