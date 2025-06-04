@@ -1,6 +1,5 @@
 package me.sirmonkeyboy.bank.Commands.BankSubCommands;
 
-import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
@@ -15,10 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-
 public class Balance extends SubCommand {
-
-    private final Bank plugin;
 
     private final MariaDB data;
 
@@ -26,9 +22,8 @@ public class Balance extends SubCommand {
 
     private final CooldownManager cooldownManager;
 
-    public Balance(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
-        this.plugin = plugin;
-        this.data = plugin.data;
+    public Balance(MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
+        this.data = data;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;
     }
