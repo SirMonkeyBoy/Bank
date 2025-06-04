@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public final class Bank extends JavaPlugin {
 
-    public MariaDB data;
+    private  MariaDB data;
 
     private static Economy econ = null;
 
@@ -31,7 +31,7 @@ public final class Bank extends JavaPlugin {
 
         ConfigManager configManager = new ConfigManager(this);
         CooldownManager cooldownManager = new CooldownManager(configManager.getCooldown());
-        MariaDB data = new MariaDB(this, configManager);
+        this.data = new MariaDB(configManager);
 
         /* Checks to make sure on startup that all config variables are there
          if not plugin will shut down. */
@@ -70,12 +70,12 @@ public final class Bank extends JavaPlugin {
         getLogger().info("Database successfully connected");
 
         /* Registers commands */
-        Objects.requireNonNull(getCommand("Bank")).setExecutor(new BankCommand(this, configManager, cooldownManager));
-        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this, configManager, cooldownManager));
-        Objects.requireNonNull(getCommand("ABank")).setExecutor(new ABankCommand(this, configManager, cooldownManager));
+        Objects.requireNonNull(getCommand("Bank")).setExecutor(new BankCommand(data, configManager, cooldownManager));
+        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(data, configManager, cooldownManager));
+        Objects.requireNonNull(getCommand("ABank")).setExecutor(new ABankCommand(this, data, configManager, cooldownManager));
 
         /* Registers join listener */
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(data),this);
 
         /* Start messages */
         Utils.getStartBanner();
