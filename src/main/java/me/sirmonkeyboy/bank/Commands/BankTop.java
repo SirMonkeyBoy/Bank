@@ -1,6 +1,5 @@
 package me.sirmonkeyboy.bank.Commands;
 
-import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
@@ -22,17 +21,14 @@ import java.util.UUID;
 
 public class BankTop implements TabExecutor {
 
-    private final Bank plugin;
-
     private final MariaDB data;
 
     private final ConfigManager configManager;
 
     private final CooldownManager cooldownManager;
 
-    public BankTop(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
-        this.plugin = plugin;
-        this.data = plugin.data;
+    public BankTop(MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
+        this.data = data;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;
     }
