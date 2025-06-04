@@ -10,7 +10,7 @@ mariaDB:
   Set-Minimum-Idle: 2
 
 # Balance message
-Balance-Message: "Your Balance is $%Bal%"
+Balance-Message: "Your Balance is $%Bal%."
 
 # Placeholders
 # %Deposit% is the amount you deposit
@@ -18,14 +18,14 @@ Balance-Message: "Your Balance is $%Bal%"
 # %Minimum% is the MinimumAmount
 
 Deposit:
-  Deposit-Message: "You have deposited $%Deposit%"
-  Dont-Have-Enough-In-Balance: "You don't have $%Deposit% in your balance"
-  Minimum-Deposit-Message: "Minimum deposit amount is $%Minimum%"
+  Deposit-Message: "You have deposited $%Deposit%."
+  Dont-Have-Enough-In-Balance: "Insufficient funds. You don't have $%Deposit% in your balance."
+  Minimum-Deposit-Message: "Minimum deposit amount is $%Minimum%."
 
 Withdraw:
-  Withdraw-Message: "You have withdrawn $%Withdraw%"
-  Dont-Have-Enough-In-Balance: "You don't have $%Withdraw% in your bank balance"
-  Minimum-Withdraw-Message: "Minimum withdraw amount is $%Minimum%"
+  Withdraw-Message: "You have withdrawn $%Withdraw%."
+  Dont-Have-Enough-In-Balance: "Insufficient funds. You don't have $%Withdraw% in your bank balance."
+  Minimum-Withdraw-Message: "Minimum withdraw amount is $%Minimum%."
 
 #Minimum amount for deposit/withdraws
 Minimum-Amount: 1000
@@ -34,10 +34,13 @@ Cooldown:
   # Cooldown in seconds between bank interactions
   Cooldown: 15
   # Cooldown message
-  Cooldown-Message: "You must wait %Seconds% seconds before use again."
+  Cooldown-Message: "You must wait %Seconds% seconds before using /bank (subcommands) or /banktop again."
+
+# if player doesn't enter a number
+Invalid-Amount: "Invalid amount. Please enter a number greater than zero."
 
 # Player Doesn't have permission to run that command
-No-Permission: "You don't have permission to run this command"
+No-Permission: "You don't have permission to run this command."
 
 # You can't run that command
-You-Cant-Run-This: "Only Players can run this command"
+You-Cant-Run-This: "Only Players can run this command."
