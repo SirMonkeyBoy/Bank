@@ -19,17 +19,17 @@ public class BalOther extends SubCommand {
 
     private final Bank plugin;
 
+    private final MariaDB data;
+
     private final ConfigManager configManager;
 
     private final CooldownManager cooldownManager;
 
-    private final MariaDB data;
-
-    public BalOther(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
+    public BalOther(Bank plugin, MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
         this.plugin = plugin;
+        this.data = data;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;
-        this.data = plugin.data;
     }
 
 
