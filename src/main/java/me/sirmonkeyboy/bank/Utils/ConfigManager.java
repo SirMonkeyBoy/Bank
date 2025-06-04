@@ -26,9 +26,10 @@ public class ConfigManager {
     private String WithdrawMessage;
     private String DontHaveEnoughInBalanceWithdraw;
     private String MinimumWithdrawMessage;
+    private String CooldownMessage;
+    private String InvalidAmount;
     private String NoPermission;
     private String YouCantRunThis;
-    private String CooldownMessage;
     // This is set here so it can't get removed in config
     @SuppressWarnings("FieldCanBeLocal")
     private final String MissingMessage = "Contact Server Admin missing message in config";
@@ -74,6 +75,7 @@ public class ConfigManager {
         MinimumAmount = plugin.getConfig().getInt("Minimum-Amount");
         Cooldown = plugin.getConfig().getInt("Cooldown.Cooldown");
         CooldownMessage = plugin.getConfig().getString("Cooldown.Cooldown-Message");
+        InvalidAmount = plugin.getConfig().getString("Invalid-Amount");
         NoPermission = plugin.getConfig().getString("No-Permission");
         YouCantRunThis = plugin.getConfig().getString("You-Cant-Run-This");
     }
@@ -98,6 +100,7 @@ public class ConfigManager {
         if (MinimumAmount <= 0) nullFields.add("Minimum-Amount");
         if (Cooldown <= 0) nullFields.add("Cooldown.Cooldown");
         if (CooldownMessage == null || CooldownMessage.isEmpty()) nullFields.add("Cooldown.Cooldown-Message");
+        if (InvalidAmount == null || InvalidAmount.isEmpty()) nullFields.add("Invalid-Amount");
         if (NoPermission == null || NoPermission.isEmpty()) nullFields.add("No-Permission");
         if (YouCantRunThis == null || YouCantRunThis.isEmpty()) nullFields.add("You-Cant-Run-This");
 
@@ -176,6 +179,10 @@ public class ConfigManager {
 
     public String getCooldownMessage() {
         return CooldownMessage;
+    }
+
+    public String getInvalidAmount() {
+        return InvalidAmount;
     }
 
     public  String getNoPermission() {
