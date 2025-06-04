@@ -1,9 +1,9 @@
 package me.sirmonkeyboy.bank.Commands;
 
-import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.BankSubCommands.*;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -20,22 +20,23 @@ import java.util.List;
 
 public class BankCommand implements TabExecutor {
     @SuppressWarnings("FieldCanBeLocal")
-    private final Bank plugin;
+    private final MariaDB data;
 
     private final ConfigManager configManager;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final CooldownManager cooldownManager;
 
     private final ArrayList<SubCommand> subcommands = new ArrayList<>();
 
-    public BankCommand(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager){
-        this.plugin = plugin;
+    public BankCommand(MariaDB data, ConfigManager configManager, CooldownManager cooldownManager){
+        this.data = data;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;
-        subcommands.add(new Balance(plugin, configManager, cooldownManager));
-        subcommands.add(new Deposit(plugin, configManager, cooldownManager));
-        subcommands.add(new Withdraw(plugin, configManager, cooldownManager));
-        subcommands.add(new Bal(plugin, configManager,cooldownManager));
+        subcommands.add(new Balance(data, configManager, cooldownManager));
+        subcommands.add(new Deposit(data, configManager, cooldownManager));
+        subcommands.add(new Withdraw(data, configManager, cooldownManager));
+        subcommands.add(new Bal(data, configManager,cooldownManager));
         subcommands.add(new Help());
     }
 
