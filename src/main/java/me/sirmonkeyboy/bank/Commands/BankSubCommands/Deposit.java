@@ -128,7 +128,7 @@ public class Deposit extends SubCommand {
             cooldownManager.startCooldown(uuid);
         // Makes sure that the arg is a number
         }catch (NumberFormatException e){
-            p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
+            p.sendMessage(Component.text(configManager.getInvalidAmount()).color(NamedTextColor.RED));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
