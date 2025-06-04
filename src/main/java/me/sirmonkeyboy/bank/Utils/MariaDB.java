@@ -1,19 +1,15 @@
 package me.sirmonkeyboy.bank.Utils;
 
-import me.sirmonkeyboy.bank.Bank;
+import org.bukkit.entity.Player;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
-import org.bukkit.entity.Player;
 
 import java.sql.*;
 import java.util.OptionalDouble;
 import java.util.UUID;
 
 public class MariaDB {
-
-    private final Bank plugin;
 
     private final ConfigManager configManager;
 
@@ -23,8 +19,7 @@ public class MariaDB {
     private final double[] topBalances = new double[10];
 
 
-    public MariaDB(Bank plugin, ConfigManager configManager) {
-        this.plugin = plugin;
+    public MariaDB(ConfigManager configManager) {
         this.configManager = configManager;
     }
 
@@ -82,14 +77,46 @@ public class MariaDB {
     // creates players row in bankbalance table
     public void createPlayer(Player p) throws SQLException {
         double balance = 0;
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME, UUID, BALANCE) VALUES (?, ?, ?)")) {
+        UUID uuid = p.getUniqueId();
+        String name = p.getName();
 
-            pstmt.setString(1, p.getName());
-            pstmt.setString(2, p.getUniqueId().toString());
-            pstmt.setDouble(3, balance);
-            pstmt.executeUpdate();
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
 
+            try (PreparedStatement pstmt = conn.prepareStatement("SELECT NAME FROM bankbalance WHERE UUID = ?")) {
+                pstmt.setString(1, uuid.toString());
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        String storedName = rs.getString("NAME");
+                        if (!storedName.equalsIgnoreCase(name)) {
+                            try (PreparedStatement updatePNameBank = conn.prepareStatement("UPDATE bankbalance SET NAME = ? WHERE UUID = ?")) {
+                                updatePNameBank.setString(1, name);
+                                updatePNameBank.setString(2, uuid.toString());
+                                updatePNameBank.executeUpdate();
+                            }
+
+                            try (PreparedStatement updatePNameTransactions = conn.prepareStatement("UPDATE transactions SET NAME = ? WHERE UUID = ?")) {
+                                updatePNameTransactions.setString(1, name);
+                                updatePNameTransactions.setString(2, uuid.toString());
+                                updatePNameTransactions.executeUpdate();
+                            }
+                        }
+                    } else {
+                        try (PreparedStatement createPlayerRow = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME, UUID, BALANCE) VALUES (?, ?, ?)")) {
+                            createPlayerRow.setString(1, p.getName());
+                            createPlayerRow.setString(2, p.getUniqueId().toString());
+                            createPlayerRow.setDouble(3, balance);
+                            createPlayerRow.executeUpdate();
+                        }
+                    }
+                }
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+            } finally {
+                conn.setAutoCommit(true);
+            }
         }
     }
 
@@ -181,6 +208,8 @@ public class MariaDB {
             } catch (SQLException e) {
                 conn.rollback();
                 return false;
+            } finally {
+                conn.setAutoCommit(true);
             }
         }
     }
@@ -244,6 +273,8 @@ public class MariaDB {
                 conn.rollback();
                 e.printStackTrace();
                 return false;
+            } finally {
+                conn.setAutoCommit(true);
             }
         }
     }
