@@ -6,12 +6,12 @@ Commands:
 - `/bank` Will give you a list of subcommands
   - `/bank help` Will give you a list of subcommands
   - `/bank balance` Shows your bank balance 
-  - `/bank deposit` Deposits to your bank
-  - `/bank withdraw` Withdraws from your bank
+  - `/bank deposit Amount` Deposits to your bank
+  - `/bank withdraw Amount` Withdraws from your bank
 - `/banktop` Shows you the top 10 bank balances
 - `/aback` Will give you a list of subcommands
   - `/abank reload` Reloads config file
-  - `/abank balother` Gives you the bank balance of another player 
+  - `/abank balother Name` Gives you the bank balance of another player 
 
 Features:
 - Stores all balances in a MariaDB database
