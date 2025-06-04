@@ -3,15 +3,15 @@
 Kingdom Bank is a Plugin made for the Minecraft server software PaperMC
 
 Commands:
-- `/bank` Will give you a list of subcommands
-  - `/bank help` Will give you a list of subcommands
-  - `/bank balance` Shows your bank balance 
-  - `/bank deposit Amount` Deposits to your bank
-  - `/bank withdraw Amount` Withdraws from your bank
-- `/banktop` Shows you the top 10 bank balances
-- `/aback` Will give you a list of subcommands
-  - `/abank reload` Reloads config file
-  - `/abank balother Name` Gives you the bank balance of another player 
+- `/bank` Displays a list of subcommands.
+  - `/bank help` Displays a list of subcommands.
+  - `/bank balance` Shows your bank balance.
+  - `/bank deposit Amount` Deposits to your bank.
+  - `/bank withdraw Amount` Withdraws from your bank.
+- `/banktop` Displays the top 10 bank balances.
+- `/aback` Displays a list of subcommands.
+  - `/abank reload` Reloads the config file.
+  - `/abank balother Name` Gives you the bank balance of another player.
 
 Features:
 - Stores all balances in a database
