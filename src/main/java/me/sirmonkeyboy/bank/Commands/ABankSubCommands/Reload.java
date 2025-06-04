@@ -1,23 +1,18 @@
 package me.sirmonkeyboy.bank.Commands.ABankSubCommands;
 
-import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class Reload extends SubCommand {
 
-    private final Bank bank;
-
     private final ConfigManager configManager;
 
-    public Reload(Bank bank, ConfigManager configManager) {
-        this.bank = bank;
+    public Reload(ConfigManager configManager) {
         this.configManager = configManager;
     }
 
