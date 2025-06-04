@@ -19,26 +19,25 @@ public class ConfigManager {
     private String database;
     private String username;
     private String password;
-    private String BalanceMessage;
-    private String DepositMessage;
-    private String DontHaveEnoughInBalanceDeposit;
-    private String MinimumDepositMessage;
-    private String WithdrawMessage;
-    private String DontHaveEnoughInBalanceWithdraw;
-    private String MinimumWithdrawMessage;
-    private String CooldownMessage;
-    private String InvalidAmount;
-    private String NoPermission;
-    private String YouCantRunThis;
+    private String balanceMessage;
+    private String depositMessage;
+    private String dontHaveEnoughInBalanceDeposit;
+    private String minimumDepositMessage;
+    private String withdrawMessage;
+    private String dontHaveEnoughInBalanceWithdraw;
+    private String minimumWithdrawMessage;
+    private String cooldownMessage;
+    private String invalidAmount;
+    private String noPermission;
+    private String youCantRunThis;
     // This is set here so it can't get removed in config
     @SuppressWarnings("FieldCanBeLocal")
-    private final String MissingMessage = "Contact Server Admin missing message in config";
+    private final String missingMessage = "Contact Server Admin missing message in config";
 
-    private int SetMaximumPoolSize;
-    private int SetMinimumIdle;
-    private int MinimumAmount;
-    private int Cooldown;
-
+    private int setMaximumPoolSize;
+    private int setMinimumIdle;
+    private int minimumAmount;
+    private int cooldown;
 
     public ConfigManager(Bank plugin) {
         this.plugin = plugin;
@@ -63,21 +62,21 @@ public class ConfigManager {
         database = plugin.getConfig().getString("mariaDB.database");
         username = plugin.getConfig().getString("mariaDB.username");
         password = plugin.getConfig().getString("mariaDB.password");
-        SetMaximumPoolSize = plugin.getConfig().getInt("mariaDB.Set-Maximum-Pool-Size");
-        SetMinimumIdle = plugin.getConfig().getInt("mariaDB.Set-Minimum-Idle");
-        BalanceMessage = plugin.getConfig().getString("Balance-Message");
-        DepositMessage = plugin.getConfig().getString("Deposit.Deposit-Message");
-        DontHaveEnoughInBalanceDeposit = plugin.getConfig().getString("Deposit.Dont-Have-Enough-In-Balance");
-        MinimumDepositMessage = plugin.getConfig().getString("Deposit.Minimum-Deposit-Message");
-        WithdrawMessage = plugin.getConfig().getString("Withdraw.Withdraw-Message");
-        DontHaveEnoughInBalanceWithdraw = plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance");
-        MinimumWithdrawMessage = plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message");
-        MinimumAmount = plugin.getConfig().getInt("Minimum-Amount");
-        Cooldown = plugin.getConfig().getInt("Cooldown.Cooldown");
-        CooldownMessage = plugin.getConfig().getString("Cooldown.Cooldown-Message");
-        InvalidAmount = plugin.getConfig().getString("Invalid-Amount");
-        NoPermission = plugin.getConfig().getString("No-Permission");
-        YouCantRunThis = plugin.getConfig().getString("You-Cant-Run-This");
+        setMaximumPoolSize = plugin.getConfig().getInt("mariaDB.Set-Maximum-Pool-Size");
+        setMinimumIdle = plugin.getConfig().getInt("mariaDB.Set-Minimum-Idle");
+        balanceMessage = plugin.getConfig().getString("Balance-Message");
+        depositMessage = plugin.getConfig().getString("Deposit.Deposit-Message");
+        dontHaveEnoughInBalanceDeposit = plugin.getConfig().getString("Deposit.Dont-Have-Enough-In-Balance");
+        minimumDepositMessage = plugin.getConfig().getString("Deposit.Minimum-Deposit-Message");
+        withdrawMessage = plugin.getConfig().getString("Withdraw.Withdraw-Message");
+        dontHaveEnoughInBalanceWithdraw = plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance");
+        minimumWithdrawMessage = plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message");
+        minimumAmount = plugin.getConfig().getInt("Minimum-Amount");
+        cooldown = plugin.getConfig().getInt("Cooldown.Cooldown");
+        cooldownMessage = plugin.getConfig().getString("Cooldown.Cooldown-Message");
+        invalidAmount = plugin.getConfig().getString("Invalid-Amount");
+        noPermission = plugin.getConfig().getString("No-Permission");
+        youCantRunThis = plugin.getConfig().getString("You-Cant-Run-This");
     }
 
     public boolean validate() {
@@ -88,21 +87,21 @@ public class ConfigManager {
         if (database == null || database.isEmpty()) nullFields.add("mariaDB.database");
         if (username == null || username.isEmpty()) nullFields.add("mariaDB.username");
         if (password == null || password.isEmpty()) nullFields.add("mariaDB.password");
-        if (SetMaximumPoolSize <= 0) nullFields.add("mariaDB.Set-Maximum-Pool-Size");
-        if (SetMinimumIdle <= 0) nullFields.add("mariaDB.Set-Minimum-Idle");
-        if (BalanceMessage == null || BalanceMessage.isEmpty()) nullFields.add("Balance-Message");
-        if (DepositMessage == null || DepositMessage.isEmpty()) nullFields.add("Deposit.Deposit-Message");
-        if (DontHaveEnoughInBalanceDeposit == null || DontHaveEnoughInBalanceDeposit.isEmpty()) nullFields.add("Deposit.Dont-Have-Enough-In-Balance");
-        if (MinimumDepositMessage == null || MinimumDepositMessage.isEmpty()) nullFields.add("Deposit.Minimum-Deposit-Message");
-        if (WithdrawMessage == null || WithdrawMessage.isEmpty()) nullFields.add("Withdraw.Withdraw-Message");
-        if (DontHaveEnoughInBalanceWithdraw == null || DontHaveEnoughInBalanceWithdraw.isEmpty()) nullFields.add("Withdraw.Dont-Have-Enough-In-Balance");
-        if (MinimumWithdrawMessage == null || MinimumWithdrawMessage.isEmpty()) nullFields.add("Withdraw.Minimum-Withdraw-Message");
-        if (MinimumAmount <= 0) nullFields.add("Minimum-Amount");
-        if (Cooldown <= 0) nullFields.add("Cooldown.Cooldown");
-        if (CooldownMessage == null || CooldownMessage.isEmpty()) nullFields.add("Cooldown.Cooldown-Message");
-        if (InvalidAmount == null || InvalidAmount.isEmpty()) nullFields.add("Invalid-Amount");
-        if (NoPermission == null || NoPermission.isEmpty()) nullFields.add("No-Permission");
-        if (YouCantRunThis == null || YouCantRunThis.isEmpty()) nullFields.add("You-Cant-Run-This");
+        if (setMaximumPoolSize <= 0) nullFields.add("mariaDB.Set-Maximum-Pool-Size");
+        if (setMinimumIdle <= 0) nullFields.add("mariaDB.Set-Minimum-Idle");
+        if (balanceMessage == null || balanceMessage.isEmpty()) nullFields.add("Balance-Message");
+        if (depositMessage == null || depositMessage.isEmpty()) nullFields.add("Deposit.Deposit-Message");
+        if (dontHaveEnoughInBalanceDeposit == null || dontHaveEnoughInBalanceDeposit.isEmpty()) nullFields.add("Deposit.Dont-Have-Enough-In-Balance");
+        if (minimumDepositMessage == null || minimumDepositMessage.isEmpty()) nullFields.add("Deposit.Minimum-Deposit-Message");
+        if (withdrawMessage == null || withdrawMessage.isEmpty()) nullFields.add("Withdraw.Withdraw-Message");
+        if (dontHaveEnoughInBalanceWithdraw == null || dontHaveEnoughInBalanceWithdraw.isEmpty()) nullFields.add("Withdraw.Dont-Have-Enough-In-Balance");
+        if (minimumWithdrawMessage == null || minimumWithdrawMessage.isEmpty()) nullFields.add("Withdraw.Minimum-Withdraw-Message");
+        if (minimumAmount <= 0) nullFields.add("Minimum-Amount");
+        if (cooldown <= 0) nullFields.add("Cooldown.Cooldown");
+        if (cooldownMessage == null || cooldownMessage.isEmpty()) nullFields.add("Cooldown.Cooldown-Message");
+        if (invalidAmount == null || invalidAmount.isEmpty()) nullFields.add("Invalid-Amount");
+        if (noPermission == null || noPermission.isEmpty()) nullFields.add("No-Permission");
+        if (youCantRunThis == null || youCantRunThis.isEmpty()) nullFields.add("You-Cant-Run-This");
 
         if (!nullFields.isEmpty()) {
             plugin.getLogger().warning("Missing or empty config entries: " + String.join(", ", nullFields));
@@ -134,66 +133,66 @@ public class ConfigManager {
     }
 
     public int getSetMaximumPoolSize() {
-        return SetMaximumPoolSize;
+        return setMaximumPoolSize;
     }
 
     public int getSetMinimumIdle() {
-        return SetMinimumIdle;
+        return setMinimumIdle;
     }
 
     public String getBalanceMessage() {
-        return BalanceMessage;
+        return balanceMessage;
     }
 
     public String getDepositMessage() {
-        return DepositMessage;
+        return depositMessage;
     }
 
     public String getDontHaveEnoughInBalanceDeposit() {
-        return DontHaveEnoughInBalanceDeposit;
+        return dontHaveEnoughInBalanceDeposit;
     }
 
     public String getMinimumDepositMessage() {
-        return MinimumDepositMessage;
+        return minimumDepositMessage;
     }
 
     public String getWithdrawMessage() {
-        return WithdrawMessage;
+        return withdrawMessage;
     }
 
     public String getDontHaveEnoughInBalanceWithdraw() {
-        return DontHaveEnoughInBalanceWithdraw;
+        return dontHaveEnoughInBalanceWithdraw;
     }
 
     public String getMinimumWithdrawMessage() {
-        return  MinimumWithdrawMessage;
+        return minimumWithdrawMessage;
     }
 
     public int getMinimumAmount() {
-        return MinimumAmount;
+        return minimumAmount;
     }
 
     public int getCooldown() {
-        return Cooldown;
+        return cooldown;
     }
 
     public String getCooldownMessage() {
-        return CooldownMessage;
+        return cooldownMessage;
     }
 
     public String getInvalidAmount() {
-        return InvalidAmount;
+        return invalidAmount;
     }
 
     public  String getNoPermission() {
-        return  NoPermission;
+        return noPermission;
     }
 
     public String getYouCantRunThis() {
-        return YouCantRunThis;
+        return youCantRunThis;
     }
 
     public String getMissingMessage() {
-        return  MissingMessage;
+        return missingMessage;
     }
 }
