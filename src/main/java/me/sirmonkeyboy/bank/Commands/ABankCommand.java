@@ -5,6 +5,7 @@ import me.sirmonkeyboy.bank.Commands.ABankSubCommands.BalOther;
 import me.sirmonkeyboy.bank.Commands.ABankSubCommands.Reload;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -25,20 +26,26 @@ public class ABankCommand implements TabExecutor {
 
     private final List<String> completions = List.of("reload", "balother");
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final Bank plugin;
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final MariaDB data;
 
     private final ConfigManager configManager;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final CooldownManager cooldownManager;
 
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
-    public ABankCommand(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
+    public ABankCommand(Bank plugin, MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
+        this.plugin = plugin;
+        this.data = data;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;
-        this.plugin = plugin;
-        subCommands.add(new Reload(plugin,  configManager));
-        subCommands.add(new BalOther(plugin, configManager, cooldownManager));
+        subCommands.add(new Reload(configManager));
+        subCommands.add(new BalOther(plugin, data, configManager, cooldownManager));
     }
 
     @Override
