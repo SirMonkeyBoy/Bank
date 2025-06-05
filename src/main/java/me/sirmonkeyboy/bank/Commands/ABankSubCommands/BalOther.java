@@ -1,6 +1,6 @@
 package me.sirmonkeyboy.bank.Commands.ABankSubCommands;
 
-import me.sirmonkeyboy.bank.Bank;
+import me.sirmonkeyboy.bank.KingdomBank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class BalOther extends SubCommand {
 
-    private final Bank plugin;
+    private final KingdomBank plugin;
 
     private final MariaDB data;
 
@@ -25,7 +25,7 @@ public class BalOther extends SubCommand {
 
     private final CooldownManager cooldownManager;
 
-    public BalOther(Bank plugin, MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
+    public BalOther(KingdomBank plugin, MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
         this.plugin = plugin;
         this.data = data;
         this.configManager = configManager;

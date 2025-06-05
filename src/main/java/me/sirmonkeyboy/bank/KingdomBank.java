@@ -18,7 +18,7 @@ import net.milkbowl.vault.economy.Economy;
 import java.sql.SQLException;
 import java.util.Objects;
 
-public final class Bank extends JavaPlugin {
+public final class KingdomBank extends JavaPlugin {
 
     private  MariaDB data;
 

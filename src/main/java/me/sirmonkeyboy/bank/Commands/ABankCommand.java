@@ -1,6 +1,6 @@
 package me.sirmonkeyboy.bank.Commands;
 
-import me.sirmonkeyboy.bank.Bank;
+import me.sirmonkeyboy.bank.KingdomBank;
 import me.sirmonkeyboy.bank.Commands.ABankSubCommands.BalOther;
 import me.sirmonkeyboy.bank.Commands.ABankSubCommands.Reload;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
@@ -27,7 +27,7 @@ public class ABankCommand implements TabExecutor {
     private final List<String> completions = List.of("reload", "balother");
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final Bank plugin;
+    private final KingdomBank plugin;
 
     @SuppressWarnings("FieldCanBeLocal")
     private final MariaDB data;
@@ -39,7 +39,7 @@ public class ABankCommand implements TabExecutor {
 
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
-    public ABankCommand(Bank plugin, MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
+    public ABankCommand(KingdomBank plugin, MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
         this.plugin = plugin;
         this.data = data;
         this.configManager = configManager;

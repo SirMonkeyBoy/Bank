@@ -1,6 +1,6 @@
 name: KingdomBank
 version: '${project.version}'
-main: me.sirmonkeyboy.bank.Bank
+main: me.sirmonkeyboy.bank.KingdomBank
 api-version: '1.21.4'
 prefix: KingdomBank
 depend: [Vault]

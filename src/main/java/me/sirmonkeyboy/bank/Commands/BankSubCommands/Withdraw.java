@@ -1,6 +1,6 @@
 package me.sirmonkeyboy.bank.Commands.BankSubCommands;
 
-import me.sirmonkeyboy.bank.Bank;
+import me.sirmonkeyboy.bank.KingdomBank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
@@ -56,7 +56,7 @@ public class Withdraw extends SubCommand {
                 return;
             }
 
-            Economy eco = Bank.getEconomy();
+            Economy eco = KingdomBank.getEconomy();
 
             // Number
             int WithdrawMinimum = configManager.getMinimumAmount();

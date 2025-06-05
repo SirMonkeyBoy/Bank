@@ -1,6 +1,6 @@
 package me.sirmonkeyboy.bank.Utils;
 
-import me.sirmonkeyboy.bank.Bank;
+import me.sirmonkeyboy.bank.KingdomBank;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class ConfigManager {
 
-    private final Bank plugin;
+    private final KingdomBank plugin;
 
     private String host;
     private String port;
@@ -39,7 +39,7 @@ public class ConfigManager {
     private int minimumAmount;
     private int cooldown;
 
-    public ConfigManager(Bank plugin) {
+    public ConfigManager(KingdomBank plugin) {
         this.plugin = plugin;
         load();
     }
