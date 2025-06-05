@@ -49,59 +49,63 @@ public class ConfigManager {
         load();
         if (!validate()) {
             sender.sendMessage(Component.text("Config validation failed. Check your config.yml for missing values.").color(NamedTextColor.DARK_RED));
-            sender.sendMessage(Component.text("Plugin will not fully work with out it").color(NamedTextColor.DARK_RED));
-            sender.sendMessage(Component.text("Check console for what is missing").color(NamedTextColor.DARK_RED));
+            sender.sendMessage(Component.text("Using default config options if database config info is missing plugin will not work.").color(NamedTextColor.DARK_RED));
+            sender.sendMessage(Component.text("Check console for what is missing.").color(NamedTextColor.DARK_RED));
             return;
         }
         sender.sendMessage(Component.text("Config successfully reloaded").color(NamedTextColor.GREEN));
     }
 
     public void load() {
-        host = plugin.getConfig().getString("mariaDB.host");
-        port = plugin.getConfig().getString("mariaDB.port");
-        database = plugin.getConfig().getString("mariaDB.database");
-        username = plugin.getConfig().getString("mariaDB.username");
-        password = plugin.getConfig().getString("mariaDB.password");
-        setMaximumPoolSize = plugin.getConfig().getInt("mariaDB.Set-Maximum-Pool-Size");
-        setMinimumIdle = plugin.getConfig().getInt("mariaDB.Set-Minimum-Idle");
-        balanceMessage = plugin.getConfig().getString("Balance-Message");
-        depositMessage = plugin.getConfig().getString("Deposit.Deposit-Message");
-        dontHaveEnoughInBalanceDeposit = plugin.getConfig().getString("Deposit.Dont-Have-Enough-In-Balance");
-        minimumDepositMessage = plugin.getConfig().getString("Deposit.Minimum-Deposit-Message");
-        withdrawMessage = plugin.getConfig().getString("Withdraw.Withdraw-Message");
-        dontHaveEnoughInBalanceWithdraw = plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance");
-        minimumWithdrawMessage = plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message");
-        minimumAmount = plugin.getConfig().getInt("Minimum-Amount");
-        cooldown = plugin.getConfig().getInt("Cooldown.Cooldown");
-        cooldownMessage = plugin.getConfig().getString("Cooldown.Cooldown-Message");
-        invalidAmount = plugin.getConfig().getString("Invalid-Amount");
-        noPermission = plugin.getConfig().getString("No-Permission");
-        youCantRunThis = plugin.getConfig().getString("You-Cant-Run-This");
+        host = plugin.getConfig().getString("mariaDB.host", "localhost");
+        port = plugin.getConfig().getString("mariaDB.port", "3306");
+        database = plugin.getConfig().getString("mariaDB.database", "KingdomBank");
+        username = plugin.getConfig().getString("mariaDB.username", "KingdomBank");
+        password = plugin.getConfig().getString("mariaDB.password", "password");
+        setMaximumPoolSize = plugin.getConfig().getInt("mariaDB.Set-Maximum-Pool-Size", 15);
+        setMinimumIdle = plugin.getConfig().getInt("mariaDB.Set-Minimum-Idle", 2);
+        balanceMessage = plugin.getConfig().getString("Balance-Message", "Your Balance is $%Bal%.");
+        depositMessage = plugin.getConfig().getString("Deposit.Deposit-Message", "You have deposited $%Deposit%.");
+        dontHaveEnoughInBalanceDeposit = plugin.getConfig().getString("Deposit.Dont-Have-Enough-In-Balance", "Insufficient funds. You don't have $%Deposit% in your balance.");
+        minimumDepositMessage = plugin.getConfig().getString("Deposit.Minimum-Deposit-Message", "Minimum deposit amount is $%Minimum%.");
+        withdrawMessage = plugin.getConfig().getString("Withdraw.Withdraw-Message", "You have withdrawn $%Withdraw%.");
+        dontHaveEnoughInBalanceWithdraw = plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance", "Insufficient funds. You don't have $%Withdraw% in your bank balance.");
+        minimumWithdrawMessage = plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message", "Minimum withdraw amount is $%Minimum%.");
+        minimumAmount = plugin.getConfig().getInt("Minimum-Amount", 1000);
+        cooldown = plugin.getConfig().getInt("Cooldown.Cooldown", 15);
+        cooldownMessage = plugin.getConfig().getString("Cooldown.Cooldown-Message", "You must wait %Seconds% seconds before using /bank (subcommands) or /banktop again.");
+        invalidAmount = plugin.getConfig().getString("Invalid-Amount", "Invalid amount. Please enter a number greater than zero.");
+        noPermission = plugin.getConfig().getString("No-Permission", "You don't have permission to run this command.");
+        youCantRunThis = plugin.getConfig().getString("You-Cant-Run-This", "Only Players can run this command.");
     }
 
+    /**
+     * I know this is not needed, but I would like to keep the validation messages
+     * And ik it's not clean, but it does it's job.
+     */
     public boolean validate() {
         List<String> nullFields = new ArrayList<>();
 
-        if (host == null || host.isEmpty()) nullFields.add("mariaDB.host");
-        if (port == null || port.isEmpty()) nullFields.add("mariaDB.port");
-        if (database == null || database.isEmpty()) nullFields.add("mariaDB.database");
-        if (username == null || username.isEmpty()) nullFields.add("mariaDB.username");
-        if (password == null || password.isEmpty()) nullFields.add("mariaDB.password");
-        if (setMaximumPoolSize <= 0) nullFields.add("mariaDB.Set-Maximum-Pool-Size");
-        if (setMinimumIdle <= 0) nullFields.add("mariaDB.Set-Minimum-Idle");
-        if (balanceMessage == null || balanceMessage.isEmpty()) nullFields.add("Balance-Message");
-        if (depositMessage == null || depositMessage.isEmpty()) nullFields.add("Deposit.Deposit-Message");
-        if (dontHaveEnoughInBalanceDeposit == null || dontHaveEnoughInBalanceDeposit.isEmpty()) nullFields.add("Deposit.Dont-Have-Enough-In-Balance");
-        if (minimumDepositMessage == null || minimumDepositMessage.isEmpty()) nullFields.add("Deposit.Minimum-Deposit-Message");
-        if (withdrawMessage == null || withdrawMessage.isEmpty()) nullFields.add("Withdraw.Withdraw-Message");
-        if (dontHaveEnoughInBalanceWithdraw == null || dontHaveEnoughInBalanceWithdraw.isEmpty()) nullFields.add("Withdraw.Dont-Have-Enough-In-Balance");
-        if (minimumWithdrawMessage == null || minimumWithdrawMessage.isEmpty()) nullFields.add("Withdraw.Minimum-Withdraw-Message");
-        if (minimumAmount <= 0) nullFields.add("Minimum-Amount");
-        if (cooldown <= 0) nullFields.add("Cooldown.Cooldown");
-        if (cooldownMessage == null || cooldownMessage.isEmpty()) nullFields.add("Cooldown.Cooldown-Message");
-        if (invalidAmount == null || invalidAmount.isEmpty()) nullFields.add("Invalid-Amount");
-        if (noPermission == null || noPermission.isEmpty()) nullFields.add("No-Permission");
-        if (youCantRunThis == null || youCantRunThis.isEmpty()) nullFields.add("You-Cant-Run-This");
+        if (plugin.getConfig().getString("mariaDB.host") == null || plugin.getConfig().getString("mariaDB.host").isEmpty()) nullFields.add("mariaDB.host");
+        if (plugin.getConfig().getString("mariaDB.port") == null || plugin.getConfig().getString("mariaDB.port").isEmpty()) nullFields.add("mariaDB.port");
+        if (plugin.getConfig().getString("mariaDB.database") == null || plugin.getConfig().getString("mariaDB.database").isEmpty()) nullFields.add("mariaDB.database");
+        if (plugin.getConfig().getString("mariaDB.username") == null || plugin.getConfig().getString("mariaDB.username").isEmpty()) nullFields.add("mariaDB.username");
+        if (plugin.getConfig().getString("mariaDB.password") == null || plugin.getConfig().getString("mariaDB.password").isEmpty()) nullFields.add("mariaDB.password");
+        if (plugin.getConfig().getInt("mariaDB.Set-Maximum-Pool-Size") <= 0) nullFields.add("mariaDB.Set-Maximum-Pool-Size");
+        if (plugin.getConfig().getInt("mariaDB.Set-Minimum-Idle") <= 0) nullFields.add("mariaDB.Set-Minimum-Idle");
+        if (plugin.getConfig().getString("Balance-Message") == null || plugin.getConfig().getString("Balance-Message").isEmpty()) nullFields.add("Balance-Message");
+        if (plugin.getConfig().getString("Deposit.Deposit-Message") == null || plugin.getConfig().getString("Deposit.Deposit-Message").isEmpty()) nullFields.add("Deposit.Deposit-Message");
+        if (plugin.getConfig().getString("Deposit.Dont-Have-Enough-In-Balance") == null || plugin.getConfig().getString("Deposit.Dont-Have-Enough-In-Balance").isEmpty()) nullFields.add("Deposit.Dont-Have-Enough-In-Balance");
+        if (plugin.getConfig().getString("Deposit.Minimum-Deposit-Message") == null || plugin.getConfig().getString("Deposit.Minimum-Deposit-Message").isEmpty()) nullFields.add("Deposit.Minimum-Deposit-Message");
+        if (plugin.getConfig().getString("Withdraw.Withdraw-Message") == null || plugin.getConfig().getString("Withdraw.Withdraw-Message").isEmpty()) nullFields.add("Withdraw.Withdraw-Message");
+        if (plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance") == null || plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance").isEmpty()) nullFields.add("Withdraw.Dont-Have-Enough-In-Balance");
+        if (plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message") == null || plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message").isEmpty()) nullFields.add("Withdraw.Minimum-Withdraw-Message");
+        if (plugin.getConfig().getInt("Minimum-Amount") <= 0) nullFields.add("Minimum-Amount");
+        if (plugin.getConfig().getInt("Cooldown.Cooldown") <= 0) nullFields.add("Cooldown.Cooldown");
+        if (plugin.getConfig().getString("Cooldown.Cooldown-Message") == null || plugin.getConfig().getString("Cooldown.Cooldown-Message").isEmpty()) nullFields.add("Cooldown.Cooldown-Message");
+        if (plugin.getConfig().getString("Invalid-Amount") == null || plugin.getConfig().getString("Invalid-Amount").isEmpty()) nullFields.add("Invalid-Amount");
+        if (plugin.getConfig().getString("No-Permission") == null || plugin.getConfig().getString("No-Permission").isEmpty()) nullFields.add("No-Permission");
+        if (plugin.getConfig().getString("You-Cant-Run-This") == null || plugin.getConfig().getString("You-Cant-Run-This").isEmpty()) nullFields.add("You-Cant-Run-This");
 
         if (!nullFields.isEmpty()) {
             plugin.getLogger().warning("Missing or empty config entries: " + String.join(", ", nullFields));
