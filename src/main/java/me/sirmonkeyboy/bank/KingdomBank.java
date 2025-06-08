@@ -9,6 +9,8 @@ import me.sirmonkeyboy.bank.Utils.CooldownManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
 import me.sirmonkeyboy.bank.Utils.Utils;
 
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,7 +38,7 @@ public final class KingdomBank extends JavaPlugin {
         /* Checks to make sure on startup that all config variables are there
          if not plugin will shut down. */
         if (!configManager.validate()) {
-            Utils.getErrorLogger("Disabling due to missing config values.");
+            Utils.ErrorLogger("Disabling Kingdom Bank due to missing config values.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -44,7 +46,7 @@ public final class KingdomBank extends JavaPlugin {
         /* Checks to make sure that Vault and an Economy plugin is installed
          if not plugin will shut down. */
         if (!setupEconomy() ) {
-            Utils.getErrorLogger("Disabled due to no Vault dependency found!");
+            Utils.ErrorLogger("Disabling Kingdom Bank due to no Vault dependency found!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -53,7 +55,7 @@ public final class KingdomBank extends JavaPlugin {
         try {
             data.connect();
         } catch (Exception e) {
-            Utils.getErrorLogger("Disabling Due to invalid Database info in config");
+            Utils.ErrorLogger("Disabling Kingdom Bank due to invalid Database info in config");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -62,12 +64,12 @@ public final class KingdomBank extends JavaPlugin {
         try {
             data.createTables();
         } catch (SQLException e) {
-            Utils.getErrorLogger("Disable Kingdom Bank due to error in Database tables");
+            Utils.ErrorLogger("Disabling Kingdom Bank due to error in Database tables");
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        getLogger().info("Database successfully connected");
+        Utils.logger(Component.text("Database successfully connected"));
 
         /* Registers commands */
         Objects.requireNonNull(getCommand("Bank")).setExecutor(new BankCommand(data, configManager, cooldownManager));
@@ -79,7 +81,7 @@ public final class KingdomBank extends JavaPlugin {
 
         /* Start messages */
         Utils.getStartBanner();
-        getLogger().info("Bank has started");
+        Utils.logger(Component.text("Kingdom Bank has started"));
     }
 
     /* Check for Vault and an Economy plugin logic*/
@@ -107,9 +109,9 @@ public final class KingdomBank extends JavaPlugin {
         /* If database connected disconnects from database */
         if (data != null && data.isConnected()) {
             data.disconnect();
-            getLogger().info("Disconnected successfully from Database");
+            Utils.logger(Component.text("Disconnected successfully from Database"));
         }
 
-        getLogger().info("Kingdom Bank has stopped");
+        Utils.logger(Component.text("Kingdom Bank has stopped"));
     }
 }
