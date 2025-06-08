@@ -68,10 +68,6 @@ public class Withdraw extends SubCommand {
 
             // Makes sure players can use the command
             if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
-                if (configManager.getNoPermission() == null || configManager.getNoPermission().isEmpty()) {
-                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                    return;
-                }
                 p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
                 return;
             }
@@ -86,18 +82,8 @@ public class Withdraw extends SubCommand {
 
             // Checks withdraw amount is over the minimum
             if (!(withdrawAmount >= WithdrawMinimum)) {
-                if (configManager.getMinimumWithdrawMessage() == null || configManager.getMinimumWithdrawMessage().isEmpty()) {
-                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                    return;
-                }
                 String MinimumWithdrawMessage = configManager.getMinimumWithdrawMessage().replace("%Minimum%", MinimumWithdrawAmount);
                 p.sendMessage(Component.text(MinimumWithdrawMessage).color(NamedTextColor.RED));
-                return;
-            }
-
-            // Checks if the withdraw message is in the config
-            if (configManager.getWithdrawMessage() == null || configManager.getWithdrawMessage().isEmpty()) {
-                p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
                 return;
             }
 
@@ -105,12 +91,8 @@ public class Withdraw extends SubCommand {
             boolean success = data.withdrawTransaction(p.getUniqueId(), p.getName(), withdrawAmount);
 
             if (!success) {
-                if (configManager.getDontHaveEnoughInBalanceWithdraw() == null || configManager.getDontHaveEnoughInBalanceWithdraw().isEmpty()) {
-                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                    return;
-                }
                 String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceWithdraw().replace("%Withdraw%", WithdrawAmountStr);
-                p.sendMessage(Component.text(DontHaveEnoughInBalance + "or error in withdraw transaction try again").color(NamedTextColor.RED));
+                p.sendMessage(Component.text(DontHaveEnoughInBalance + " or error in withdraw transaction try again").color(NamedTextColor.RED));
 
                 return;
             }

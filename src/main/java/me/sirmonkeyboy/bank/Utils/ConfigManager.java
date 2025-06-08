@@ -80,8 +80,7 @@ public class ConfigManager {
     }
 
     /**
-     * I know this is not needed, but I would like to keep the validation messages
-     * And ik it's not clean, but it does it's job.
+     * This is only for database config as plugin will not work if some of them are wrong
      */
     public boolean validate() {
         List<String> nullFields = new ArrayList<>();
@@ -93,19 +92,6 @@ public class ConfigManager {
         if (plugin.getConfig().getString("mariaDB.password") == null || plugin.getConfig().getString("mariaDB.password").isEmpty()) nullFields.add("mariaDB.password");
         if (plugin.getConfig().getInt("mariaDB.Set-Maximum-Pool-Size") <= 0) nullFields.add("mariaDB.Set-Maximum-Pool-Size");
         if (plugin.getConfig().getInt("mariaDB.Set-Minimum-Idle") <= 0) nullFields.add("mariaDB.Set-Minimum-Idle");
-        if (plugin.getConfig().getString("Balance-Message") == null || plugin.getConfig().getString("Balance-Message").isEmpty()) nullFields.add("Balance-Message");
-        if (plugin.getConfig().getString("Deposit.Deposit-Message") == null || plugin.getConfig().getString("Deposit.Deposit-Message").isEmpty()) nullFields.add("Deposit.Deposit-Message");
-        if (plugin.getConfig().getString("Deposit.Dont-Have-Enough-In-Balance") == null || plugin.getConfig().getString("Deposit.Dont-Have-Enough-In-Balance").isEmpty()) nullFields.add("Deposit.Dont-Have-Enough-In-Balance");
-        if (plugin.getConfig().getString("Deposit.Minimum-Deposit-Message") == null || plugin.getConfig().getString("Deposit.Minimum-Deposit-Message").isEmpty()) nullFields.add("Deposit.Minimum-Deposit-Message");
-        if (plugin.getConfig().getString("Withdraw.Withdraw-Message") == null || plugin.getConfig().getString("Withdraw.Withdraw-Message").isEmpty()) nullFields.add("Withdraw.Withdraw-Message");
-        if (plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance") == null || plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance").isEmpty()) nullFields.add("Withdraw.Dont-Have-Enough-In-Balance");
-        if (plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message") == null || plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message").isEmpty()) nullFields.add("Withdraw.Minimum-Withdraw-Message");
-        if (plugin.getConfig().getInt("Minimum-Amount") <= 0) nullFields.add("Minimum-Amount");
-        if (plugin.getConfig().getInt("Cooldown.Cooldown") <= 0) nullFields.add("Cooldown.Cooldown");
-        if (plugin.getConfig().getString("Cooldown.Cooldown-Message") == null || plugin.getConfig().getString("Cooldown.Cooldown-Message").isEmpty()) nullFields.add("Cooldown.Cooldown-Message");
-        if (plugin.getConfig().getString("Invalid-Amount") == null || plugin.getConfig().getString("Invalid-Amount").isEmpty()) nullFields.add("Invalid-Amount");
-        if (plugin.getConfig().getString("No-Permission") == null || plugin.getConfig().getString("No-Permission").isEmpty()) nullFields.add("No-Permission");
-        if (plugin.getConfig().getString("You-Cant-Run-This") == null || plugin.getConfig().getString("You-Cant-Run-This").isEmpty()) nullFields.add("You-Cant-Run-This");
 
         if (!nullFields.isEmpty()) {
             plugin.getLogger().warning("Missing or empty config entries: " + String.join(", ", nullFields));

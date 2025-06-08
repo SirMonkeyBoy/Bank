@@ -44,10 +44,6 @@ public class BankCommand implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if(sender instanceof Player p) {
             if (!p.hasPermission("Bank.commands.Bank")) {
-                if (configManager.getNoPermission() == null || configManager.getNoPermission().isEmpty()){
-                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                    return true;
-                }
                 p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
                 return true;
             }

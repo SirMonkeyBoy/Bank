@@ -34,10 +34,6 @@ public class Reload extends SubCommand {
     @Override
     public void perform(Player p, String[] args) {
         if (!(p.hasPermission("Bank.commands.ABank.Reload"))) {
-            if (configManager.getNoPermission() == null || configManager.getNoPermission().isEmpty()){
-                p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                return;
-            }
             p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
             return;
         }
