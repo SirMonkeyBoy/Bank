@@ -30,9 +30,6 @@ public class ConfigManager {
     private String invalidAmount;
     private String noPermission;
     private String youCantRunThis;
-    // This is set here so it can't get removed in config
-    @SuppressWarnings("FieldCanBeLocal")
-    private final String missingMessage = "Contact Server Admin missing message in config";
 
     private int setMaximumPoolSize;
     private int setMinimumIdle;
@@ -180,9 +177,5 @@ public class ConfigManager {
 
     public String getYouCantRunThis() {
         return youCantRunThis;
-    }
-
-    public String getMissingMessage() {
-        return missingMessage;
     }
 }
