@@ -20,10 +20,17 @@ public class Utils {
         console.sendMessage(Component.text("########################################################################################################################"));
     }
 
-    public static void getErrorLogger(String message) {
-        console.sendMessage(Component.text("[").color(NamedTextColor.WHITE)
-            .append(Component.text("KingdomBank").color(NamedTextColor.GOLD)
-                .append(Component.text("] ").color(NamedTextColor.WHITE))
-                    .append(Component.text(message).color(NamedTextColor.DARK_RED))));
+    public static void ErrorLogger(String message) {
+        console.sendMessage(Component.text("[").color(NamedTextColor.GRAY)
+            .append(Component.text("KingdomBank").color(NamedTextColor.GOLD))
+                .append(Component.text("] ").color(NamedTextColor.GRAY))
+                    .append(Component.text(message).color(NamedTextColor.DARK_RED)));
+    }
+
+    public static void logger(Component message) {
+        console.sendMessage(Component.text("[").color(NamedTextColor.GRAY)
+            .append(Component.text("KingdomBank").color(NamedTextColor.GOLD))
+                .append(Component.text("] ").color(NamedTextColor.GRAY))
+                    .append(message));
     }
 }
