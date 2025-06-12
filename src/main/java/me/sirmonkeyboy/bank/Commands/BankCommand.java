@@ -64,9 +64,9 @@ public class BankCommand implements TabExecutor {
             //noinspection ConstantValue
             if (args.length == 0) {
                 player.sendMessage(Component.text("Bank usages"));
-                player.sendMessage(Component.text("/bank balance or /bank bal - ").append(Component.text("Gets your bank balance").color(NamedTextColor.GOLD)));
-                player.sendMessage(Component.text("/bank deposit (Amount) - ").append(Component.text("Deposits (Amount) into your account").color(NamedTextColor.GOLD)));
-                player.sendMessage(Component.text("/bank withdraw (Amount) - ").append(Component.text("Withdraws (Amount) from your account").color(NamedTextColor.GOLD)));
+                player.sendMessage(Component.text("/bank balance or /bank bal - ").append(Component.text("Gets your bank balance.").color(NamedTextColor.GOLD)));
+                player.sendMessage(Component.text("/bank deposit (Amount) - ").append(Component.text("Deposits (Amount) into your account.").color(NamedTextColor.GOLD)));
+                player.sendMessage(Component.text("/bank withdraw (Amount) - ").append(Component.text("Withdraws (Amount) from your account.").color(NamedTextColor.GOLD)));
                 return true;
             }
         }else if (sender instanceof  ConsoleCommandSender c){

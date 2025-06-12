@@ -66,7 +66,7 @@ public class ConfigManager {
         dontHaveEnoughInBalanceDeposit = plugin.getConfig().getString("Deposit.Dont-Have-Enough-In-Balance", "Insufficient funds. You don't have $%Deposit% in your balance.");
         minimumDepositMessage = plugin.getConfig().getString("Deposit.Minimum-Deposit-Message", "Minimum deposit amount is $%Minimum%.");
         withdrawMessage = plugin.getConfig().getString("Withdraw.Withdraw-Message", "You have withdrawn $%Withdraw%.");
-        dontHaveEnoughInBalanceWithdraw = plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance", "Insufficient funds. You don't have $%Withdraw% in your bank balance.");
+        dontHaveEnoughInBalanceWithdraw = plugin.getConfig().getString("Withdraw.Dont-Have-Enough-In-Balance", "Insufficient funds. You don't have $%Withdraw% in your bank bal or Error in withdraw try again contact staff.");
         minimumWithdrawMessage = plugin.getConfig().getString("Withdraw.Minimum-Withdraw-Message", "Minimum withdraw amount is $%Minimum%.");
         minimumAmount = plugin.getConfig().getInt("Minimum-Amount", 1000);
         cooldown = plugin.getConfig().getInt("Cooldown.Cooldown", 15);

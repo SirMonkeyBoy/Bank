@@ -44,7 +44,7 @@ public class Balance extends SubCommand {
     }
 
     @Override
-    public void perform(Player player, String[] args) throws SQLException {
+    public void perform(Player player, String[] args) {
         if (!player.hasPermission("Bank.commands.Bank.Balance")) {
             player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
             return;
@@ -58,7 +58,13 @@ public class Balance extends SubCommand {
             return;
         }
 
-        double balance = data.getBalance(player.getUniqueId());
+        double balance = 0;
+        try {
+            balance = data.getBalance(player.getUniqueId());
+        } catch (SQLException e) {
+            player.sendMessage(Component.text("Error getting your bank balance try again or contact staff.").color(NamedTextColor.RED));
+            return;
+        }
 
         String BalanceStr = String.valueOf(balance);
         String BalanceMessage = configManager.getBalanceMessage().replace("%Bal%", BalanceStr);

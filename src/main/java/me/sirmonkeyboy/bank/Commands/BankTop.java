@@ -65,7 +65,8 @@ public class BankTop implements TabExecutor {
                 cooldownManager.startCooldown(uuid);
                 return true;
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                player.sendMessage(Component.text("Error get top 10 bank balances try again or contact stuff.").color(NamedTextColor.RED));
+                return true;
             }
         }else {
             sender.sendMessage(Component.text(configManager.getYouCantRunThis()).color(NamedTextColor.RED));

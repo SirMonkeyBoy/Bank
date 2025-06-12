@@ -99,7 +99,7 @@ public class Deposit extends SubCommand {
             boolean success = data.depositTransaction(player.getUniqueId(), player.getName(), depositAmount);
 
             if (!success) {
-                player.sendMessage(Component.text("Error in deposit transaction try again").color(NamedTextColor.RED));
+                player.sendMessage(Component.text("Error in deposit transaction try again or contact staff.").color(NamedTextColor.RED));
                 return;
             }
 

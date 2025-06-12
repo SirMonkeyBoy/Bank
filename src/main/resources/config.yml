@@ -24,7 +24,7 @@ Deposit:
 
 Withdraw:
   Withdraw-Message: "You have withdrawn $%Withdraw%."
-  Dont-Have-Enough-In-Balance: "Insufficient funds. You don't have $%Withdraw% in your bank balance."
+  Dont-Have-Enough-In-Balance: "Insufficient funds. You don't have $%Withdraw% in your bank bal or Error in withdrawal try again contact staff."
   Minimum-Withdraw-Message: "Minimum withdraw amount is $%Minimum%."
 
 #Minimum amount for deposit/withdraws

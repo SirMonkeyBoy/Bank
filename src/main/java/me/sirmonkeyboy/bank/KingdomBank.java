@@ -55,7 +55,7 @@ public final class KingdomBank extends JavaPlugin {
         try {
             data.connect();
         } catch (Exception e) {
-            Utils.getErrorLogger("Disabling Kingdom Bank due to invalid Database info in config");
+            Utils.getErrorLogger("Disabling Kingdom Bank due to invalid Database config: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -64,12 +64,12 @@ public final class KingdomBank extends JavaPlugin {
         try {
             data.createTables();
         } catch (SQLException e) {
-            Utils.getErrorLogger("Disabling Kingdom Bank due to error in Database tables");
+            Utils.getErrorLogger("Disabling Kingdom Bank due to error creating Database tables: "+ e.getMessage());
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        Utils.logger(Component.text("Database successfully connected"));
+        Utils.logger(Component.text("Database connected successfully"));
 
         /* Registers commands */
         Objects.requireNonNull(getCommand("Bank")).setExecutor(new BankCommand(data, configManager, cooldownManager));

@@ -184,7 +184,7 @@ public class MariaDB {
                         if (rs.next()) {
                             newBalance = rs.getDouble("balance");
                         } else {
-                            throw new SQLException("UUID not found in bankbalance");
+                            throw new SQLException("UUID not found in bank_balance");
                         }
                     }
                 }
@@ -231,7 +231,7 @@ public class MariaDB {
                         if (rs.next()) {
                             currentBalance = rs.getDouble("balance");
                         } else {
-                            throw new SQLException("UUID not found in bankbalance");
+                            throw new SQLException("UUID not found in bank_balance");
                         }
                     }
                 }

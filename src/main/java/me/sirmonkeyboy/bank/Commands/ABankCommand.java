@@ -72,8 +72,8 @@ public class ABankCommand implements TabExecutor {
             //noinspection ConstantValue
             if (args.length == 0) {
                 player.sendMessage(Component.text("----- Bank usages -----"));
-                player.sendMessage(Component.text("/abank reload - ").append(Component.text("Reloads the config file").color(NamedTextColor.GOLD)));
-                player.sendMessage(Component.text("/abank balother - ").append(Component.text("Shows you another players bank balance").color(NamedTextColor.GOLD)));
+                player.sendMessage(Component.text("/abank reload - ").append(Component.text("Reloads the config file.").color(NamedTextColor.GOLD)));
+                player.sendMessage(Component.text("/abank balother - ").append(Component.text("Shows you another players bank balance.").color(NamedTextColor.GOLD)));
             }
 
             return true;

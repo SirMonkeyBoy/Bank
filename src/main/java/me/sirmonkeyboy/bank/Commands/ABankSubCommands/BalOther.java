@@ -49,7 +49,7 @@ public class BalOther extends SubCommand {
     }
 
     @Override
-    public void perform(Player player, String[] args) throws SQLException {
+    public void perform(Player player, String[] args) {
 
         if (args.length < 2 || args[1].isBlank()) {
             player.sendMessage(Component.text("Use /abank balother name"));
@@ -66,14 +66,20 @@ public class BalOther extends SubCommand {
             return;
         }
 
-        OptionalDouble result = data.getBalanceOther(name);
+        OptionalDouble result = OptionalDouble.empty();
+        try {
+            result = data.getBalanceOther(name);
+        } catch (SQLException e) {
+            player.sendMessage(Component.text("Error getting " + name + " bank balance try again or contact staff.").color(NamedTextColor.RED));
+            return;
+        }
 
         if (result.isEmpty()) {
             player.sendMessage(Component.text("No player found").color(NamedTextColor.RED));
             return;
         }
         double balance = result.getAsDouble();
-        player.sendMessage(Component.text(name + "'s is balance: " + balance).color(NamedTextColor.GREEN));
+        player.sendMessage(Component.text(name + "'s balance is " + balance).color(NamedTextColor.GREEN));
 
         cooldownManager.startCooldown(uuid);
     }

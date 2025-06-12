@@ -92,8 +92,7 @@ public class Withdraw extends SubCommand {
 
             if (!success) {
                 String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceWithdraw().replace("%Withdraw%", WithdrawAmountStr);
-                player.sendMessage(Component.text(DontHaveEnoughInBalance + " or error in withdraw transaction try again").color(NamedTextColor.RED));
-
+                player.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
                 return;
             }
 
@@ -107,7 +106,7 @@ public class Withdraw extends SubCommand {
         } catch (NumberFormatException e) {
             player.sendMessage(Component.text(configManager.getInvalidAmount()).color(NamedTextColor.RED));
         } catch (SQLException e) {
-            player.sendMessage(Component.text("Error withdrawing from your bank balance try again or contact staff.").color(NamedTextColor.RED));
+            player.sendMessage(Component.text("Error withdrawing from your bank try again or contact staff.").color(NamedTextColor.RED));
         }
 
     }
