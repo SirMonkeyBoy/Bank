@@ -50,9 +50,9 @@ public class ABankCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
-        if (sender instanceof Player p) {
-            if (!(p.hasPermission("Bank.commands.ABank"))) {
-                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+        if (sender instanceof Player player) {
+            if (!(player.hasPermission("Bank.commands.ABank"))) {
+                player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
                 return true;
             }
 
@@ -60,7 +60,7 @@ public class ABankCommand implements TabExecutor {
                 for (int i = 0; i < getSubCommands().size(); i++) {
                     if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
                         try {
-                            getSubCommands().get(i).perform(p, args);
+                            getSubCommands().get(i).perform(player, args);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -71,9 +71,9 @@ public class ABankCommand implements TabExecutor {
 
             //noinspection ConstantValue
             if (args.length == 0) {
-                p.sendMessage(Component.text("----- Bank usages -----"));
-                p.sendMessage(Component.text("/abank reload - ").append(Component.text("Reloads the config file").color(NamedTextColor.GOLD)));
-                p.sendMessage(Component.text("/abank balother - ").append(Component.text("Shows you another players bank balance").color(NamedTextColor.GOLD)));
+                player.sendMessage(Component.text("----- Bank usages -----"));
+                player.sendMessage(Component.text("/abank reload - ").append(Component.text("Reloads the config file").color(NamedTextColor.GOLD)));
+                player.sendMessage(Component.text("/abank balother - ").append(Component.text("Shows you another players bank balance").color(NamedTextColor.GOLD)));
             }
 
             return true;

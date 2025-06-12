@@ -44,25 +44,25 @@ public class Balance extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) throws SQLException {
-        if (!p.hasPermission("Bank.commands.Bank.Balance")) {
-            p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+    public void perform(Player player, String[] args) throws SQLException {
+        if (!player.hasPermission("Bank.commands.Bank.Balance")) {
+            player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
             return;
         }
 
-        UUID uuid = p.getUniqueId();
+        UUID uuid = player.getUniqueId();
         if (cooldownManager.isOnCooldown(uuid)) {
             long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
             String CooldownMessage = configManager.getCooldownMessage().replace("%Seconds%", String.valueOf(seconds));
-            p.sendMessage(CooldownMessage);
+            player.sendMessage(CooldownMessage);
             return;
         }
 
-        double balance = data.getBalance(p.getUniqueId());
+        double balance = data.getBalance(player.getUniqueId());
 
         String BalanceStr = String.valueOf(balance);
         String BalanceMessage = configManager.getBalanceMessage().replace("%Bal%", BalanceStr);
-        p.sendMessage(Component.text(BalanceMessage).color(NamedTextColor.GREEN));
+        player.sendMessage(Component.text(BalanceMessage).color(NamedTextColor.GREEN));
 
         cooldownManager.startCooldown(uuid);
     }

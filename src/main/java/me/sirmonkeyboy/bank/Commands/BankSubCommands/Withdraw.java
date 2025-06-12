@@ -47,12 +47,12 @@ public class Withdraw extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) {
+    public void perform(Player player, String[] args) {
 
         try {
             // Checks args length
             if (args.length < 2 || args[1].isBlank()) {
-                p.sendMessage(Component.text("Use /bank withdraw Amount"));
+                player.sendMessage(Component.text("Use /bank withdraw Amount"));
                 return;
             }
 
@@ -67,45 +67,45 @@ public class Withdraw extends SubCommand {
             String MinimumWithdrawAmount = String.valueOf(WithdrawMinimum);
 
             // Makes sure players can use the command
-            if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
-                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+            if (!player.hasPermission("Bank.commands.Bank.Withdraw")) {
+                player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
                 return;
             }
 
-            UUID uuid = p.getUniqueId();
+            UUID uuid = player.getUniqueId();
             if (cooldownManager.isOnCooldown(uuid)) {
                 long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
                 String CooldownMessage = configManager.getCooldownMessage().replace("%Seconds%", String.valueOf(seconds));
-                p.sendMessage(CooldownMessage);
+                player.sendMessage(CooldownMessage);
                 return;
             }
 
             // Checks withdraw amount is over the minimum
             if (!(withdrawAmount >= WithdrawMinimum)) {
                 String MinimumWithdrawMessage = configManager.getMinimumWithdrawMessage().replace("%Minimum%", MinimumWithdrawAmount);
-                p.sendMessage(Component.text(MinimumWithdrawMessage).color(NamedTextColor.RED));
+                player.sendMessage(Component.text(MinimumWithdrawMessage).color(NamedTextColor.RED));
                 return;
             }
 
             // Withdraw logic
-            boolean success = data.withdrawTransaction(p.getUniqueId(), p.getName(), withdrawAmount);
+            boolean success = data.withdrawTransaction(player.getUniqueId(), player.getName(), withdrawAmount);
 
             if (!success) {
                 String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceWithdraw().replace("%Withdraw%", WithdrawAmountStr);
-                p.sendMessage(Component.text(DontHaveEnoughInBalance + " or error in withdraw transaction try again").color(NamedTextColor.RED));
+                player.sendMessage(Component.text(DontHaveEnoughInBalance + " or error in withdraw transaction try again").color(NamedTextColor.RED));
 
                 return;
             }
 
-            eco.depositPlayer(p, withdrawAmount);
+            eco.depositPlayer(player, withdrawAmount);
 
             String WithdrawMessage = configManager.getWithdrawMessage().replace("%Withdraw%", WithdrawAmountStr);
-            p.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
+            player.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
 
             cooldownManager.startCooldown(uuid);
         // Makes sure that the arg is a number
         } catch (NumberFormatException e) {
-            p.sendMessage(Component.text(configManager.getInvalidAmount()).color(NamedTextColor.RED));
+            player.sendMessage(Component.text(configManager.getInvalidAmount()).color(NamedTextColor.RED));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

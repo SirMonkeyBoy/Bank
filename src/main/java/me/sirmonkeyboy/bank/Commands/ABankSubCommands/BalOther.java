@@ -49,31 +49,31 @@ public class BalOther extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) throws SQLException {
+    public void perform(Player player, String[] args) throws SQLException {
 
         if (args.length < 2 || args[1].isBlank()) {
-            p.sendMessage(Component.text("Use /abank balother name"));
+            player.sendMessage(Component.text("Use /abank balother name"));
             return;
         }
 
         String name = args[1];
 
-        UUID uuid = p.getUniqueId();
+        UUID uuid = player.getUniqueId();
         if (cooldownManager.isOnCooldown(uuid)) {
             long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
             String CooldownMessage = configManager.getCooldownMessage().replace("%Seconds%", String.valueOf(seconds));
-            p.sendMessage(CooldownMessage);
+            player.sendMessage(CooldownMessage);
             return;
         }
 
         OptionalDouble result = data.getBalanceOther(name);
 
         if (result.isEmpty()) {
-            p.sendMessage(Component.text("No player found").color(NamedTextColor.RED));
+            player.sendMessage(Component.text("No player found").color(NamedTextColor.RED));
             return;
         }
         double balance = result.getAsDouble();
-        p.sendMessage(Component.text(name + "'s is balance: " + balance).color(NamedTextColor.GREEN));
+        player.sendMessage(Component.text(name + "'s is balance: " + balance).color(NamedTextColor.GREEN));
 
         cooldownManager.startCooldown(uuid);
     }

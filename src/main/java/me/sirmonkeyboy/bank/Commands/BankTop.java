@@ -36,17 +36,17 @@ public class BankTop implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args ) {
-        if (sender instanceof Player p) {
-            if (!p.hasPermission("Bank.commands.Bank.BankTop")) {
-                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+        if (sender instanceof Player player) {
+            if (!player.hasPermission("Bank.commands.Bank.BankTop")) {
+                player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
                 return true;
             }
 
-            UUID uuid = p.getUniqueId();
+            UUID uuid = player.getUniqueId();
             if (cooldownManager.isOnCooldown(uuid)) {
                 long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
                 String CooldownMessage = configManager.getCooldownMessage().replace("%Seconds%", String.valueOf(seconds));
-                p.sendMessage(CooldownMessage);
+                player.sendMessage(CooldownMessage);
                 return true;
             }
 
@@ -54,12 +54,12 @@ public class BankTop implements TabExecutor {
                 data.bankTop();
                 String[] names = data.getTopPlayers();
                 double[] balances = data.getTopBalances();
-                p.sendMessage(Component.text(" -----").color(NamedTextColor.YELLOW)
+                player.sendMessage(Component.text(" -----").color(NamedTextColor.YELLOW)
                         .append(Component.text(" Bank Top ").color(NamedTextColor.GOLD))
                         .append(Component.text("-----").color(NamedTextColor.YELLOW)));
                 for (int i = 0; i < names.length; i++) {
                     if (names[i] != null) {
-                        p.sendMessage((i + 1) + ". " + names[i] + ", $" + balances[i]);
+                        player.sendMessage((i + 1) + ". " + names[i] + ", $" + balances[i]);
                     }
                 }
                 cooldownManager.startCooldown(uuid);

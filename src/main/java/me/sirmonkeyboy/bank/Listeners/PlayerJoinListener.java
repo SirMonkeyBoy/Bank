@@ -19,7 +19,7 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) throws SQLException {
-        Player p = e.getPlayer();
-        data.createPlayer(p);
+        Player player = e.getPlayer();
+        data.createPlayer(player);
     }
 }

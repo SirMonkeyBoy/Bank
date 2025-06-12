@@ -32,13 +32,13 @@ public class Reload extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) {
-        if (!(p.hasPermission("Bank.commands.ABank.Reload"))) {
-            p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+    public void perform(Player player, String[] args) {
+        if (!(player.hasPermission("Bank.commands.ABank.Reload"))) {
+            player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
             return;
         }
 
-        configManager.reloadConfigManager(p);
+        configManager.reloadConfigManager(player);
     }
 
     @Override
