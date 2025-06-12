@@ -107,7 +107,7 @@ public class Withdraw extends SubCommand {
         } catch (NumberFormatException e) {
             player.sendMessage(Component.text(configManager.getInvalidAmount()).color(NamedTextColor.RED));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            player.sendMessage(Component.text("Error withdrawing from your bank balance try again or contact staff.").color(NamedTextColor.RED));
         }
 
     }

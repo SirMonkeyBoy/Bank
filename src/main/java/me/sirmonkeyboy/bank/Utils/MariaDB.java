@@ -114,6 +114,7 @@ public class MariaDB {
                 conn.commit();
             } catch (SQLException e) {
                 conn.rollback();
+                Utils.getErrorLogger("Error creating player row in database or updating the name: " + e.getMessage());
             } finally {
                 conn.setAutoCommit(true);
             }
@@ -207,6 +208,7 @@ public class MariaDB {
                 return true;
             } catch (SQLException e) {
                 conn.rollback();
+                Utils.getErrorLogger("Error depositing into " + name + " bank balance: " + e.getMessage());
                 return false;
             } finally {
                 conn.setAutoCommit(true);
@@ -271,7 +273,7 @@ public class MariaDB {
                 return true;
             }catch (SQLException e) {
                 conn.rollback();
-                e.printStackTrace();
+                Utils.getErrorLogger("Error withdrawing from " + name + " bank balance: " + e.getMessage());
                 return false;
             } finally {
                 conn.setAutoCommit(true);
