@@ -75,10 +75,10 @@ public class MariaDB {
     }
 
     // creates players row in bankbalance table
-    public void createPlayer(Player p) throws SQLException {
+    public void createPlayer(Player player) throws SQLException {
         double balance = 0;
-        UUID uuid = p.getUniqueId();
-        String name = p.getName();
+        UUID uuid = player.getUniqueId();
+        String name = player.getName();
 
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
@@ -104,8 +104,8 @@ public class MariaDB {
                         }
                     } else {
                         try (PreparedStatement createPlayerRow = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME, UUID, BALANCE) VALUES (?, ?, ?)")) {
-                            createPlayerRow.setString(1, p.getName());
-                            createPlayerRow.setString(2, p.getUniqueId().toString());
+                            createPlayerRow.setString(1, player.getName());
+                            createPlayerRow.setString(2, player.getUniqueId().toString());
                             createPlayerRow.setDouble(3, balance);
                             createPlayerRow.executeUpdate();
                         }
