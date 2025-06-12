@@ -59,13 +59,13 @@ public class MariaDB {
     @SuppressWarnings("TextBlockMigration")
     public void createTables() throws SQLException {
         try (Connection conn = getConnection();
-             PreparedStatement pstmt1 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bankbalance (" +
-                     "NAME VARCHAR(255), UUID VARCHAR(100), BALANCE DOUBLE, PRIMARY KEY (UUID))");
+             PreparedStatement pstmt1 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS bank_balance (" +
+                     "username VARCHAR(255), UUID VARCHAR(100), balance DOUBLE, PRIMARY KEY (UUID))");
              PreparedStatement pstmt2 = conn.prepareStatement("CREATE TABLE IF NOT EXISTS transactions (" +
-                     "id INT NOT NULL AUTO_INCREMENT UNIQUE, " +
-                     "NAME VARCHAR(255), UUID VARCHAR(100), time TIMESTAMP, type VARCHAR(255), " +
-                     "amount DOUBLE, newbalance DOUBLE, PRIMARY KEY (id), " +
-                     "FOREIGN KEY (UUID) REFERENCES bankbalance(UUID) ON DELETE CASCADE)");
+                     "transaction_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE, " +
+                     "username VARCHAR(255), UUID VARCHAR(100), time TIMESTAMP, type VARCHAR(255), " +
+                     "amount DOUBLE, new_balance DOUBLE, PRIMARY KEY (id), " +
+                     "FOREIGN KEY (UUID) REFERENCES bank_balance(UUID) ON DELETE CASCADE)");
              PreparedStatement pstmt3 = conn.prepareStatement("CREATE INDEX IF NOT EXISTS transactions_index_0 ON transactions (UUID)")) {
 
             pstmt1.executeUpdate();
@@ -83,27 +83,27 @@ public class MariaDB {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
 
-            try (PreparedStatement pstmt = conn.prepareStatement("SELECT NAME FROM bankbalance WHERE UUID = ?")) {
+            try (PreparedStatement pstmt = conn.prepareStatement("SELECT username FROM bank_balance WHERE UUID = ?")) {
                 pstmt.setString(1, uuid.toString());
 
                 try (ResultSet rs = pstmt.executeQuery()) {
                     if (rs.next()) {
-                        String storedName = rs.getString("NAME");
+                        String storedName = rs.getString("username");
                         if (!storedName.equalsIgnoreCase(name)) {
-                            try (PreparedStatement updatePNameBank = conn.prepareStatement("UPDATE bankbalance SET NAME = ? WHERE UUID = ?")) {
+                            try (PreparedStatement updatePNameBank = conn.prepareStatement("UPDATE bank_balance SET username = ? WHERE UUID = ?")) {
                                 updatePNameBank.setString(1, name);
                                 updatePNameBank.setString(2, uuid.toString());
                                 updatePNameBank.executeUpdate();
                             }
 
-                            try (PreparedStatement updatePNameTransactions = conn.prepareStatement("UPDATE transactions SET NAME = ? WHERE UUID = ?")) {
+                            try (PreparedStatement updatePNameTransactions = conn.prepareStatement("UPDATE transactions SET username = ? WHERE UUID = ?")) {
                                 updatePNameTransactions.setString(1, name);
                                 updatePNameTransactions.setString(2, uuid.toString());
                                 updatePNameTransactions.executeUpdate();
                             }
                         }
                     } else {
-                        try (PreparedStatement createPlayerRow = conn.prepareStatement("INSERT IGNORE INTO bankbalance (NAME, UUID, BALANCE) VALUES (?, ?, ?)")) {
+                        try (PreparedStatement createPlayerRow = conn.prepareStatement("INSERT IGNORE INTO bank_balance (username, UUID, balance) VALUES (?, ?, ?)")) {
                             createPlayerRow.setString(1, player.getName());
                             createPlayerRow.setString(2, player.getUniqueId().toString());
                             createPlayerRow.setDouble(3, balance);
@@ -127,13 +127,13 @@ public class MariaDB {
         double money = 0;
 
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("SELECT BALANCE FROM bankbalance WHERE UUID=?")) {
+             PreparedStatement pstmt = conn.prepareStatement("SELECT BALANCE FROM bank_balance WHERE UUID=?")) {
 
             pstmt.setString(1, uuid.toString());
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    money = rs.getDouble("BALANCE");
+                    money = rs.getDouble("balance");
                     return money;
                 }
             }
@@ -146,13 +146,13 @@ public class MariaDB {
         double bal;
 
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("SELECT BALANCE FROM bankbalance WHERE NAME=?")) {
+             PreparedStatement pstmt = conn.prepareStatement("SELECT balance FROM bank_balance WHERE NAME=?")) {
 
             pstmt.setString(1, name);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    bal = rs.getDouble("BALANCE");
+                    bal = rs.getDouble("balance");
                     return OptionalDouble.of(bal);
                 }
             }
@@ -168,7 +168,7 @@ public class MariaDB {
             try {
                 // Deposits into the players account
                 try (PreparedStatement pstmt = conn.prepareStatement(
-                        "UPDATE bankbalance SET BALANCE = BALANCE + ? WHERE UUID = ?")) {
+                        "UPDATE bank_balance SET balance = balance + ? WHERE UUID = ?")) {
                     pstmt.setDouble(1, amount);
                     pstmt.setString(2, uuid.toString());
 
@@ -178,11 +178,11 @@ public class MariaDB {
                 // Gets the new balance
                 double newBalance;
                 try (PreparedStatement pstmt = conn.prepareStatement(
-                        "SELECT BALANCE FROM bankbalance WHERE UUID = ?")) {
+                        "SELECT balance FROM bank_balance WHERE UUID = ?")) {
                     pstmt.setString(1, uuid.toString());
                     try (ResultSet rs = pstmt.executeQuery()) {
                         if (rs.next()) {
-                            newBalance = rs.getDouble("BALANCE");
+                            newBalance = rs.getDouble("balance");
                         } else {
                             throw new SQLException("UUID not found in bankbalance");
                         }
@@ -190,7 +190,7 @@ public class MariaDB {
                 }
 
                 // Adds transaction into transaction table
-                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (NAME, UUID, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
+                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, UUID, time, type, amount, new_balance) VALUES (?, ?, ?, ?, ?, ?)")) {
                     String type = "DEPOSIT";
                     long currentTimeMillis = System.currentTimeMillis();
                     java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
@@ -225,11 +225,11 @@ public class MariaDB {
                 // Check current balance
                 double currentBalance;
                 try (PreparedStatement pstmt = conn.prepareStatement(
-                        "SELECT BALANCE FROM bankbalance WHERE UUID = ?")) {
+                        "SELECT balance FROM bank_balance WHERE UUID = ?")) {
                     pstmt.setString(1, uuid.toString());
                     try (ResultSet rs = pstmt.executeQuery()) {
                         if (rs.next()) {
-                            currentBalance = rs.getDouble("BALANCE");
+                            currentBalance = rs.getDouble("balance");
                         } else {
                             throw new SQLException("UUID not found in bankbalance");
                         }
@@ -243,7 +243,7 @@ public class MariaDB {
                 }
 
                 // Withdraws from the players account
-                try (PreparedStatement pstmt = conn.prepareStatement("UPDATE bankbalance SET BALANCE=? WHERE UUID=?")) {
+                try (PreparedStatement pstmt = conn.prepareStatement("UPDATE bank_balance SET balance=? WHERE UUID=?")) {
 
                     pstmt.setDouble(1, currentBalance - amount);
                     pstmt.setString(2, uuid.toString());
@@ -255,7 +255,7 @@ public class MariaDB {
                 double newBalance = currentBalance - amount;
 
                 // Adds transaction into transaction table
-                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (NAME, UUID, time, type, amount, newbalance) VALUES (?, ?, ?, ?, ?, ?)")) {
+                try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO transactions (username, UUID, time, type, amount, new_balance) VALUES (?, ?, ?, ?, ?, ?)")) {
                     String type = "WITHDRAW";
                     long currentTimeMillis = System.currentTimeMillis();
                     java.sql.Timestamp timestamp = new java.sql.Timestamp(currentTimeMillis);
@@ -284,13 +284,13 @@ public class MariaDB {
     // Gets the top 10 bank balances
     public void bankTop() throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM bankbalance ORDER BY BALANCE DESC LIMIT 10;");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM bank_balance ORDER BY balance DESC LIMIT 10;");
             ResultSet rs = pstmt.executeQuery();
 
             int i = 0;
             while (rs.next() && i < 10) {
-                topPlayers[i] = rs.getString("NAME");
-                topBalances[i] = rs.getDouble("BALANCE");
+                topPlayers[i] = rs.getString("username");
+                topBalances[i] = rs.getDouble("balance");
                 i++;
             }
         }
