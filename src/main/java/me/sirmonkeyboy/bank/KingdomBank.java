@@ -38,7 +38,7 @@ public final class KingdomBank extends JavaPlugin {
         /* Checks to make sure on startup that all config variables are there
          if not plugin will shut down. */
         if (!configManager.validate()) {
-            Utils.ErrorLogger("Disabling Kingdom Bank due to missing config values.");
+            Utils.getErrorLogger("Disabling Kingdom Bank due to missing config values.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -46,7 +46,7 @@ public final class KingdomBank extends JavaPlugin {
         /* Checks to make sure that Vault and an Economy plugin is installed
          if not plugin will shut down. */
         if (!setupEconomy() ) {
-            Utils.ErrorLogger("Disabling Kingdom Bank due to no Vault dependency found!");
+            Utils.getErrorLogger("Disabling Kingdom Bank due to no Vault dependency found!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -55,7 +55,7 @@ public final class KingdomBank extends JavaPlugin {
         try {
             data.connect();
         } catch (Exception e) {
-            Utils.ErrorLogger("Disabling Kingdom Bank due to invalid Database info in config");
+            Utils.getErrorLogger("Disabling Kingdom Bank due to invalid Database info in config");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -64,7 +64,7 @@ public final class KingdomBank extends JavaPlugin {
         try {
             data.createTables();
         } catch (SQLException e) {
-            Utils.ErrorLogger("Disabling Kingdom Bank due to error in Database tables");
+            Utils.getErrorLogger("Disabling Kingdom Bank due to error in Database tables");
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
             return;
