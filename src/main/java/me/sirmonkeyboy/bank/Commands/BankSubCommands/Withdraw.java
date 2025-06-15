@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 
 import net.milkbowl.vault.economy.Economy;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -88,27 +87,21 @@ public class Withdraw extends SubCommand {
             }
 
             // Withdraw logic
-            boolean success = data.withdrawTransaction(player.getUniqueId(), player.getName(), withdrawAmount);
+            data.withdrawTransaction(uuid,player.getName(), withdrawAmount, (success) -> {
+                if (!success) {
+                    player.sendMessage(Component.text("Failed to get balance try again of contact staff.").color(NamedTextColor.RED));
+                    return;
+                }
+                eco.depositPlayer(player, withdrawAmount);
 
-            if (!success) {
-                String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceWithdraw().replace("%Withdraw%", WithdrawAmountStr);
-                player.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
-                return;
-            }
-
-            eco.depositPlayer(player, withdrawAmount);
-
-            String WithdrawMessage = configManager.getWithdrawMessage().replace("%Withdraw%", WithdrawAmountStr);
-            player.sendMessage(Component.text(WithdrawMessage).color(NamedTextColor.GREEN));
-
-            cooldownManager.startCooldown(uuid);
+                String withdrawMessage = configManager.getWithdrawMessage().replace("%Withdraw%", WithdrawAmountStr);
+                player.sendMessage(Component.text(withdrawMessage).color(NamedTextColor.GREEN));
+                cooldownManager.startCooldown(uuid);
+            });
         // Makes sure that the arg is a number
         } catch (NumberFormatException e) {
             player.sendMessage(Component.text(configManager.getInvalidAmount()).color(NamedTextColor.RED));
-        } catch (SQLException e) {
-            player.sendMessage(Component.text("Error withdrawing from your bank try again or contact staff.").color(NamedTextColor.RED));
         }
-
     }
 
     @Override

@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 
 import net.milkbowl.vault.economy.Economy;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,23 +95,20 @@ public class Deposit extends SubCommand {
             }
 
             // Deposit Logic
-            boolean success = data.depositTransaction(player.getUniqueId(), player.getName(), depositAmount);
+            data.depositTransaction(uuid,player.getName(), depositAmount, (success) -> {
+                if (!success) {
+                    player.sendMessage(Component.text("Failed to get balance try again of contact staff.").color(NamedTextColor.RED));
+                    return;
+                }
+                eco.withdrawPlayer(player, depositAmount);
+                String DepositMessage = configManager.getDepositMessage().replace("%Deposit%", DepositAmountStr);
+                player.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
 
-            if (!success) {
-                player.sendMessage(Component.text("Error in deposit transaction try again or contact staff.").color(NamedTextColor.RED));
-                return;
-            }
-
-            eco.withdrawPlayer(player, depositAmount);
-            String  DepositMessage = configManager.getDepositMessage().replace("%Deposit%", DepositAmountStr);
-            player.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
-
-            cooldownManager.startCooldown(uuid);
+                cooldownManager.startCooldown(uuid);
+            });
         // Makes sure that the arg is a number
         }catch (NumberFormatException e){
             player.sendMessage(Component.text(configManager.getInvalidAmount()).color(NamedTextColor.RED));
-        } catch (SQLException e) {
-            player.sendMessage(Component.text("Error depositing into your bank balance try again or contact staff.").color(NamedTextColor.RED));
         }
     }
 

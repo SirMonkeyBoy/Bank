@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,24 +49,25 @@ public class BankTop implements TabExecutor {
                 return true;
             }
 
-            try {
-                data.bankTop();
-                String[] names = data.getTopPlayers();
-                double[] balances = data.getTopBalances();
+            data.bankTop( (result) -> {
+                if (!result.success) {
+                    player.sendMessage(Component.text("Failed to get banktop try again of contact staff.").color(NamedTextColor.RED));
+                    return;
+                }
+
                 player.sendMessage(Component.text(" -----").color(NamedTextColor.YELLOW)
                         .append(Component.text(" Bank Top ").color(NamedTextColor.GOLD))
                         .append(Component.text("-----").color(NamedTextColor.YELLOW)));
-                for (int i = 0; i < names.length; i++) {
-                    if (names[i] != null) {
-                        player.sendMessage((i + 1) + ". " + names[i] + ", $" + balances[i]);
+                for (int i = 0; i < result.names.length; i++) {
+                    if (result.names[i] != null) {
+                        player.sendMessage((i + 1) + ". " + result.names[i] + ", $" + result.balances[i]);
                     }
                 }
+
                 cooldownManager.startCooldown(uuid);
-                return true;
-            } catch (SQLException e) {
-                player.sendMessage(Component.text("Error get top 10 bank balances try again or contact stuff.").color(NamedTextColor.RED));
-                return true;
-            }
+            });
+
+            return true;
         }else {
             sender.sendMessage(Component.text(configManager.getYouCantRunThis()).color(NamedTextColor.RED));
             return true;
