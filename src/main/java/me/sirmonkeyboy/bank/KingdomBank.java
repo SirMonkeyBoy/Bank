@@ -11,6 +11,7 @@ import me.sirmonkeyboy.bank.Utils.Utils;
 
 import net.kyori.adventure.text.Component;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,7 +34,7 @@ public final class KingdomBank extends JavaPlugin {
 
         ConfigManager configManager = new ConfigManager(this);
         CooldownManager cooldownManager = new CooldownManager(configManager.getCooldown());
-        this.data = new MariaDB(configManager);
+        this.data = new MariaDB(this, configManager);
 
         /* Checks to make sure on startup that all config variables are there
          if not plugin will shut down. */
@@ -61,27 +62,27 @@ public final class KingdomBank extends JavaPlugin {
         }
 
         /* Attempts to make database tables if fails will plugin shut down */
-        try {
-            data.createTables();
-        } catch (SQLException e) {
-            Utils.getErrorLogger("Disabling Kingdom Bank due to error creating Database tables: "+ e.getMessage());
-            e.printStackTrace();
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-        Utils.logger(Component.text("Database connected successfully"));
+        data.createTables((success) -> {
+            if (!success) {
+                Utils.getErrorLogger("Disabling Kingdom Bank due to error creating Database tables.");
+                getServer().getPluginManager().disablePlugin(this);
+                return;
+            }
 
-        /* Registers commands */
-        Objects.requireNonNull(getCommand("Bank")).setExecutor(new BankCommand(data, configManager, cooldownManager));
-        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(data, configManager, cooldownManager));
-        Objects.requireNonNull(getCommand("ABank")).setExecutor(new ABankCommand(this, data, configManager, cooldownManager));
+            Utils.logger(Component.text("Database connected successfully"));
 
-        /* Registers join listener */
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(data),this);
+            // Register commands
+            Objects.requireNonNull(getCommand("Bank")).setExecutor(new BankCommand(data, configManager, cooldownManager));
+            Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(data, configManager, cooldownManager));
+            Objects.requireNonNull(getCommand("ABank")).setExecutor(new ABankCommand(this, data, configManager, cooldownManager));
 
-        /* Start messages */
-        Utils.getStartBanner();
-        Utils.logger(Component.text("Kingdom Bank has started"));
+            // Register listeners
+            getServer().getPluginManager().registerEvents(new PlayerJoinListener(data), this);
+
+            // Banner and startup message
+            Utils.getStartBanner();
+            Utils.logger(Component.text("Kingdom Bank has started"));
+        });
     }
 
     /* Check for Vault and an Economy plugin logic*/
@@ -105,6 +106,8 @@ public final class KingdomBank extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
+        Bukkit.getAsyncScheduler().cancelTasks(this);
 
         /* If database connected disconnects from database */
         if (data != null && data.isConnected()) {
