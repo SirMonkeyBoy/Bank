@@ -11,14 +11,12 @@ import me.sirmonkeyboy.bank.Utils.Utils;
 
 import net.kyori.adventure.text.Component;
 
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
 
-import java.sql.SQLException;
 import java.util.Objects;
 
 public final class KingdomBank extends JavaPlugin {

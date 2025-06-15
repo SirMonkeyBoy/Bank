@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 
-
 public class Bal extends SubCommand {
 
     private final MariaDB data;
