@@ -1,6 +1,5 @@
 package me.sirmonkeyboy.bank.Commands;
 
-import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
@@ -22,17 +21,14 @@ import java.util.UUID;
 
 public class BankTop implements TabExecutor {
 
-    private final Bank plugin;
-
     private final MariaDB data;
 
     private final ConfigManager configManager;
 
     private final CooldownManager cooldownManager;
 
-    public BankTop(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
-        this.plugin = plugin;
-        this.data = plugin.data;
+    public BankTop(MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
+        this.data = data;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;
     }
@@ -40,47 +36,41 @@ public class BankTop implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args ) {
-        if (sender instanceof Player p) {
-            if (!p.hasPermission("Bank.commands.Bank.Withdraw")) {
-                if (configManager.getNoPermission() == null) {
-                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                    return false;
-                }
-                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
-                return false;
+        if (sender instanceof Player player) {
+            if (!player.hasPermission("Bank.commands.Bank.BankTop")) {
+                player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+                return true;
             }
 
-            UUID uuid = p.getUniqueId();
+            UUID uuid = player.getUniqueId();
             if (cooldownManager.isOnCooldown(uuid)) {
                 long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
-                p.sendMessage("You're on cooldown! Try again in " + seconds + " seconds.");
-                return false;
+                String CooldownMessage = configManager.getCooldownMessage().replace("%Seconds%", String.valueOf(seconds));
+                player.sendMessage(CooldownMessage);
+                return true;
             }
 
             try {
                 data.bankTop();
                 String[] names = data.getTopPlayers();
                 double[] balances = data.getTopBalances();
-                p.sendMessage(Component.text(" -----").color(NamedTextColor.YELLOW)
+                player.sendMessage(Component.text(" -----").color(NamedTextColor.YELLOW)
                         .append(Component.text(" Bank Top ").color(NamedTextColor.GOLD))
                         .append(Component.text("-----").color(NamedTextColor.YELLOW)));
                 for (int i = 0; i < names.length; i++) {
                     if (names[i] != null) {
-                        p.sendMessage((i + 1) + ". " + names[i] + ", $" + balances[i]);
+                        player.sendMessage((i + 1) + ". " + names[i] + ", $" + balances[i]);
                     }
                 }
                 cooldownManager.startCooldown(uuid);
                 return true;
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                player.sendMessage(Component.text("Error get top 10 bank balances try again or contact stuff.").color(NamedTextColor.RED));
+                return true;
             }
         }else {
-            if (configManager.getYouCantRunThis() == null) {
-                sender.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                return false;
-            }
             sender.sendMessage(Component.text(configManager.getYouCantRunThis()).color(NamedTextColor.RED));
-            return false;
+            return true;
         }
     }
 

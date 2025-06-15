@@ -1,6 +1,6 @@
-package me.sirmonkeyboy.bank.Commands.SubCommands;
+package me.sirmonkeyboy.bank.Commands.BankSubCommands;
 
-import me.sirmonkeyboy.bank.Bank;
+import me.sirmonkeyboy.bank.KingdomBank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
@@ -20,19 +20,15 @@ import java.util.UUID;
 
 public class Deposit extends SubCommand {
 
-    private final Bank plugin;
-
     private final MariaDB data;
 
     private final ConfigManager configManager;
 
     private final CooldownManager cooldownManager;
 
-    public Deposit(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
-        this.plugin = plugin;
-        this.data = plugin.data;
+    public Deposit(MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
+        this.data = data;
         this.configManager = configManager;
-
         this.cooldownManager = cooldownManager;
     }
 
@@ -52,16 +48,16 @@ public class Deposit extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) {
+    public void perform(Player player, String[] args) {
 
         try {
             // Checks args length
             if (args.length < 2 || args[1].isBlank()) {
-                p.sendMessage(Component.text("Use /bank deposit Amount"));
+                player.sendMessage(Component.text("Use /bank deposit Amount"));
                 return;
             }
 
-            Economy eco = Bank.getEconomy();
+            Economy eco = KingdomBank.getEconomy();
 
             // Numbers
             int DepositMinimum = configManager.getMinimumAmount();
@@ -72,68 +68,51 @@ public class Deposit extends SubCommand {
             String MinimumDepositAmount = String.valueOf(DepositMinimum);
 
             // Makes sure players can use the command
-            if (!p.hasPermission("Bank.commands.Bank.Deposit")) {
-                if (configManager.getNoPermission() == null) {
-                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                    return;
-                }
-                p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+            if (!player.hasPermission("Bank.commands.Bank.Deposit")) {
+                player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
                 return;
             }
 
-            UUID uuid = p.getUniqueId();
+            UUID uuid = player.getUniqueId();
             if (cooldownManager.isOnCooldown(uuid)) {
                 long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
-                p.sendMessage("You're on cooldown! Try again in " + seconds + " seconds.");
+                String CooldownMessage = configManager.getCooldownMessage().replace("%Seconds%", String.valueOf(seconds));
+                player.sendMessage(CooldownMessage);
                 return;
             }
 
             // Checks Deposit amount is over the minimum
             if (!(depositAmount >= DepositMinimum)) {
-                if (configManager.getMinimumDepositMessage() == null) {
-                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                    return;
-                }
                 String MinimumDepositMessage = configManager.getMinimumDepositMessage().replace("%Minimum%", MinimumDepositAmount);
-                p.sendMessage(Component.text(MinimumDepositMessage).color(NamedTextColor.RED));
+                player.sendMessage(Component.text(MinimumDepositMessage).color(NamedTextColor.RED));
                 return;
             }
 
             // Checks Deposit amount is less than the players balance
-            if (depositAmount > eco.getBalance(p)) {
-                if (configManager.getDontHaveEnoughInBalanceDeposit() == null) {
-                    p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                    return;
-                }
+            if (depositAmount > eco.getBalance(player)) {
                 String DontHaveEnoughInBalance = configManager.getDontHaveEnoughInBalanceDeposit().replace("%Deposit%", DepositAmountStr);
-                p.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
-                return;
-            }
-
-            // Checks if the deposit message is in the config
-            if (configManager.getDepositMessage() == null) {
-                p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+                player.sendMessage(Component.text(DontHaveEnoughInBalance).color(NamedTextColor.RED));
                 return;
             }
 
             // Deposit Logic
-            boolean success = data.depositTransaction(p.getUniqueId(), p.getName(), depositAmount);
+            boolean success = data.depositTransaction(player.getUniqueId(), player.getName(), depositAmount);
 
             if (!success) {
-                p.sendMessage(Component.text("Error in deposit transaction try again").color(NamedTextColor.RED));
+                player.sendMessage(Component.text("Error in deposit transaction try again or contact staff.").color(NamedTextColor.RED));
                 return;
             }
 
-            eco.withdrawPlayer(p, depositAmount);
+            eco.withdrawPlayer(player, depositAmount);
             String  DepositMessage = configManager.getDepositMessage().replace("%Deposit%", DepositAmountStr);
-            p.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
+            player.sendMessage(Component.text(DepositMessage).color(NamedTextColor.GREEN));
 
             cooldownManager.startCooldown(uuid);
         // Makes sure that the arg is a number
         }catch (NumberFormatException e){
-            p.sendMessage(Component.text("Please enter a number").color(NamedTextColor.RED));
+            player.sendMessage(Component.text(configManager.getInvalidAmount()).color(NamedTextColor.RED));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            player.sendMessage(Component.text("Error depositing into your bank balance try again or contact staff.").color(NamedTextColor.RED));
         }
     }
 

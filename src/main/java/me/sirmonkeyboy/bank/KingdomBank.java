@@ -1,16 +1,15 @@
 package me.sirmonkeyboy.bank;
 
+import me.sirmonkeyboy.bank.Commands.ABankCommand;
+import me.sirmonkeyboy.bank.Commands.BankCommand;
 import me.sirmonkeyboy.bank.Commands.BankTop;
-import me.sirmonkeyboy.bank.Commands.CommandManager;
 import me.sirmonkeyboy.bank.Listeners.PlayerJoinListener;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
 import me.sirmonkeyboy.bank.Utils.MariaDB;
 import me.sirmonkeyboy.bank.Utils.Utils;
 
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -21,13 +20,11 @@ import net.milkbowl.vault.economy.Economy;
 import java.sql.SQLException;
 import java.util.Objects;
 
-public final class Bank extends JavaPlugin {
+public final class KingdomBank extends JavaPlugin {
 
-    public MariaDB data;
+    private  MariaDB data;
 
     private static Economy econ = null;
-
-    Audience console = Bukkit.getConsoleSender();
 
     @Override
     public void onEnable() {
@@ -35,53 +32,59 @@ public final class Bank extends JavaPlugin {
         this.saveDefaultConfig();
 
         ConfigManager configManager = new ConfigManager(this);
-
         CooldownManager cooldownManager = new CooldownManager(configManager.getCooldown());
+        this.data = new MariaDB(configManager);
 
+        /* Checks to make sure on startup that all config variables are there
+         if not plugin will shut down. */
         if (!configManager.validate()) {
-            getLogger().severe("Disabling due to missing config values.");
+            Utils.getErrorLogger("Disabling Kingdom Bank due to missing config values.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
+        /* Checks to make sure that Vault and an Economy plugin is installed
+         if not plugin will shut down. */
         if (!setupEconomy() ) {
-            getLogger().info("Disabled due to no Vault dependency found!");
+            Utils.getErrorLogger("Disabling Kingdom Bank due to no Vault dependency found!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        this.data = new MariaDB(this, configManager);
-
+        /* Attempts to connect to the database if fails will plugin shut down */
         try {
             data.connect();
         } catch (Exception e) {
-            console.sendMessage(Component.text("[Kingdom Bank] Disabling Due to invalid Database info in config").color(NamedTextColor.DARK_RED));
+            Utils.getErrorLogger("Disabling Kingdom Bank due to invalid Database config: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
+        /* Attempts to make database tables if fails will plugin shut down */
         try {
             data.createTables();
         } catch (SQLException e) {
-            getLogger().info("Disable Kingdom Bank due to error in Database tables");
+            Utils.getErrorLogger("Disabling Kingdom Bank due to error creating Database tables: "+ e.getMessage());
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        Utils.logger(Component.text("Database connected successfully"));
 
-        Utils.StartBanner();
+        /* Registers commands */
+        Objects.requireNonNull(getCommand("Bank")).setExecutor(new BankCommand(data, configManager, cooldownManager));
+        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(data, configManager, cooldownManager));
+        Objects.requireNonNull(getCommand("ABank")).setExecutor(new ABankCommand(this, data, configManager, cooldownManager));
 
-        getLogger().info("Database successfully connected");
+        /* Registers join listener */
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(data),this);
 
-
-        Objects.requireNonNull(getCommand("Bank")).setExecutor(new CommandManager(this, configManager, cooldownManager));
-        Objects.requireNonNull(getCommand("BankTop")).setExecutor(new BankTop(this, configManager, cooldownManager));
-
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),this);
-
-        getLogger().info("Bank has started");
+        /* Start messages */
+        Utils.getStartBanner();
+        Utils.logger(Component.text("Kingdom Bank has started"));
     }
 
+    /* Check for Vault and an Economy plugin logic*/
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
@@ -103,11 +106,12 @@ public final class Bank extends JavaPlugin {
     @Override
     public void onDisable() {
 
+        /* If database connected disconnects from database */
         if (data != null && data.isConnected()) {
             data.disconnect();
-            getLogger().info("Disconnected successfully from Database");
+            Utils.logger(Component.text("Disconnected successfully from Database"));
         }
 
-        getLogger().info("Kingdom Bank has stopped");
+        Utils.logger(Component.text("Kingdom Bank has stopped"));
     }
 }

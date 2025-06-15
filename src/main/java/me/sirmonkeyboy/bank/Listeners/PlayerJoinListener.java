@@ -1,6 +1,6 @@
 package me.sirmonkeyboy.bank.Listeners;
 
-import me.sirmonkeyboy.bank.Bank;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,15 +11,15 @@ import java.sql.SQLException;
 
 public class PlayerJoinListener implements Listener {
 
-    private final Bank plugin;
+    private final MariaDB data;
 
-    public PlayerJoinListener(Bank plugin){
-        this.plugin = plugin;
+    public PlayerJoinListener(MariaDB data){
+        this.data = data;
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) throws SQLException {
-        Player p = e.getPlayer();
-        plugin.data.createPlayer(p);
+        Player player = e.getPlayer();
+        data.createPlayer(player);
     }
 }

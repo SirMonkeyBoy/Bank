@@ -1,9 +1,9 @@
 package me.sirmonkeyboy.bank.Commands;
 
-import me.sirmonkeyboy.bank.Bank;
-import me.sirmonkeyboy.bank.Commands.SubCommands.*;
+import me.sirmonkeyboy.bank.Commands.BankSubCommands.*;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
+import me.sirmonkeyboy.bank.Utils.MariaDB;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -18,48 +18,56 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandManager implements TabExecutor {
+public class BankCommand implements TabExecutor {
     @SuppressWarnings("FieldCanBeLocal")
-    private final Bank plugin;
+    private final MariaDB data;
 
     private final ConfigManager configManager;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final CooldownManager cooldownManager;
 
     private final ArrayList<SubCommand> subcommands = new ArrayList<>();
 
-    public CommandManager(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager){
-        this.plugin = plugin;
+    public BankCommand(MariaDB data, ConfigManager configManager, CooldownManager cooldownManager){
+        this.data = data;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;
-        subcommands.add(new Balance(plugin, configManager, cooldownManager));
-        subcommands.add(new Deposit(plugin, configManager, cooldownManager));
-        subcommands.add(new Withdraw(plugin, configManager, cooldownManager));
-        subcommands.add(new Bal(plugin, configManager,cooldownManager));
+        subcommands.add(new Balance(data, configManager, cooldownManager));
+        subcommands.add(new Deposit(data, configManager, cooldownManager));
+        subcommands.add(new Withdraw(data, configManager, cooldownManager));
+        subcommands.add(new Bal(data, configManager,cooldownManager));
         subcommands.add(new Help());
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if(sender instanceof Player p) {
-            if (p.hasPermission("Bank.commands.Bank")) {
-                if (args.length > 0) {
-                    for (int i = 0; i < getSubcommands().size(); i++) {
-                        if (args[0].equalsIgnoreCase(getSubcommands().get(i).getName())) {
-                            try {
-                                getSubcommands().get(i).perform(p, args);
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
+        if(sender instanceof Player player) {
+            if (!player.hasPermission("Bank.commands.Bank")) {
+                player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+                return true;
+            }
+
+            if (args.length > 0) {
+                for (int i = 0; i < getSubcommands().size(); i++) {
+                    if (args[0].equalsIgnoreCase(getSubcommands().get(i).getName())) {
+                        try {
+                            getSubcommands().get(i).perform(player, args);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
                         }
                     }
-                } else //noinspection ConstantValue
-                    if (args.length == 0) {
-                        p.sendMessage(Component.text("Bank usages"));
-                        p.sendMessage(Component.text("/bank balance or /bank bal - ").append(Component.text("Gets your bank balance").color(NamedTextColor.GOLD)));
-                        p.sendMessage(Component.text("/bank deposit (Amount) - ").append(Component.text("Deposits (Amount) into your account").color(NamedTextColor.GOLD)));
-                        p.sendMessage(Component.text("/bank withdraw (Amount) - ").append(Component.text("Withdraws (Amount) from your account").color(NamedTextColor.GOLD)));
-                    }
+                }
+                return true;
+            }
+
+            //noinspection ConstantValue
+            if (args.length == 0) {
+                player.sendMessage(Component.text("Bank usages"));
+                player.sendMessage(Component.text("/bank balance or /bank bal - ").append(Component.text("Gets your bank balance.").color(NamedTextColor.GOLD)));
+                player.sendMessage(Component.text("/bank deposit (Amount) - ").append(Component.text("Deposits (Amount) into your account.").color(NamedTextColor.GOLD)));
+                player.sendMessage(Component.text("/bank withdraw (Amount) - ").append(Component.text("Withdraws (Amount) from your account.").color(NamedTextColor.GOLD)));
+                return true;
             }
         }else if (sender instanceof  ConsoleCommandSender c){
             c.sendMessage(Component.text("Console can't run this command").color(NamedTextColor.RED));

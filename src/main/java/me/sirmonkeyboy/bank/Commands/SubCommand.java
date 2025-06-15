@@ -13,7 +13,7 @@ public abstract class SubCommand {
 
     public abstract String getSyntax();
 
-    public abstract void perform(Player p, String args[]) throws SQLException;
+    public abstract void perform(Player player, String args[]) throws SQLException;
 
     public abstract List<String> getSubCommandArguments(Player p, String args[]);
 

@@ -1,6 +1,5 @@
-package me.sirmonkeyboy.bank.Commands.SubCommands;
+package me.sirmonkeyboy.bank.Commands.BankSubCommands;
 
-import me.sirmonkeyboy.bank.Bank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
@@ -15,10 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-
 public class Balance extends SubCommand {
-
-    private final Bank plugin;
 
     private final MariaDB data;
 
@@ -26,9 +22,8 @@ public class Balance extends SubCommand {
 
     private final CooldownManager cooldownManager;
 
-    public Balance(Bank plugin, ConfigManager configManager, CooldownManager cooldownManager) {
-        this.plugin = plugin;
-        this.data = plugin.data;
+    public Balance(MariaDB data, ConfigManager configManager, CooldownManager cooldownManager) {
+        this.data = data;
         this.configManager = configManager;
         this.cooldownManager = cooldownManager;
     }
@@ -49,32 +44,31 @@ public class Balance extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) throws SQLException {
-        if (!p.hasPermission("Bank.commands.Bank.Balance")) {
-            if (configManager.getNoPermission() == null) {
-                p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
-                return;
-            }
-            p.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
+    public void perform(Player player, String[] args) {
+        if (!player.hasPermission("Bank.commands.Bank.Balance")) {
+            player.sendMessage(Component.text(configManager.getNoPermission()).color(NamedTextColor.RED));
             return;
         }
 
-        UUID uuid = p.getUniqueId();
+        UUID uuid = player.getUniqueId();
         if (cooldownManager.isOnCooldown(uuid)) {
             long seconds = cooldownManager.getRemainingTime(uuid) / 1000;
-            p.sendMessage("You're on cooldown! Try again in " + seconds + " seconds.");
+            String CooldownMessage = configManager.getCooldownMessage().replace("%Seconds%", String.valueOf(seconds));
+            player.sendMessage(CooldownMessage);
             return;
         }
 
-        double balance = data.getBalance(p.getUniqueId());
-        if (configManager.getBalanceMessage() == null) {
-            p.sendMessage(Component.text(configManager.getMissingMessage()).color(NamedTextColor.RED));
+        double balance = 0;
+        try {
+            balance = data.getBalance(player.getUniqueId());
+        } catch (SQLException e) {
+            player.sendMessage(Component.text("Error getting your bank balance try again or contact staff.").color(NamedTextColor.RED));
             return;
         }
 
         String BalanceStr = String.valueOf(balance);
         String BalanceMessage = configManager.getBalanceMessage().replace("%Bal%", BalanceStr);
-        p.sendMessage(Component.text(BalanceMessage).color(NamedTextColor.GREEN));
+        player.sendMessage(Component.text(BalanceMessage).color(NamedTextColor.GREEN));
 
         cooldownManager.startCooldown(uuid);
     }

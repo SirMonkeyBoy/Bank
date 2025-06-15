@@ -1,8 +1,8 @@
 name: KingdomBank
 version: '${project.version}'
-main: me.sirmonkeyboy.bank.Bank
+main: me.sirmonkeyboy.bank.KingdomBank
 api-version: '1.21.4'
-prefix: Kingdom Bank
+prefix: KingdomBank
 depend: [Vault]
 authors: [SirMonkeyBoy]
 website: https://github.com/SirMonkeyBoy
@@ -16,6 +16,10 @@ commands:
     description: BankTop
     permission: Bank.commands.BankTop
     permission-message: "You do not have permission to use this command"
+  ABank:
+    description: ABank
+    permission: Bank.commands.ABank
+    permission-message: "You do not have permission to use this command"
 permissions:
   Bank.commands.Bank:
     description: "Access to /Bank"
@@ -27,3 +31,8 @@ permissions:
   Bank.commands.BankTop:
     description: "Access to /BankTop"
     default: op
+  Bank.commands.ABank:
+    description: "Access to /ABank"
+    default: op
+    children:
+      Bank.commands.ABank.Reload: true
