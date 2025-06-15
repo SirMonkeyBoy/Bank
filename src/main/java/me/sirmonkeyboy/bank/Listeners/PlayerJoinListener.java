@@ -7,8 +7,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.sql.SQLException;
-
 public class PlayerJoinListener implements Listener {
 
     private final MariaDB data;
@@ -18,8 +16,9 @@ public class PlayerJoinListener implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent e) throws SQLException {
+    public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        data.createPlayer(player);
+        data.createPlayer(player, (success) -> {
+        });
     }
 }
