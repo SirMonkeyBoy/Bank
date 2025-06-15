@@ -4,15 +4,14 @@ import me.sirmonkeyboy.bank.KingdomBank;
 import me.sirmonkeyboy.bank.Commands.SubCommand;
 import me.sirmonkeyboy.bank.Utils.ConfigManager;
 import me.sirmonkeyboy.bank.Utils.CooldownManager;
-
 import me.sirmonkeyboy.bank.Utils.MariaDB;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.UUID;
 
 public class BalOther extends SubCommand {
@@ -66,22 +65,15 @@ public class BalOther extends SubCommand {
             return;
         }
 
-        OptionalDouble result = OptionalDouble.empty();
-        try {
-            result = data.getBalanceOther(name);
-        } catch (SQLException e) {
-            player.sendMessage(Component.text("Error getting " + name + " bank balance try again or contact staff.").color(NamedTextColor.RED));
-            return;
-        }
 
-        if (result.isEmpty()) {
-            player.sendMessage(Component.text("No player found").color(NamedTextColor.RED));
-            return;
-        }
-        double balance = result.getAsDouble();
-        player.sendMessage(Component.text(name + "'s balance is " + balance).color(NamedTextColor.GREEN));
-
-        cooldownManager.startCooldown(uuid);
+        data.getBalanceOther(name, (success, balance) -> {
+            if (!success) {
+                player.sendMessage(Component.text("Failed to get the balance is the name correct.").color(NamedTextColor.RED));
+                return;
+            }
+            player.sendMessage(Component.text(name + "'s balance is " + balance).color(NamedTextColor.GREEN));
+            cooldownManager.startCooldown(uuid);
+        });
     }
 
     @Override

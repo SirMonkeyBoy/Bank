@@ -10,7 +10,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,19 +57,15 @@ public class Balance extends SubCommand {
             return;
         }
 
-        double balance = 0;
-        try {
-            balance = data.getBalance(player.getUniqueId());
-        } catch (SQLException e) {
-            player.sendMessage(Component.text("Error getting your bank balance try again or contact staff.").color(NamedTextColor.RED));
-            return;
-        }
-
-        String BalanceStr = String.valueOf(balance);
-        String BalanceMessage = configManager.getBalanceMessage().replace("%Bal%", BalanceStr);
-        player.sendMessage(Component.text(BalanceMessage).color(NamedTextColor.GREEN));
-
-        cooldownManager.startCooldown(uuid);
+        data.getBalance(player, (success, balance) -> {
+            if (!success) {
+                player.sendMessage(Component.text("Failed to get balance try again of contact staff.").color(NamedTextColor.RED));
+                return;
+            }
+            String msg = configManager.getBalanceMessage().replace("%Bal%", String.valueOf(balance));
+            player.sendMessage(Component.text(msg).color(NamedTextColor.GREEN));
+            cooldownManager.startCooldown(uuid);
+        });
     }
 
     @Override
